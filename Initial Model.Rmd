@@ -8,8 +8,44 @@ date: "2024-03-13"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r Parameters}
+```{r 3 All or Nothing}
+AoN <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1.Track the total population size
+    num <- s.num + i.num + + v.num
+    # 2.Define lambda
+    lambda <- (tau * ce * (i.num / num))
+    mu <- 1/lifespan
+    gamma <- 1/dur.inf
+    # 3.Write four differential equations
+    
+    #Susceptibles
+    dS <- (-lambda * s.num) + ((1 - (omega*chi)) * (mu * num) - (mu * s.num))
+    #Infected
+    dI <- (lambda * s.num) - (gamma * i.num) - (mu * i.num)
+    #Recovered
+    dR <- (gamma * i.num) - (mu * r.num)
+    #Vaccinated
+    dV <- (omega * chi * (mu)*(num)) - (mu * v.num)
 
+    # 4.Outputs
+    list(c(dS, dI,dR, dV, 
+           si.flow = lambda * s.num,
+           v.flow = (omega * chi *mu* (num))
+    ))
+  })
+}
+
+param <- param.dcm(tau = 0.4, ce = 3, lifespan = (50*365), 
+                   dur.inf = 14, omega = c(0,0.5,0.9), chi = 0.9)
+
+init <- init.dcm(s.num = 100000, i.num = 1, r.num = 0,v.num = 0,
+                 si.flow = 0, v.flow = 0)
+
+control <- control.dcm(nsteps = (15*365), new.mod = AoN)
+
+mod <- dcm(param, init, control)
+mod
 ```
-
+Overall effect of vaccination, direct effect of vaccination, indirect effect of vaccination.
 
