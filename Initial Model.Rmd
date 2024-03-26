@@ -6,6 +6,8 @@ date: "2024-03-13"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(EpiModel)
 ```
 
 ```{r 3 All or Nothing}
@@ -17,23 +19,34 @@ AoN <- function(t, t0, parms) {
     num <- h.num + l.num
     
     # 2. Define Contact Rate for low-sexual activity based on the rate for high sexual activity
-    ce.l <- (ce.h * h.num)/l.num
-    -----------------------------------------------# Unsure on this (How do I define the contact rate that is interdependent on high and low)
-    # 2.Define lambda
-    lambda.h <- (tau.h * ce.h * (? / num))
-    lambda.l <- (tau.l * ce.l * (? / num))
-    -----------------------------------------------# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
+      beta1 <- ce1 / h.num
+      beta2 <- ce2 / num
+      # we are assuming there is a higher contact rate between high-high contacts and then lower contact between the other 2 pairing of low-low, high-low.
+      
+#Can we make this assumption that the ce would be the same for these other ones
+    
+   # 3.Define lambda
+      lambda.hh <- beta1 * i.h.num
+      lambda.hl <- 0.5 * beta2 * i.l.num
+      lambda.h <- lambda.hh + lambda.hl
+
+      lambda.ll <- beta2 * i.l.num
+      lambda.lh <- 0.5 * beta2 * i.h.num
+      lambda.l <- lambda.ll + lambda.lh
+
+
+# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
     
     mu <- 1/lifespan
     gamma <- 1/dur.inf
-    # 3.Write four differential equations
+    # 3.Write eight differential equations
     
     #Susceptibles
     dSh <- (-lambda.h * s.h.num) + ((1 - (omega*chi)) * (mu * h.num) - (mu * s.h.num))
-    dSl <- (-lambd.l * s.l.num) + ((1 - (omega*chi)) * (mu * l.num) - (mu * s.l.num))
+    dSl <- (-lambda.l * s.l.num) + ((1 - (omega*chi)) * (mu * l.num) - (mu * s.l.num))
     #Infected
-    dIh <- (lambda * s.h.num) - (gamma * i.h.num) - (mu * i.h.num)
-    dIl <- (lambda * s.l.num) - (gamma * i.l.num) - (mu * i.l.num)
+    dIh <- (lambda.h * s.h.num) - (gamma * i.h.num) - (mu * i.h.num)
+    dIl <- (lambda.l * s.l.num) - (gamma * i.l.num) - (mu * i.l.num)
     #Recovered
     dRh <- (gamma * i.h.num) - (mu * r.h.num)
     dRl <- (gamma * i.l.num) - (mu * r.l.num)
@@ -50,16 +63,35 @@ AoN <- function(t, t0, parms) {
   })
 }
 
-param <- param.dcm(tau = ?, ce = ?, lifespan = ? (Death rate/ Birthrate?), 
-                   dur.inf = ?, omega = ?, chi = ?)
+param <- param.dcm(tau = 0.4, ce1 = 0.34, ce2 = 0.07, lifespan = (50*365), 
+                   dur.inf = 14, omega = 0.95, chi = 0.5)
 
-init <- init.dcm(s.h.num = ?, s.l.num = ?, i.h.num = ?, i.l.num = ?, r.h.num = ?, r.l.num = ?, v.h.num = ?, v.l.num = ?,
-                 si.flow = ?, v.flow = 0)
+init <- init.dcm(s.h.num = (15*365), s.l.num = 100, i.h.num = 1, i.l.num = 1, r.h.num = 0, r.l.num = 0, v.h.num = 0, v.l.num = 0,
+                 si.h.flow = 0, si.l.flow = 0, v.h.flow = 0, v.l.flow = 0)
 
-control <- control.dcm(nsteps = ?, new.mod = AoN)
+control <- control.dcm(nsteps = (15*365), new.mod = AoN)
 
 mod <- dcm(param, init, control)
 mod
 ```
-Overall effect of vaccination, direct effect of vaccination, indirect effect of vaccination.
+```{r}
+# Add number infected and prevalence
+mod <- mutate_epi(mod, h.num = s.h.num + i.h.num + r.h.num + v.h.num, l.num = s.l.num + i.l.num + r.l.num + v.l.num)
+mod <- mutate_epi(mod, h.prev = i.h.num / h.num, l.prev = i.l.num / l.num)
+
+
+par(mfrow = c(2,2), mar = c(3,3,2,1), mgp = c(2,1,0)) 
+
+plot(mod, y = "i.h.num", main = "number infected high_activity",
+legend = "lim", lwd = 1)
+
+plot(mod, y = "i.l.num", main = "number infected low_activity",
+legend = "lim", lwd = 1)
+
+plot(mod, y = "h.prev", main = "prev infected high_activity",
+legend = "lim", lwd = 1, ylim = c(0, 0.5)) 
+
+plot(mod, y = "l.prev", main = "prev infected low_activity",
+legend = "lim", lwd = 1, ylim = c(0, 0.1))
+```
 
