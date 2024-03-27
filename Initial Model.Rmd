@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(EpiModel)
 library(ggplot2)
+library(tidyverse)
 ```
 
 ```{r 3 All or Nothing}
