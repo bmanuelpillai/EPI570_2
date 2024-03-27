@@ -5,9 +5,12 @@ date: "2024-03-13"
 ---
 
 ```{r setup, include=FALSE}
+#HELLO WORLD!
+
 knitr::opts_chunk$set(echo = TRUE)
 
 library(EpiModel)
+library(ggplot2)
 ```
 
 ```{r 3 All or Nothing}
