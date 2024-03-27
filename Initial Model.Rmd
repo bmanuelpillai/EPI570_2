@@ -9,6 +9,7 @@ date: "2024-03-13"
 
 knitr::opts_chunk$set(echo = TRUE)
 
+library(pacman)
 library(EpiModel)
 library(ggplot2)
 library(tidyverse)
