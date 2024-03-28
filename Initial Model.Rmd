@@ -17,6 +17,27 @@ library(tidyr)
 library(reshape2)
 ```
 
+LateX Equations (for Bevin's Model):
+$S_h = -\lambda_h N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_a \mu_a N_{ih}-\mu_a N_{sh}$
+$S_l = -\lambda_l N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a N_{il}-\mu_a N_{sh}$
+$S_y = -\lambda_y N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_y N_{sh}$
+
+$I_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
+$I_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
+$I_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+
+$R_h = \gamma*N_{ih}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rh}$
+$R_l = \gamma*N_{il}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rl}$
+$R_y = \gamma*N_{iy}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{ry}$
+
+$V_h = \omega_a N_h-\mu_a N_{vh}+1-\omega_y*N_{sy}*\iota$
+$V_h = \omega_a N_l-\mu_a N_{vl}+1-\omega_y*N_{sy}*\iota$
+
+Where l = low risk group
+      h = high risk group
+      y = young group
+      
+
 ```{r 3 All or Nothing BEVIN}
 AoN <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
@@ -148,7 +169,25 @@ ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
   xlab("Time")+ylab("Number") 
 ```
 
+LateX Equations (for Tom's Model):
+$S_h = -\lambda_h N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_a \mu_a N_{ih}-\mu_a N_{sh}$
+$S_l = -\lambda_l N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a N_{il}-\mu_a N_{sh}$
+$S_y = -\lambda_y N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_y N_{sh}$
 
+$A_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
+$A_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
+$A_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+
+$I_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
+$I_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
+$I_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+
+$R_h = \gamma*N_{ih}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rh}$
+$R_l = \gamma*N_{il}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rl}$
+$R_y = \gamma*N_{iy}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{ry}$
+
+$V_h = \omega_a N_h-\mu_a N_{vh}+1-\omega_y*N_{sy}*\iota$
+$V_h = \omega_a N_l-\mu_a N_{vl}+1-\omega_y*N_{sy}*\iota$
 
 
 ```{r 3 All or Nothing TOM with Aysmptomatic}
@@ -253,7 +292,7 @@ mod
 #Puberty --> highly sexually active and low sexual active
 #Old past puberty
 ```
-
+i.
 ```{r}
 #Graphs for S, I, R, V
 H <- c("s.h.num","a.h.num","i.h.num","r.h.num","v.h.num")
