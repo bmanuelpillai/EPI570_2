@@ -109,25 +109,17 @@ mod
 #Note: Added more code similar to this below, made some modifications which you may find to be easier
 # Add number infected and prevalence
 
-# Tom you are the expert outputter so I leave this part to you to fix boss.
+# Tom you are the expert outputter so I leave this part to you to fix boss. This is so busted its not even funny
 
-mod <- mutate_epi(mod, s.m.num + i.m.sy.num + i.m.ay.num + v.m.num, f.num = s.f.num + i.f.sy.num+ i.f.ay.num + v.f.num)
-mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
+mod <- mutate_epi(mod, m.num = s.m.num + i.m.sy.num + i.m.ay.num + v.m.num, f.num = s.f.num + i.f.sy.num + i.f.ay.num + v.f.num)
+mod <- mutate_epi(mod, m.prev = (i.m.sy.num + i.m.ay.num) / m.num, f.prev = (i.f.sy.num + i.f.ay.num) / f.num)
 
-m.num = s.m.num + i.m.sy.num+ i.m.ay.num + v.m.num
-        f.num = s.f.num + i.f.sy.num+ i.f.ay.num + v.f.num
 
 par(mfrow = c(2,2), mar = c(3,3,2,1), mgp = c(2,1,0)) 
 
-plot(mod, y = "i.h.num", main = "number infected high_activity",
-legend = "lim", lwd = 1)
-
-plot(mod, y = "i.l.num", main = "number infected low_activity",
-legend = "lim", lwd = 1)
-
-plot(mod, y = "h.prev", main = "prev infected high_activity",
+plot(mod, y = "m.prev", main = "prev infected males",
 legend = "lim", lwd = 1, ylim = c(0, 0.5)) 
 
-plot(mod, y = "l.prev", main = "prev infected low_activity",
+plot(mod, y = "f.prev", main = "prev infected females",
 legend = "lim", lwd = 1, ylim = c(0, 0.1))
 ```
