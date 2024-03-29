@@ -96,6 +96,7 @@ control <- control.dcm(nsteps = (5*365), new.mod = AoN)
 mod <- dcm(param, init, control)
 mod
 ```
+
 ```{r}
 #Note: Added more code similar to this below, made some modifications which you may find to be easier
 # Add number infected and prevalence
@@ -145,9 +146,6 @@ ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
   geom_line(lwd=2)+             #Add line
   xlab("Time")+ylab("Number") 
 ```
-
-
-
 
 ```{r 3 All or Nothing TOM with Aysmptomatic}
 #With asymptomatic? This is important for the epidimiology of the disease.
