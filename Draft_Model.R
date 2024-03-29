@@ -29,19 +29,19 @@ ce.m.sy <- ce.m.ay * nu
 #defining lambdas
 
 #For Males
-lambda.m.uv.ay <- (tau.uv) * (ce.m.ay) * (i.m.ay.num / m.uv.num)
-lambda.m.uv.sy <- (tau.uv) * (ce.m.sy) * (i.m.sy.num / m.uv.num)
+lambda.m.uv.ay <- (tau.uv.ay) * (ce.m.ay) * (i.m.ay.num / m.uv.num)
+lambda.m.uv.sy <- (tau.uv.sy) * (ce.m.sy) * (i.m.sy.num / m.uv.num)
 
-lambda.m.v.ay <- (tau.v) * (ce.m.ay) * (i.m.ay.num / m.v.num)
-lambda.m.v.sy <- (tau.v) * (ce.m.sy) * (i.m.sy.num / m.v.num)
+lambda.m.v.ay <- (tau.v.ay) * (ce.m.ay) * (i.m.ay.num / m.v.num)
+lambda.m.v.sy <- (tau.v.sy) * (ce.m.sy) * (i.m.sy.num / m.v.num)
 
 
 #For Females
-lambda.f.uv.ay <- (tau.uv) * (ce.f.ay) * (i.f.ay.num / f.uv.num)
-lambda.f.uv.sy <- (tau.uv) * (ce.f.sy) * (i.f.sy.num / f.uv.num)
+lambda.f.uv.ay <- (tau.uv.ay) * (ce.f.ay) * (i.f.ay.num / f.uv.num)
+lambda.f.uv.sy <- (tau.uv.sy) * (ce.f.sy) * (i.f.sy.num / f.uv.num)
 
-lambda.f.v.ay <- (tau.v) * (ce.f.ay) * (i.f.ay.num / f.v.num)
-lambda.f.v.sy <- (tau.v) * (ce.f.sy) * (i.f.sy.num / f.v.num)
+lambda.f.v.ay <- (tau.v.ay) * (ce.f.ay) * (i.f.ay.num / f.v.num)
+lambda.f.v.sy <- (tau.v.sy) * (ce.f.sy) * (i.f.sy.num / f.v.num)
 
 #Output
 list(c(dSm,dIm,dVm,
@@ -50,8 +50,9 @@ list(c(dSm,dIm,dVm,
        si.f.flow = (lambda.f.uv.sy * s.f.num + lambda.f.uv.ay * s.f.num)
        ))
 
-param <- param.dcm(omega = ?, chi = ?, mu = ?, delta = ?,
-                   ,ce.m.ay = ?, nu = ?, tau.uv = ?, tau.v = ?)
+param <- param.dcm(omega = ?, chi = ?, mu = ?, delta = ?
+                   ,ce.m.ay = ?, nu = ?,
+                   tau.uv.ay = ?,tau.uv.sy = ?, tau.v.ay = ?,  tau.v.sy = ?)
 
 init <- init.dcm(s.m.num = ?, i.m.sy.num = ?, i.m.ay.num = ?, v.m.num = ?, 
                  s.f.num = ?, i.f.sy.num = ?, i.f.ay.num = ?,v.f.num = ?,)

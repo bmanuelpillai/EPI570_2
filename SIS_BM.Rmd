@@ -1,0 +1,133 @@
+---
+title: "SIS Model"
+author: "Bevin Manuelpillai"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pacman)
+library(EpiModel)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(reshape2)
+```
+
+```{r 3 All or Nothing SIS BEVIN}
+
+AoN <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1.Track the population sizes
+        m.num = s.m.num + i.m.sy.num+ i.m.ay.num + v.m.num
+        f.num = s.f.num + i.f.sy.num+ i.f.ay.num + v.f.num
+        num = m.num + f.num
+        i.m.num = i.m.ay.num + i.m.sy.num
+        i.f.num = i.f.ay.num + i.f.sy.num
+    
+    # 2. Define Contact Rate based on Sex and symptomatic status. Define contact rate for females based on the contact rate for males. Define contact rate for symptomatic people based on a decreased sexual activity from asymptomatic people of the same sex.
+        ce.f.ay <- (ce.m.ay * m.num) / f.num
+        ce.f.sy <- ce.f.ay * nu
+        ce.m.sy <- ce.m.ay * nu
+      # We are isolating to only heterosexual contacts.
+      
+#Can we make this assumption that the ce would be the same for these other ones
+    
+   # 3.Define lambda
+        #For Unvaccinated Males
+        lambda.m.uv.ay <- (tau.uv.ay) * (ce.m.ay) * (i.m.ay.num / s.m.num)
+        lambda.m.uv.sy <- (tau.uv.sy) * (ce.m.sy) * (i.m.sy.num / s.m.num)
+        #For Vaccinated Males
+        lambda.m.v.ay <- (tau.v.ay) * (ce.m.ay) * (i.m.ay.num / v.m.num)
+        lambda.m.v.sy <- (tau.v.sy) * (ce.m.sy) * (i.m.sy.num / v.m.num)
+
+
+        #For Unvaccinated Females
+        lambda.f.uv.ay <- (tau.uv.ay) * (ce.f.ay) * (i.f.ay.num / s.f.num)
+        lambda.f.uv.sy <- (tau.uv.sy) * (ce.f.sy) * (i.f.sy.num / s.f.num)
+        #For Vaccinated Females
+        lambda.f.v.ay <- (tau.v.ay) * (ce.f.ay) * (i.f.ay.num / v.f.num)
+        lambda.f.v.sy <- (tau.v.sy) * (ce.f.sy) * (i.f.sy.num / v.f.num)
+
+# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
+    
+    delta <- 1/dur.inf
+    
+    # 3.Write six differential equations
+    
+# MALES
+  dSm <- (-lambda.m.uv.sy * s.m.num) + (-lambda.m.uv.ay * s.m.num) + (1-(0.5*omega*chi*mu*num)) + (delta * i.m.sy.num) + (delta * i.m.ay.num) - (mu.s.m * s.m.num)
+
+  dIsym <- (lambda.m.v.sy * v.m.num)  + (lambda.m.uv.sy * s.m.num) - (delta * i.m.sy.num)  - (mu.i.m * i.m.num)
+  
+  dIaym <-  (lambda.m.v.ay * v.m.num) + (lambda.m.uv.ay * s.m.num) - (delta * i.m.ay.num) - (mu.i.m * i.m.num)
+
+  dVm <- (-lambda.m.v.sy * v.m.num) + (-lambda.m.v.ay * v.m.num) + (0.5*omega*chi*mu*num) - (mu.v.m * v.m.num)
+
+# FEMALES
+  dSf <- (-lambda.f.uv.sy * s.f.num) + (-lambda.f.uv.ay * s.f.num) + (1-(0.5*omega*chi*mu*num)) + (delta * i.f.sy.num) + (delta * i.f.ay.num) - (mu.s.f * s.f.num)
+
+  dIsyf <- (lambda.f.v.sy * v.f.num)  + (lambda.f.uv.sy * s.f.num) - (delta * i.f.sy.num)  - (mu.i.f * i.f.num)
+  
+  dIayf <-  (lambda.f.v.ay * v.f.num) + (lambda.f.uv.ay * s.f.num) - (delta * i.f.ay.num) - (mu.i.f * i.f.num)
+
+  dVf <- (-lambda.f.v.sy * v.f.num) + (-lambda.f.v.ay * v.f.num) + (0.5*omega*chi*mu*num) - (mu.v.f * v.f.num)
+    
+    # 4.Outputs
+    list(c(dSm, dIsym, dIaym, dVm,
+            dSf, dIsyf, dIayf, dVf,
+            si.m.flow = (lambda.m.uv.sy * s.m.num + lambda.m.uv.ay * s.m.num),
+            si.f.flow = (lambda.f.uv.sy * s.f.num + lambda.f.uv.ay * s.f.num),
+            vi.m.flow = (lambda.m.v.sy * v.m.num + lambda.m.v.ay * v.m.num),
+            vi.f.flow = (lambda.f.v.sy * v.f.num + lambda.f.v.ay * v.f.num)
+       ))
+  })
+}
+
+param <- param.dcm(omega = 0.5, chi = 0.95, mu = 0.1,
+                   mu.s.m = 0.1, mu.i.m = 0.1 , mu.v.m = 0.1,
+                   mu.s.f = 0.1, mu.i.f = 0.1, mu.v.f = 0.1,
+                   dur.inf = 50 ,ce.m.ay = 5, nu = 0.02,
+                   tau.uv.ay = 0.04,tau.uv.sy = 0.02, tau.v.ay = 0.01,  tau.v.sy = 0.005)
+
+init <- init.dcm(s.m.num = 100, i.m.sy.num = 100, i.m.ay.num = 100, v.m.num = 100, si.m.flow = 0,vi.m.flow = 0,
+                 s.f.num = 100, i.f.sy.num = 100, i.f.ay.num = 100,v.f.num = 100, si.f.flow = 0, vi.f.flow = 0)
+
+control <- control.dcm(nsteps = (15*365), new.mod = AoN)
+
+mod <- dcm(param, init, control)
+mod
+```
+
+```{r}
+#Note: Added more code similar to this below, made some modifications which you may find to be easier
+# Add number infected and prevalence
+
+# Tom you are the expert outputter so I leave this part to you to fix boss.
+
+mod <- mutate_epi(mod, s.m.num + i.m.sy.num + i.m.ay.num + v.m.num, f.num = s.f.num + i.f.sy.num+ i.f.ay.num + v.f.num)
+mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
+
+m.num = s.m.num + i.m.sy.num+ i.m.ay.num + v.m.num
+        f.num = s.f.num + i.f.sy.num+ i.f.ay.num + v.f.num
+
+par(mfrow = c(2,2), mar = c(3,3,2,1), mgp = c(2,1,0)) 
+
+plot(mod, y = "i.h.num", main = "number infected high_activity",
+legend = "lim", lwd = 1)
+
+plot(mod, y = "i.l.num", main = "number infected low_activity",
+legend = "lim", lwd = 1)
+
+plot(mod, y = "h.prev", main = "prev infected high_activity",
+legend = "lim", lwd = 1, ylim = c(0, 0.5)) 
+
+plot(mod, y = "l.prev", main = "prev infected low_activity",
+legend = "lim", lwd = 1, ylim = c(0, 0.1))
+```
