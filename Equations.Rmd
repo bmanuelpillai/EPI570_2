@@ -4,37 +4,17 @@ output:
   html_document: default
   word_document: default
 ---
-**LateX Equations:**
+
+**Males**  
+$dS_m = -\lambda_m N_{sm}+(1-\omega_m) N_m +\delta N_{im} - \mu N_{sm}$
   
-**___________________________________________________________________________________**  
-$S_h = -\lambda_h N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_a \mu_a N_{ih}-\mu_a N_{sh}$
- 
-$S_l = -\lambda_l N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a N_{il}-\mu_a N_{sh}$
- 
-$S_y = -\lambda_y N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_y N_{sh}$
+$dI_m = \lambda_m N_{vm} (1-\psi)+(\lambda_m N_{sm}) N_m -\delta N_{im} - \mu N_{im}$
   
-**___________________________________________________________________________________**  
-$A_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
- 
-$A_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
- 
-$A_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+$dV_m = -\lambda_m N_{vm} (1-\psi)+(\omega_m \mu N_{m}) - \mu N_{vm}$
   
-**___________________________________________________________________________________**  
-$I_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
- 
-$I_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
- 
-$I_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+**Females**  
+$dS_f = -\lambda_f N_{sf}+(1-\omega_f) N_f +\delta N_{if} - \mu N_{sf}$
   
-**___________________________________________________________________________________**  
-$R_h = \gamma*N_{ih}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rh}$
- 
-$R_l = \gamma*N_{il}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rl}$
- 
-$R_y = \gamma*N_{iy}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{ry}$
+$dI_f = \lambda_m N_{vf} (1-\psi)+(\lambda_m N_{sf}) N_f -\delta N_{if} - \mu N_{if}$
   
-**___________________________________________________________________________________**  
-$V_h = \omega_a N_h-\mu_a N_{vh}+1-\omega_y*N_{sy}*\iota$
- 
-$V_h = \omega_a N_l-\mu_a N_{vl}+1-\omega_y*N_{sy}*\iota$
+$dV_f = -\lambda_f N_{vf} (1-\psi)+(\omega_f \mu N_{f}) - \mu N_{vf}$
