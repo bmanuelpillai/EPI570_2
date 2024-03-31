@@ -21,7 +21,6 @@ library(reshape2)
 ```
 
 ```{r 3 All or Nothing SIS BEVIN}
-
 AoN <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
     # 1.Track the population sizes
@@ -50,14 +49,14 @@ AoN <- function(t, t0, parms) {
     # 3.Write six differential equations
     
 # MALES
-  dSm <- (-lambda.m * s.m.num) + (1 - (mu * m.num * omega.m)) + (delta * i.m.num)  - (mu * s.m.num)
+  dSm <- (-lambda.m * s.m.num) + ((1 - omega.m) * (mu * m.num)) + (delta * i.m.num)  - (mu * s.m.num)
 
   dIm <- (lambda.m * v.m.num * (1-psi))  + (lambda.m * s.m.num) - (delta * i.m.num)  - (mu * i.m.num)
   
   dVm <- (-lambda.m * v.m.num * (1-psi)) + (omega.m * mu * m.num) - (mu * v.m.num)
 
 # FEMALES
-  dSf <- (-lambda.f * s.f.num) + (1 - (mu * f.num * omega.f)) + (delta * i.f.num)  - (mu * s.f.num)
+  dSf <- (-lambda.f * s.f.num) + ((1 - omega.f)* (mu * f.num)) + (delta * i.f.num)  - (mu * s.f.num)
 
   dIf <- (lambda.f * v.f.num * (1-psi))  + (lambda.f * s.f.num) - (delta * i.f.num)  - (mu * i.f.num)
   
@@ -74,18 +73,34 @@ AoN <- function(t, t0, parms) {
   })
 }
 
-param <- param.dcm(omega.m = 0.10, omega.f = 0.40, chi = 0.90, lifespan = (11*365),
-                   psi = 0.98, dur.inf = (1.5*365), ce.m = 5, tau = 0.74)
 
-init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000, si.m.flow = 0,vi.m.flow = 0,
-                 s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000, si.f.flow = 0, vi.f.flow = 0)
+param <- param.dcm(omega.m = 0.10, omega.f = 0.40, lifespan = (11*365),
+                   psi = 0.90, dur.inf = (1.5*365), ce.m = 5, tau = 0.74)
 
-control <- control.dcm(nsteps = (11*365), new.mod = AoN)
+init <- init.dcm(s.m.num = 1000, i.m.num = 1000, v.m.num = 1000, si.m.flow = 0,vi.m.flow = 0,
+                 s.f.num = 1000, i.f.num = 1000, v.f.num = 1000, si.f.flow = 0, vi.f.flow = 0)
+
+control <- control.dcm(nsteps = (5*365), new.mod = AoN)
 
 mod <- dcm(param, init, control)
 mod
 
 test <- as.data.frame(mod)
+
+
+
+# param <- param.dcm(omega.m = 0.10, omega.f = 0.40, lifespan = (11*365),
+#                    psi = 0.90, dur.inf = (1.5*365), ce.m = 5, tau = 0.74)
+# 
+# init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000, si.m.flow = 0,vi.m.flow = 0,
+#                  s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000, si.f.flow = 0, vi.f.flow = 0)
+# 
+# control <- control.dcm(nsteps = (11*365), new.mod = AoN)
+# 
+# mod <- dcm(param, init, control)
+# mod
+# 
+# test <- as.data.frame(mod)
 ```
 
 ```{r}
@@ -94,8 +109,8 @@ test <- as.data.frame(mod)
 
 # Tom you are the expert outputter so I leave this part to you to fix boss. This is so busted its not even funny
 
-mod <- mutate_epi(mod, m.num = s.m.num + i.m.sy.num + i.m.ay.num + v.m.num, f.num = s.f.num + i.f.sy.num + i.f.ay.num + v.f.num)
-mod <- mutate_epi(mod, m.prev = (i.m.sy.num + i.m.ay.num) / m.num, f.prev = (i.f.sy.num + i.f.ay.num) / f.num)
+mod <- mutate_epi(mod, m.num = s.m.num + i.m.num + v.m.num, f.num = s.f.num + i.f.num + v.f.num)
+mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
 
 
 par(mfrow = c(2,2), mar = c(3,3,2,1), mgp = c(2,1,0)) 
@@ -105,4 +120,7 @@ legend = "lim", lwd = 1, ylim = c(0, 0.5))
 
 plot(mod, y = "f.prev", main = "prev infected females",
 legend = "lim", lwd = 1, ylim = c(0, 0.1))
+
+plot(mod, y = "si.m.flow")
+plot(mod, y = "si.f.flow")
 ```
