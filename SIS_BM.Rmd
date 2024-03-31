@@ -123,3 +123,29 @@ legend = "lim", lwd = 1, ylim = c(0, 0.5))
 plot(mod, y = "f.prev", main = "prev infected females",
 legend = "lim", lwd = 1, ylim = c(0, 0.1))
 ```
+
+```{r}
+#Graphs for S, I, R, V
+S <- c("s.m.num","s.f.num")
+I <- c("s.l.num","i.l.num","r.l.num","v.l.num")
+V <- c("s.y.num","i.y.num","r.y.num","v.y.num")
+
+df_mod <- as.data.frame(mod) 
+colnames(mod)
+
+mod_long <- melt(as.data.frame(mod),"time")
+
+mod_long_subset1 <- subset(mod_long, variable %in% H)
+mod_long_subset2 <- subset(mod_long, variable %in% L)
+mod_long_subset3 <- subset(mod_long, variable %in% Y)
+
+ggplot(mod_long_subset1,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+ggplot(mod_long_subset2,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+```
