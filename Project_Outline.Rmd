@@ -1,0 +1,102 @@
+---
+title: "SIS Model"
+author: "Bevin Manuelpillai"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pacman)
+library(EpiModel)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(reshape2)
+```
+
+```{r 3 Vaccination of HPV}
+Vaccination <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1.Track the population sizes
+        m.num = s.m.num + i.m.num + v.m.num
+        f.num = s.f.num + i.f.num + v.f.num
+        num = m.num + f.num
+
+    
+    # 2. Define Contact Rate based on Sex.Define contact rate for females based on the contact rate for males.
+        ce.f <- (ce.m * m.num) / f.num
+      # We are isolating to only heterosexual contacts.
+      
+#Can we make this assumption that the ce would be the same for these other ones
+    
+   # 3.Define lambda
+        #For Males
+        lambda.m <- (tau) * (ce.m) * (i.f.num / f.num)
+
+        #For Females
+        lambda.f <- (tau) * (ce.f) * (i.m.num / m.num)
+
+# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
+    mu <- 1/lifespan
+    delta <- 1/dur.inf
+    
+    # 3.Write six differential equations
+    
+# MALES
+  dSm <- (-lambda.m * s.m.num) + ((1 - omega.m) * (mu * m.num)) + (delta * i.m.num)  - (mu * s.m.num)
+
+  dIm <- (lambda.m * v.m.num * (1-psi))  + (lambda.m * s.m.num) - (delta * i.m.num)  - (mu * i.m.num)
+  
+  dVm <- (-lambda.m * v.m.num * (1-psi)) + (omega.m * mu * m.num) - (mu * v.m.num)
+
+# FEMALES
+  dSf <- (-lambda.f * s.f.num) + ((1 - omega.f)* (mu * f.num)) + (delta * i.f.num)  - (mu * s.f.num)
+
+  dIf <- (lambda.f * v.f.num * (1-psi))  + (lambda.f * s.f.num) - (delta * i.f.num)  - (mu * i.f.num)
+  
+  dVf <- (-lambda.f * v.f.num * (1-psi)) + (omega.f * mu * f.num) - (mu * v.f.num)
+    
+    # 4.Outputs
+    list(c(dSm, dIm,dVm,
+            dSf, dIf, dVf,
+            si.m.flow = (lambda.m * s.m.num),
+            si.f.flow = (lambda.f * s.f.num),
+            vi.m.flow = (lambda.m * v.m.num * (1-psi)),
+            vi.f.flow = (lambda.f * v.f.num * (1-psi))
+       ))
+  })
+}
+
+
+param <- param.dcm(omega.m = seq(0.1, 0.4, by = 0.1), omega.f = 0.40, lifespan = (11*365),
+                   psi = 0.90, dur.inf = (1.5*365), ce.m = (1.8/365), tau = 0.74)
+
+init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
+                 s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000,
+                 si.m.flow = 0, si.f.flow = 0,
+                 vi.m.flow = 0,vi.f.flow = 0)
+
+control <- control.dcm(nsteps = (11*365), new.mod = Vaccination)
+
+mod <- dcm(param, init, control)
+mod
+
+test <- as.data.frame(mod)
+View(test)
+```
+
+Plotting Compartments and Flows
+
+```{r}
+mod <- mutate_epi(mod, m.num = s.m.num + i.m.num + v.m.num, f.num = s.f.num + i.f.num + v.f.num)
+mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
+
+
+par(mfrow = c(2,2))
+plot(mod, y = "m.prev", main = "Proportional Prevalence for Males\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "f.prev", main = "Proportional Prevalence for Females\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "si.m.flow", main = "Incidence in Unvaccinated Males\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "si.f.flow", main = "Incidence in Unvaccinated Females\nomega.m = 0.1-0.4", legend = "full")
+```
