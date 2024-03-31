@@ -1,0 +1,370 @@
+---
+title: "Initial Model"
+output: html_document
+date: "2024-03-13"
+---
+
+```{r setup, include=FALSE}
+#HELLO WORLD!
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pacman)
+library(EpiModel)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(reshape2)
+```
+
+LateX Equations (for Bevin's Model):
+$S_h = -\lambda_h N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_a \mu_a N_{ih}-\mu_a N_{sh}$
+$S_l = -\lambda_l N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a N_{il}-\mu_a N_{sh}$
+$S_y = -\lambda_y N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_y N_{sh}$
+
+$I_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
+$I_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
+$I_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+
+$R_h = \gamma*N_{ih}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rh}$
+$R_l = \gamma*N_{il}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rl}$
+$R_y = \gamma*N_{iy}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{ry}$
+
+$V_h = \omega_a N_h-\mu_a N_{vh}+1-\omega_y*N_{sy}*\iota$
+$V_h = \omega_a N_l-\mu_a N_{vl}+1-\omega_y*N_{sy}*\iota$
+
+Where l = low risk group
+      h = high risk group
+      y = young group
+      
+
+```{r 3 All or Nothing BEVIN}
+AoN <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1.Track the population sizes
+    h.num <- s.h.num + i.h.num + r.h.num + v.h.num
+    l.num <- s.l.num + i.l.num + r.l.num + v.l.num
+    y.num <- s.y.num + i.y.num + r.y.num #12-15, this is planned to be removed
+    num <- h.num + l.num + y.num
+    
+    # 2. Define Contact Rate for low-sexual activity based on the rate for high sexual activity. Define Contact Rate for young persons. I am giving young persons their own contact rate and they wont have contacts with the high and low sex activity groups.
+      beta1 <- ce1 / h.num
+      beta2 <- ce2 / num
+      beta3 <- ce3 / y.num
+      # we are assuming there is a higher contact rate between high-high contacts and then lower contact between the other 2 pairing of low-low, high-low.
+      
+#Can we make this assumption that the ce would be the same for these other ones
+    
+   # 3.Define lambda
+      lambda.hh <- beta1 * i.h.num
+      lambda.hl <- 0.5 * beta2 * i.l.num
+      lambda.h <- lambda.hh + lambda.hl
+
+      lambda.ll <- beta2 * i.l.num
+      lambda.lh <- 0.5 * beta2 * i.h.num
+      lambda.l <- lambda.ll + lambda.lh
+      
+      lambda.y <- beta3 * i.y.num
+
+
+# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
+    
+    mu.a <- 1/lifespan
+    mu.y <- 1/childspan # I have no idea how to define death rate for 12-15 year olds
+    gamma <- 1/dur.inf
+    alpha <- 1/puberty_span
+    # 3.Write eight differential equations
+    
+    #iota represents some parameter we need to represent the proportion of young people that become highly sexually active vs low sexual activity. set at 0.9
+    #Assume that only susceptible young persons are getting vaccinated.
+    #vaccine provides 100% protection so we dont need chi
+    # we will model both vaccination of children and adults
+    
+    #Susceptibles
+    dSh <- (-lambda.h * s.h.num) + (1-(alpha*s.y.num*(iota))) + ((1 - (omega.a)) * (mu.a * h.num)) - (mu.a * s.h.num) 
+    dSl <- (-lambda.l * s.l.num) + (alpha*s.y.num*(iota)) + ((1 - (omega.a)) * (mu.a * l.num)) - (mu.a * s.l.num) 
+    dSy <- (-lambda.y * s.y.num) - (alpha*s.y.num) - (mu.y * s.y.num) - (omega.y*s.y.num) 
+    
+    #Infected
+    dIh <- (lambda.h * s.h.num)  + (1-(alpha*i.y.num*(iota))) - (gamma * i.h.num) - (mu.a * i.h.num) 
+    dIl <- (lambda.l * s.l.num) + (alpha*i.y.num*(iota)) - (gamma * i.l.num) - (mu.a * i.l.num) 
+    dIy <- (lambda.y * s.y.num) - (alpha*i.y.num) - (gamma * i.y.num) - (mu.y * i.y.num) 
+    
+    #Recovered
+    dRh <- (gamma * i.h.num) + (1-(alpha*r.y.num*(iota))) - (mu.a * r.h.num) 
+    dRl <- (gamma * i.l.num) + (alpha*r.y.num*(iota)) - (mu.a * r.l.num) 
+    dRy <- (gamma * i.y.num) - (alpha*r.y.num) - (mu.y * r.y.num) 
+    
+    #Vaccinated
+    dVh <- (omega.a * (mu.a)*(h.num)) - (mu.a * v.h.num) + (1-(omega.y*s.y.num*iota)) 
+    dVl <- (omega.a * (mu.a)*(l.num)) - (mu.a * v.l.num) + (omega.y*s.y.num*iota)
+    # 4.Outputs
+    list(c(dSh, dSl, dSy,dIh, dIl, dIy, dRh, dRl, dRy, dVh, dVl, 
+           si.h.flow = lambda.h * s.h.num,
+           si.l.flow = lambda.l * s.l.num,
+           v.h.flow = (omega.a * mu.a * h.num + (1-(omega.y * s.y.num * iota))),
+           v.l.flow = (omega.a * mu.a * l.num + (omega.y * s.y.num * iota))
+    ))
+  })
+}
+
+param <- param.dcm(tau = 0.5, ce1 = 0.34, ce2 = 0.07, ce3 = 0.001, lifespan = (50*365), childspan = (80*365), puberty_span = (3*365),
+                   dur.inf = 14, omega.a = 0.25, omega.y = 0.5, chi = 0.5, iota = 0.9)
+
+init <- init.dcm(s.h.num = 100, s.l.num = 100, s.y.num = 100, i.h.num = 1, i.l.num = 1, i.y.num = 1, r.h.num = 0, r.l.num = 0, r.y.num =0, v.h.num = 0, v.l.num = 0,
+                 si.h.flow = 0, si.l.flow = 0, v.h.flow = 0, v.l.flow = 0)
+
+control <- control.dcm(nsteps = (5*365), new.mod = AoN)
+
+mod <- dcm(param, init, control)
+mod
+```
+```{r}
+#Note: Added more code similar to this below, made some modifications which you may find to be easier
+# Add number infected and prevalence
+
+mod <- mutate_epi(mod, h.num = s.h.num + i.h.num + r.h.num + v.h.num, l.num = s.l.num + i.l.num + r.l.num + v.l.num)
+mod <- mutate_epi(mod, h.prev = i.h.num / h.num, l.prev = i.l.num / l.num)
+
+
+par(mfrow = c(2,2), mar = c(3,3,2,1), mgp = c(2,1,0)) 
+
+plot(mod, y = "i.h.num", main = "number infected high_activity",
+legend = "lim", lwd = 1)
+
+plot(mod, y = "i.l.num", main = "number infected low_activity",
+legend = "lim", lwd = 1)
+
+plot(mod, y = "h.prev", main = "prev infected high_activity",
+legend = "lim", lwd = 1, ylim = c(0, 0.5)) 
+
+plot(mod, y = "l.prev", main = "prev infected low_activity",
+legend = "lim", lwd = 1, ylim = c(0, 0.1))
+```
+
+```{r}
+#Graphs for S, I, R, V
+H <- c("s.h.num","i.h.num","r.h.num","v.h.num")
+L <- c("s.l.num","i.l.num","r.l.num","v.l.num")
+Y <- c("s.y.num","i.y.num","r.y.num","v.y.num")
+
+df_mod <- as.data.frame(mod) 
+colnames(mod)
+
+df_mod[,S]
+mod_long <- melt(as.data.frame(mod),"time")
+
+mod_long_subset1 <- subset(mod_long, variable %in% H)
+mod_long_subset2 <- subset(mod_long, variable %in% L)
+mod_long_subset3 <- subset(mod_long, variable %in% Y)
+
+ggplot(mod_long_subset1,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+ggplot(mod_long_subset2,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+```
+
+LateX Equations (for Tom's Model):
+$S_h = -\lambda_h N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_a \mu_a N_{ih}-\mu_a N_{sh}$
+$S_l = -\lambda_l N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a N_{il}-\mu_a N_{sh}$
+$S_y = -\lambda_y N_{sy}+1-\alpha N_{sy} (\iota)+1-\omega_y N_{sh}$
+
+$A_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
+$A_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
+$_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+
+$I_h = -\lambda_h N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_a \mu_a*N_h-\mu_a*N_{sh}$
+$I_l = -\lambda_l*N_{sl}+1-\alpha*N_{sy}*(\iota)+1-\omega_a*\mu_a*N_h-\mu_a*N_{sh}$
+$I_y = -\lambda_y*N_{sy}+1-\alpha*N_{sy}*(\iota)+1-\omega_y*N_{sh}$
+
+$R_h = \gamma*N_{ih}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rh}$
+$R_l = \gamma*N_{il}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{rl}$
+$R_y = \gamma*N_{iy}+1-\alpha*N_{ry}*(\iota)+1-\mu_a*N_h*N_{ry}$
+
+$V_h = \omega_a N_h-\mu_a N_{vh}+1-\omega_y*N_{sy}*\iota$
+$V_h = \omega_a N_l-\mu_a N_{vl}+1-\omega_y*N_{sy}*\iota$
+
+
+```{r 3 All or Nothing TOM with Aysmptomatic}
+#With asymptomatic? This is important for the epidimiology of the disease.
+
+AoN <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1.Track the population sizes
+    h.num <- s.h.num + i.h.num + a.h.num + r.h.num + v.h.num #High risk group
+    l.num <- s.l.num + i.l.num + a.l.num + r.l.num + v.l.num #Low risk group
+    y.num <- s.y.num + i.y.num + a.y.num + r.y.num #Young group aged 12-15
+    num <- h.num + l.num + y.num 
+    
+    # 2. Define Contact Rate for low-sexual activity based on the rate for high sexual activity. Define Contact Rate for young persons. I am giving young persons their own contact rate and they wont have contacts with the high and low sex activity groups.
+      beta1 <- ce1 / h.num 
+      beta2 <- ce2 / num
+      beta3 <- ce3 / y.num
+      # we are assuming there is a higher contact rate between high-high contacts and then lower contact between the other 2 pairing of low-low, high-low.
+      
+#Can we make this assumption that the ce would be the same for these other ones
+    
+   # 3.Define lambda
+      lambda.hh <- beta1 * i.h.num
+      lambda.hl <- 0.5 * beta2 * i.l.num
+      lambda.h <- lambda.hh + lambda.hl
+
+      lambda.ll <- beta2 * i.l.num
+      lambda.lh <- 0.5 * beta2 * i.h.num
+      lambda.l <- lambda.ll + lambda.lh
+      
+      lambda.y <- beta3 * i.y.num
+
+
+# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
+    
+    mu.a <- 1/lifespan
+    mu.y <- 1/childspan # I have no idea how to define death rate for 12-15 year olds
+    gamma <- 1/dur.inf
+    alpha <- 1/puberty_span
+    # 3.Write eight differential equations
+    
+    #iota represents some parameter we need to represent the proportion of young people that become highly sexually active vs low sexual activity. set at 0.9
+    #Assume that only susceptible young persons are getting vaccinated.
+    #vaccine provides 100% protection so we dont need chi
+    # we will model both vaccination of children and adults
+    
+    #Susceptibles
+    #Added, we will have an asymptomatic category. The TA recommended it and it is an important part of HPV.
+    
+    
+    dSh <- (-lambda.h * s.h.num) + (1-(alpha*s.y.num*(iota))) + ((1 - (omega.a)) * (mu.a * h.num)) - (mu.a * s.h.num) 
+    dSl <- (-lambda.l * s.l.num) + (alpha*s.y.num*(iota)) + ((1 - (omega.a)) * (mu.a * l.num)) - (mu.a * s.l.num) 
+    dSy <- (-lambda.y * s.y.num) - (alpha*s.y.num) - (mu.y * s.y.num) - (omega.y*s.y.num) 
+    
+    #Asymptomatic added by TOM
+    dAh <- (lambda.h * a.h.num)  + (1-(alpha*i.y.num*(iota))) - (gamma * a.h.num) - (mu.a * a.h.num) 
+    dAl <- (lambda.l * a.l.num) + (alpha*i.y.num*(iota)) - (gamma * a.l.num) - (mu.a * a.l.num) 
+    dAy <- (lambda.y * a.y.num) - (alpha*i.y.num) - (gamma * a.y.num) - (mu.y * a.y.num) 
+    
+    #Infected
+    dIh <- (lambda.h * s.h.num)  + (1-(alpha*i.y.num*(iota))) - (gamma * i.h.num) - (mu.a * i.h.num) 
+    dIl <- (lambda.l * s.l.num) + (alpha*i.y.num*(iota)) - (gamma * i.l.num) - (mu.a * i.l.num) 
+    dIy <- (lambda.y * s.y.num) - (alpha*i.y.num) - (gamma * i.y.num) - (mu.y * i.y.num) 
+    
+    #Recovered
+    dRh <- (gamma * i.h.num) + (1-(alpha*r.y.num*(iota))) - (mu.a * r.h.num) 
+    dRl <- (gamma * i.l.num) + (alpha*r.y.num*(iota)) - (mu.a * r.l.num) 
+    dRy <- (gamma * i.y.num) - (alpha*r.y.num) - (mu.y * r.y.num) 
+    
+    #Vaccinated
+    dVh <- (omega.a * (mu.a)*(h.num)) - (mu.a * v.h.num) + (1-(omega.y*s.y.num*iota)) 
+    dVl <- (omega.a * (mu.a)*(l.num)) - (mu.a * v.l.num) + (omega.y*s.y.num*iota)
+    #This is confusing since it doesn't match the diagram, the only poeple I see leaving are dying not lambda.
+    
+    # 4.Outputs
+    list(c(dSh, dSl, dSy, dAh, dAl, dAy, dIh, dIl, dIy, dRh, dRl, dRy, dVh, dVl, 
+           si.h.flow = lambda.h * s.h.num,
+           si.l.flow = lambda.l * s.l.num,
+           v.h.flow = (omega.a * mu.a * h.num + (1-(omega.y * s.y.num * iota))),
+           v.l.flow = (omega.a * mu.a * l.num + (omega.y * s.y.num * iota))
+    ))
+  })
+}
+
+param <- param.dcm(tau = 0.5, ce1 = 0.34, ce2 = 0.07, ce3 = 0.001, lifespan = (50*365), childspan = (80*365), puberty_span = (3*365),
+                   dur.inf = 14, omega.a = 0.25, omega.y = 0.5, chi = 0.5, iota = 0.9)
+
+#Duration of infection? From what I found is that the medium duration of infection was 8 months. From a casual source:
+
+
+init <- init.dcm(s.h.num = 100, s.l.num = 100, s.y.num = 100, i.h.num = 1, i.l.num = 1, i.y.num = 1, a.l.num = 0, a.h.num = 0, a.y.num = 0, r.h.num = 0, r.l.num = 0, r.y.num =0, v.h.num = 0, v.l.num = 0,
+                 si.h.flow = 0, si.l.flow = 0, v.h.flow = 0, v.l.flow = 0)
+
+control <- control.dcm(nsteps = (5*365), new.mod = AoN)
+
+mod <- dcm(param, init, control)
+mod
+
+#Three age groups
+#12-15
+#After 15
+#Puberty --> highly sexually active and low sexual active
+#Old past puberty
+```
+i.
+```{r}
+#Graphs for S, I, R, V
+H <- c("s.h.num","a.h.num","i.h.num","r.h.num","v.h.num")
+L <- c("s.l.num","a.l.num","i.l.num","r.l.num","v.l.num")
+Y <- c("s.y.num","a.y.num","i.y.num","r.y.num","v.y.num")
+
+df_mod <- as.data.frame(mod) 
+colnames(mod)
+
+df_mod[,S]
+mod_long <- melt(as.data.frame(mod),"time")
+
+mod_long_subset1 <- subset(mod_long, variable %in% H)
+mod_long_subset2 <- subset(mod_long, variable %in% L)
+mod_long_subset3 <- subset(mod_long, variable %in% Y)
+
+ggplot(mod_long_subset1,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+ggplot(mod_long_subset2,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number") 
+```
+
+```{r}
+#For proportional disease prevalence
+mod <- mutate_epi(mod, num.t = (i.h.num / (s.h.num+s.l.num+s.y.num+i.h.num+i.l.num+i.y.num+r.h.num+r.l.num+r.y.num+v.h.num+v.l.num+si.h.flow+si.l.flow+v.h.flow+v.l.flow))) #Total Number
+mod <- mutate_epi(mod, i.h.prev = (i.h.num / num.t)) #Prevalence calculation for high risk group
+mod <- mutate_epi(mod, i.l.prev = (i.l.num /  num.t))
+
+df_mod <- as.data.frame(mod) 
+
+#FIND PREVELENCE FOR YOUNG?
+
+#Day of peak prevalence for low risk group
+which.max(df_mod$i.h.prev)
+#Peak prevalence low prevalence
+max(df_mod$i.h.prev)
+#Day of peak proportional for high risk group 
+which.max(df_mod$i.l.prev)
+#Peak prevalence high prevalence
+max(df_mod$i.l.prev)
+
+
+par(mfrow = c(1,2))
+plot(mod, y = "i.l.prev", legend = "full", lwd = 1, main = "Proportional Prevelence Low Risk")
+plot(mod, y = "i.h.prev", legend = "full", lwd = 1, main = "Proportional Prevelence High Risk")
+```
+
+```{r}
+df_mod <- data.frame(mod) 
+
+df_mod <- df_mod %>% mutate(cumincid.l = cumsum(si.l.flow))
+df_mod <- df_mod %>% mutate(cumincid.l = cumsum(si.h.flow))
+df_mod <- df_mod %>% mutate(cumincid.l.v = cumsum(si.l.flow))
+df_mod <- df_mod %>% mutate(cumincid.h.v = cumsum(si.h.flow))
+
+#High group total vaccinated
+tot_vac_h <- sum(df_mod$v.h.num)
+tot_vac_h
+#Low group total vaccinated
+tot_vac_l <- sum(df_mod$v.l.num)
+tot_vac_l
+
+#Vaccinated vs. unvaccinated in high group
+inf_averted_h_l <- max(df_mod$cumincid.h.v) - max(df_mod$cumincid.l.v)
+inf_averted_h_l
+(inf_averted_h_l/max(df_mod$cumincid.h.v))*100
+
+#High vs. low NNT
+NNT_h_l <- tot_vac_h/inf_averted_h_l
+```
