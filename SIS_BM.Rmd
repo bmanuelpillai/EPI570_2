@@ -37,10 +37,10 @@ AoN <- function(t, t0, parms) {
     
    # 3.Define lambda
         #For Males
-        lambda.m <- (tau) * (ce.m) * (i.m.num / (s.m.num + v.m.num))
+        lambda.m <- (tau) * (ce.m) * (i.f.num / f.num)
 
         #For Females
-        lambda.f <- (tau) * (ce.f) * (i.f.num / (s.f.num + v.f.num))
+        lambda.f <- (tau) * (ce.f) * (i.m.num / m.num)
 
 # Unsure on this (we have infection probability * contact rate times number of people infected overall???)
     mu <- 1/lifespan
@@ -73,54 +73,43 @@ AoN <- function(t, t0, parms) {
   })
 }
 
+#Issue is with vaccination. I change omega and nothing happens
 
-param <- param.dcm(omega.m = 0.10, omega.f = 0.40, lifespan = (11*365),
-                   psi = 0.90, dur.inf = (1.5*365), ce.m = 5, tau = 0.74)
+param <- param.dcm(omega.m = seq(0.1, 0.4, by = 0.2), omega.f = 0.40, lifespan = (11*365),
+                   psi = 0.90, dur.inf = (1.5*365), ce.m = (1.8/365), tau = 0.74)
 
-init <- init.dcm(s.m.num = 1000, i.m.num = 1000, v.m.num = 1000, si.m.flow = 0,vi.m.flow = 0,
-                 s.f.num = 1000, i.f.num = 1000, v.f.num = 1000, si.f.flow = 0, vi.f.flow = 0)
+init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
+                 s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000,
+                 si.m.flow = 0, si.f.flow = 0,
+                 vi.m.flow = 0,vi.f.flow = 0)
 
-control <- control.dcm(nsteps = (5*365), new.mod = AoN)
+control <- control.dcm(nsteps = (11*365), new.mod = AoN)
 
 mod <- dcm(param, init, control)
 mod
 
 test <- as.data.frame(mod)
-
-
-
-# param <- param.dcm(omega.m = 0.10, omega.f = 0.40, lifespan = (11*365),
-#                    psi = 0.90, dur.inf = (1.5*365), ce.m = 5, tau = 0.74)
-# 
-# init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000, si.m.flow = 0,vi.m.flow = 0,
-#                  s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000, si.f.flow = 0, vi.f.flow = 0)
-# 
-# control <- control.dcm(nsteps = (11*365), new.mod = AoN)
-# 
-# mod <- dcm(param, init, control)
-# mod
-# 
-# test <- as.data.frame(mod)
+View(test)
 ```
 
 ```{r}
 #Note: Added more code similar to this below, made some modifications which you may find to be easier
 # Add number infected and prevalence
 
-# Tom you are the expert outputter so I leave this part to you to fix boss. This is so busted its not even funny
 
 mod <- mutate_epi(mod, m.num = s.m.num + i.m.num + v.m.num, f.num = s.f.num + i.f.num + v.f.num)
 mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
 
 
-par(mfrow = c(2,2), mar = c(3,3,2,1), mgp = c(2,1,0)) 
-
-plot(mod, y = "m.prev", main = "prev infected males",
-legend = "lim", lwd = 1, ylim = c(0, 0.5)) 
-
-plot(mod, y = "f.prev", main = "prev infected females",
-legend = "lim", lwd = 1, ylim = c(0, 0.1))
-
-plot(mod, y = "si.m.flow")
-plot(mod, y = "si.f.flow")
+par(mfrow = c(2,2))
+plot(mod, y = "m.prev", main = "Proportional Prevalence for Males\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "f.prev", main = "Proportional Prevalence for Females\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "si.m.flow", main = "Incidence in Unvaccinated Males\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "si.f.flow", main = "Incidence in Unvaccinated Females\nomega.m = 0.1-0.4", legend = "full")
 ```
+
+
+
+
+
+
