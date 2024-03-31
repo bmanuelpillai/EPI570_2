@@ -75,6 +75,7 @@ AoN <- function(t, t0, parms) {
 
 #Issue is with vaccination. I change omega and nothing happens
 
+<<<<<<< HEAD
 param <- param.dcm(omega.m = seq(0.1, 0.4, by = 0.2), omega.f = 0.40, lifespan = (11*365),
                    psi = 0.90, dur.inf = (1.5*365), ce.m = (1.8/365), tau = 0.74)
 
@@ -82,6 +83,10 @@ init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
                  s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000,
                  si.m.flow = 0, si.f.flow = 0,
                  vi.m.flow = 0,vi.f.flow = 0)
+=======
+init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000, s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000, si.m.flow = 0,vi.m.flow = 0, si.f.flow = 0, vi.f.flow = 0)
+
+>>>>>>> e406bcc4ce6d1838e94cb86fff823f50ad85f147
 
 control <- control.dcm(nsteps = (11*365), new.mod = AoN)
 
@@ -92,11 +97,201 @@ test <- as.data.frame(mod)
 View(test)
 ```
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pacman)
+library(EpiModel)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(reshape2)
+```
+
+```{r 3 All or Nothing SIS TOM}
+AoN <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1.Track the population sizes
+        m.num = s.m.num + i.m.num + v.m.num
+        f.num = s.f.num + i.f.num + v.f.num
+        num = m.num + f.num
+
+    
+    # 2. Define Contact Rate based on Sex and symptomatic status. Define contact rate for females based on the contact rate for males. Define contact rate for symptomatic people based on a decreased sexual activity from asymptomatic people of the same sex.
+        ce.f <- (ce.m * m.num) / f.num
+      # We are isolating to only heterosexual contacts.
+      
+#Can we make this assumption that the ce would be the same for these other ones
+    
+   # 3.Define lambda
+        #For Males
+        lambda.m <- (tau) * (ce.m) * (i.m.num / (s.m.num + v.m.num))
+
+        #For Females
+        lambda.f <- (tau) * (ce.f) * (i.f.num / (s.f.num + v.f.num))
+
+# Unsure on this (we have infection probability * contact rate times number of people infected overall???)
+    mu <- 1/lifespan
+    delta <- 1/dur.inf
+    
+    # 3.Write six differential equations
+    
+# MALES
+  dSm <- (-lambda.m * s.m.num) + (1 - (mu * m.num * omega.m)) + (delta * i.m.num)  - (mu * s.m.num)
+
+  dIm <- (lambda.m * v.m.num * (1-psi))  + (lambda.m * s.m.num) - (delta * i.m.num)  - (mu * i.m.num)
+  
+  dVm <- (-lambda.m * v.m.num * (1-psi)) + (omega.m * mu * m.num) - (mu * v.m.num)
+
+# FEMALES
+  dSf <- (-lambda.f * s.f.num) + (1 - (mu * f.num * omega.f)) + (delta * i.f.num)  - (mu * s.f.num)
+
+  dIf <- (lambda.f * v.f.num * (1-psi))  + (lambda.f * s.f.num) - (delta * i.f.num)  - (mu * i.f.num)
+  
+  dVf <- (-lambda.f * v.f.num * (1-psi)) + (omega.f * mu * f.num) - (mu * v.f.num)
+    
+    # 4.Outputs
+    list(c(dSm, dIm,dVm,
+            dSf, dIf, dVf,
+            si.m.flow = (lambda.m * s.m.num),
+            si.f.flow = (lambda.f * s.f.num),
+            vi.m.flow = (lambda.m * v.m.num * (1-psi)),
+            vi.f.flow = (lambda.f * v.f.num * (1-psi))
+       ))
+  })
+}
+
+param <- param.dcm(omega.m = 0.10, omega.f = 0.40, chi = 0.90, lifespan = (365),
+                   psi = 0.98, dur.inf = (.5*365), ce.m = 5, tau = 0.74)
+
+init <- init.dcm(s.m.num = 100, i.m.num = 1, v.m.num = 100, s.f.num = 100, i.f.num = 1, v.f.num = 100, si.m.flow = 0,vi.m.flow = 0, si.f.flow = 0, vi.f.flow = 0)
+
+control <- control.dcm(nsteps = (365), new.mod = AoN)
+
+mod <- dcm(param, init, control)
+mod
+
+test <- as.data.frame(mod)
+```
+
+```{r}
+#Graphs for S, I, R, V
+S <- c("s.m.num","s.f.num")
+I <- c("i.m.num","i.f.num")
+V <- c("v.m.num","v.f.num")
+
+df_mod <- as.data.frame(mod) 
+colnames(mod)
+
+mod_long <- melt(as.data.frame(mod),"time")
+
+mod_long_subset1 <- subset(mod_long, variable %in% S)
+mod_long_subset2 <- subset(mod_long, variable %in% I)
+mod_long_subset3 <- subset(mod_long, variable %in% V)
+
+ggplot(mod_long_subset1,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number")+ggtitle("Susceptible Category Graph")
+ggplot(mod_long_subset2,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number")+ggtitle("Infected Category Graph") 
+ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number")+ggtitle("Vaccinated Category Graph") 
+```
+
+```{r Tom's Attempt to tinker / recreate...}
+AoN <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    # 1. Track the total population size
+    m.num = s.m.num + i.m.num + v.m.num
+    f.num = s.f.num + i.f.num + v.f.num
+    s.num = s.m.num + s.f.num
+    i.num = i.m.num + i.m.num
+    v.num = v.m.num + v.m.num
+    num = s.m.num + i.m.num + v.m.num + s.f.num + i.f.num + v.f.num
+    
+    # ce definition
+    
+    # 2. Define lambda
+    lambda <- tau*c*(i.num/num)
+    gamma <- 1/dur.i
+    mu <- 1/life.e
+    
+    # MALES
+    dSm <- (-lambda*s.num)+((1-(omega*chi))*(mu*num))-(mu*s.num)
+    # + (delta * i.m.num) 
+  
+    dIm <- (lambda*s.num)-(gamma*i.num)-(mu*i.num)
+    # - (delta * i.m.num)
+    #(lambda.m * v.m.num * (1-psi))  + 
+    
+    dVm <- (omega*chi*mu*num)-(mu*v.num)
+    #Sus: 
+  
+  # FEMALES
+    dSf <- (-lambda*s.num)+((1-(omega*chi))*(mu*num))-(mu*s.num)
+    #  + (delta * i.f.num) 
+    
+    dIf <- (lambda*s.num)-(gamma*i.num)-(mu*i.num)
+    #  (lambda.f * v.f.num * (1-psi))  + 
+    #(lambda.f * v.f.num * (1-psi))  + 
+    
+    dVf <- (omega*chi*mu*num)-(mu*v.num)
+    #sus: 
+    
+    # 4.Outputs
+    list(c(dSm, dIm,dVm,
+            dSf, dIf, dVf,
+            si.m.flow = (lambda * s.m.num),
+            si.f.flow = (lambda * s.f.num),
+            vi.m.flow = (lambda * v.m.num),
+            vi.f.flow = (lambda * v.f.num)
+       ))
+  })
+}
+
+param <- param.dcm(omega = 0.40, chi = 0.90, life.e = (11*365),
+                   psi = 0.98, dur.i = (1.5*365), c = 5, tau = 0.74)
+init <- init.dcm(s.m.num = 100, i.m.num = 5, v.m.num = 5, s.f.num = 100, i.f.num = 5, v.f.num = 5, si.m.flow = 0, si.f.flow = 0, vi.m.flow = 0, vi.f.flow = 0)
+control <- control.dcm(nsteps = 1000, new.mod = AoN)
+
+mod <- dcm(param, init, control)
+mod
+```
+
+```{r}
+#Graphs for S, I, R, V
+S <- c("s.m.num","s.f.num")
+I <- c("i.m.num","i.f.num")
+V <- c("v.m.num","v.f.num")
+
+df_mod <- as.data.frame(mod) 
+colnames(mod)
+
+mod_long <- melt(as.data.frame(mod),"time")
+
+mod_long_subset1 <- subset(mod_long, variable %in% S)
+mod_long_subset2 <- subset(mod_long, variable %in% I)
+mod_long_subset3 <- subset(mod_long, variable %in% V)
+
+ggplot(mod_long_subset1,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number")+ggtitle("Susceptible Category Graph")
+ggplot(mod_long_subset2,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number")+ggtitle("Infected Category Graph") 
+ggplot(mod_long_subset3,aes(x=time,y=value,colour=variable,group=variable))+
+  geom_line(lwd=2)+             #Add line
+  xlab("Time")+ylab("Number")+ggtitle("Vaccinated Category Graph") 
+```
+
 ```{r}
 #Note: Added more code similar to this below, made some modifications which you may find to be easier
 # Add number infected and prevalence
 
 
+<<<<<<< HEAD
 mod <- mutate_epi(mod, m.num = s.m.num + i.m.num + v.m.num, f.num = s.f.num + i.f.num + v.f.num)
 mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
 
@@ -109,7 +304,26 @@ plot(mod, y = "si.f.flow", main = "Incidence in Unvaccinated Females\nomega.m = 
 ```
 
 
+=======
+mod2 <- mutate_epi(mod, m.num = s.m.num + i.m.num + v.m.num, f.num = s.f.num + i.f.num + v.f.num)
+mod2 <- mutate_epi(mod2, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
+df_mod2 <- as.data.frame(mod2)
+>>>>>>> e406bcc4ce6d1838e94cb86fff823f50ad85f147
+
+sum(df_mod2$m.num)
+summary(df_mod2$m.prev)
+summary(df_mod2$f.prev)
+```
+
+
+```{r}
 
 
 
+<<<<<<< HEAD
+=======
+plot(mod, y = "f.prev", main = "prev infected females",
+legend = "lim", lwd = 1, ylim = c(0, 0.1))
+```
 
+>>>>>>> e406bcc4ce6d1838e94cb86fff823f50ad85f147
