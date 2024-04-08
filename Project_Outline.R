@@ -1,11 +1,4 @@
----
-title: "SIS Model"
-author: "Bevin Manuelpillai"
-date: "`r Sys.Date()`"
-output: html_document
----
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
 
 library(pacman)
@@ -14,19 +7,15 @@ library(ggplot2)
 library(tidyverse)
 library(tidyr)
 library(reshape2)
-```
 
-```{r 3 Vaccination of HPV}
+
+## ----3 Vaccination of HPV-----------------------------------------------------
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
     # 1.Track the population sizes
         m.num = s.m.num + i.m.num + v.m.num
         f.num = s.f.num + i.f.num + v.f.num
         num = m.num + f.num
-        
-        if(t >= aged_in){
-          omega.m <- omega.m * (vaccine_intervention)
-        }
 
     
     # 2. Define Contact Rate based on Sex.Define contact rate for females based on the contact rate for males.
@@ -73,7 +62,7 @@ Vaccination <- function(t, t0, parms) {
 }
 
 
-param <- param.dcm(aged_in = (7*365), omega.m = 0.1, omega.f = 0.40, vaccine_intervention = c(2,4,6,8), lifespan = (11*365),
+param <- param.dcm(omega.m = seq(0.1, 0.4, by = 0.1), omega.f = 0.40, lifespan = (11*365),
                    psi = 0.90, dur.inf = (1.5*365), ce.m = (1.8/365), tau = 0.74)
 
 init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
@@ -81,30 +70,28 @@ init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
                  si.m.flow = 0, si.f.flow = 0,
                  vi.m.flow = 0,vi.f.flow = 0)
 
-control <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
+control <- control.dcm(nsteps = (11*365), new.mod = Vaccination)
 
 mod <- dcm(param, init, control)
 mod
 
 test <- as.data.frame(mod)
 View(test)
-```
 
-Plotting Compartments and Flows
 
-```{r}
+## -----------------------------------------------------------------------------
 mod <- mutate_epi(mod, m.num = s.m.num + i.m.num + v.m.num, f.num = s.f.num + i.f.num + v.f.num)
 mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
 
 
 par(mfrow = c(2,2))
-plot(mod, y = "m.prev", main = "Proportional Prevalence for Males\nomega.m = 0.2,0.4x,0.6x,0.8x", legend = "full", ylim = c(0,0.5))
-plot(mod, y = "f.prev", main = "Proportional Prevalence for Females\nomega.m = 0.2,0.4x,0.6x,0.8x", legend = "full", ylim = c(0,0.5))
-plot(mod, y = "si.m.flow", main = "Incidence in Unvaccinated Males\nomega.m = 0.2,0.4x,0.6x,0.8x", legend = "full")
-plot(mod, y = "si.f.flow", main = "Incidence in Unvaccinated Females\nomega.m = 0.2,0.4x,0.6x,0.8x", legend = "full")
-```
+plot(mod, y = "m.prev", main = "Proportional Prevalence for Males\nomega.m = 0.1-0.4", legend = "full", ylim = c(0,0.5))
+plot(mod, y = "f.prev", main = "Proportional Prevalence for Females\nomega.m = 0.1-0.4", legend = "full", ylim = c(0,0.5))
+plot(mod, y = "si.m.flow", main = "Incidence in Unvaccinated Males\nomega.m = 0.1-0.4", legend = "full")
+plot(mod, y = "si.f.flow", main = "Incidence in Unvaccinated Females\nomega.m = 0.1-0.4", legend = "full")
 
-```{r}
+
+## -----------------------------------------------------------------------------
 param2 <- param.dcm(omega.m = 0.1, omega.f = seq(0.40,0.80, by = 0.2), lifespan = (11*365),
                    psi = 0.90, dur.inf = (1.5*365), ce.m = (1.8/365), tau = 0.74)
 
@@ -127,11 +114,9 @@ plot(mod2, y = "m.prev", main = "Proportional Prevalence for Males\nomega.f = 0.
 plot(mod2, y = "f.prev", main = "Proportional Prevalence for Females\nomega.f = 0.4,0.6,0.8", legend = "full", ylim = c(0,0.5))
 plot(mod2, y = "si.m.flow", main = "Incidence in Unvaccinated Males\nomega.f = 0.4,0.6,0.8", legend = "full")
 plot(mod2, y = "si.f.flow", main = "Incidence in Unvaccinated Females\nomega.f = 0.4,0.6,0.8", legend = "full")
-```
 
-This is not part of our official submission but can we get feedback on this next step model on how we could incorporate it into our next iteration of the model
 
-```{r}
+## -----------------------------------------------------------------------------
 m.num = s.m.num + i.m.sy.num+ i.m.ay.num + v.m.num
 f.num = s.f.num + i.f.sy.num+ i.f.ay.num + v.f.num
 num = m.num + f.num
@@ -190,4 +175,4 @@ list(c(dSm,dIm,dVm,
 #                  s.f.num = ?, i.f.sy.num = ?, i.f.ay.num = ?,v.f.num = ?,)
 # 
 # control <- control.dcm(nsteps = ?, new.mod = AoN)
-```
+
