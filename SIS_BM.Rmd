@@ -75,7 +75,7 @@ AoN <- function(t, t0, parms) {
 
 #Issue is with vaccination. I change omega and nothing happens
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
 param <- param.dcm(omega.m = seq(0.1, 0.4, by = 0.2), omega.f = 0.40, lifespan = (11*365),
                    psi = 0.90, dur.inf = (1.5*365), ce.m = (1.8/365), tau = 0.74)
 
@@ -83,10 +83,10 @@ init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
                  s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000,
                  si.m.flow = 0, si.f.flow = 0,
                  vi.m.flow = 0,vi.f.flow = 0)
-=======
+#=======
 init <- init.dcm(s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000, s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000, si.m.flow = 0,vi.m.flow = 0, si.f.flow = 0, vi.f.flow = 0)
 
->>>>>>> e406bcc4ce6d1838e94cb86fff823f50ad85f147
+#>>>>>>> e406bcc4ce6d1838e94cb86fff823f50ad85f147
 
 control <- control.dcm(nsteps = (11*365), new.mod = AoN)
 
