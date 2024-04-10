@@ -1,10 +1,36 @@
+---
+title: "Updated_Model0410_Full"
+author: "Bevin Manuelpillai"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(pacman)
+library(EpiModel)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(reshape2)
+```
 
 
+```{r}
+Vaccination <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
 #1. Track Population Sizes
-m.num = s.m.ue + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num
-f.num = s.f.ue + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num
+m.num = s.m.ue.num + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num
+
+f.num = s.f.ue.num + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num
+
 num = f.num + m.num
 
+
+i.m.num = i.m.s.a.num + i.m.s.s.num + i.m.v.a.num + i.m.v.s.num
+i.f.num = i.f.s.a.num + i.f.s.s.num + i.f.v.a.num + i.f.v.s.num
+  
 #2. Define Contact Rate
 ce.f <- (ce.m * m.num) / f.num
 
@@ -31,7 +57,7 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 
 #5. Define Differential Equations
   
-#zeta is proportion of asympomatic that become symptomatic at each timestep, kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
+#zeta is proportion of asymptomatic that become symptomatic at each timestep, kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
 # MALES
 dS.m.ue <- (1-(0.5 * omega.m * chi * mu * num)) - ((1/8) * s.m.ue.num)
 
@@ -76,37 +102,44 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
        dS.f.ue, dS.f.e, dI.f.s.a, dI.f.s.s, 
        dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
        si.f.flow = (lambda.f.s.a * s.f.e.num),
-       vi.f.flow = (lambda.f.v.a * v.f.e.num)))
+       vi.f.flow = (lambda.f.v.a * v.f.e.num))
+       )
+  })
+}
        
 param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (1.8/365),
                     lifespan = (11*365),
                     dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365),
                     dur.inf.v.a = (1.5*365), dur.inf.v.s = (1.5*365), 
-                    omega.m = 0.1, omega.f = 0.40, chi = ,
-                    zeta.v = , zeta.s = , kappa.m = , kappa.f = )
+                    omega.m = 0.1, omega.f = 0.40, chi = 0.90,
+                    zeta.v = 0.1 , zeta.s = 0.1, kappa.m = 0.0025, kappa.f = 0.0025)
 
-init <- init.dcm(s.m.ue.num = , s.m.e.num = , i.m.s.a.num = , i.m.s.s.num = ,
-                 v.m.ue.num = , v.m.e.num = , i.m.v.a.num = , i.m.v.s.num = ,
-                 s.f.ue.num = , s.f.e.num = , i.f.s.a.num = , i.f.s.s.num = ,
-                 v.f.ue.num = , v.f.e.num = , i.f.v.a.num = , i.f.v.s.num = ,
+init <- init.dcm(s.m.ue.num = 3800000, s.m.e.num = 3800000,
+                 i.m.s.a.num = 1300000, i.m.s.s.num = 1300000,
+                 v.m.ue.num = 304000, v.m.e.num = 304000, 
+                 i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
+                 s.f.ue.num = 3800000, s.f.e.num = 3800000, 
+                 i.f.s.a.num = 3000000, i.f.s.s.num = 3000000,
+                 v.f.ue.num = 240000, v.f.e.num = 240000, 
+                 i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
                  si.m.flow = 0, vi.m.flow = 0,
-                 si.f.flow = 0, vi.f.flow = 0,
-  
-  
-  
-  s.m.num = 3800000, i.m.num = 1300000, v.m.num = 304000,
-                 s.f.num = 3000000, i.f.num = 2000000, v.f.num = 240000,
-                 si.m.flow = 0, si.f.flow = 0,
-                 vi.m.flow = 0,vi.f.flow = 0)
+                 si.f.flow = 0, vi.f.flow = 0)
 
 control <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
 
 mod <- dcm(param, init, control)
 mod
+```
+Plotting Compartments and Flows
+```{r}
+mod <- mutate_epi(mod, m.num = s.m.ue.num + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num, f.num = s.f.ue.num + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num)
 
-test <- as.data.frame(mod)
-View(test)
-       
-       
+mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.s.s.num + i.m.v.a.num + i.m.v.s.num, i.f.num = i.f.s.a.num + i.f.s.s.num + i.f.v.a.num + i.f.v.s.num)
 
+mod <- mutate_epi(mod, m.prev = i.m.num / m.num, f.prev = i.f.num / f.num)
+
+par(mfrow = c(2,2))
+plot(mod, y = "m.prev", main = "Proportional Prevalence for Males")
+plot(mod, y = "f.prev", main = "Proportional Prevalence for Females")
+```
 
