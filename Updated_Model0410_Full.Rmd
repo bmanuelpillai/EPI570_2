@@ -61,40 +61,40 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 #kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
 #
 # MALES
-dS.m.ue <- (1-(0.5 * omega.m * chi * mu * num)) - ((1/8) * s.m.ue.num)
+dS.m.ue <- (1-(0.5 * omega.m * chi * mu * num)) - (age.in * s.m.ue.num)
 
-dS.m.e <- ((1/8) * s.m.ue.num) - (lambda.m.s.a * s.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.s.s.num) - (kappa.m * s.m.e.num) - ((1/11) * s.m.e.num)
+dS.m.e <- (age.in * s.m.ue.num) - (lambda.m.s.a * s.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.s.s.num) - (kappa.m * s.m.e.num) - (age.out * s.m.e.num)
 
-dI.m.s.a <- (lambda.m.s.a * s.m.e.num) - (zeta.s * i.m.s.a.num) - (delta.s.a * i.m.s.a.num) - ((1/11) * i.m.s.a.num)
+dI.m.s.a <- (lambda.m.s.a * s.m.e.num) - (zeta.s * i.m.s.a.num) - (delta.s.a * i.m.s.a.num) - (age.out * i.m.s.a.num)
 
-dI.m.s.s <- (zeta.s * i.m.s.a.num) - (delta.s.s * i.m.s.s.num) - ((1/11) * i.m.s.s.num)
+dI.m.s.s <- (zeta.s * i.m.s.a.num) - (delta.s.s * i.m.s.s.num) - (age.out * i.m.s.s.num)
 
 
-dV.m.ue <- (0.5 * omega.m * chi * mu * num) - ((1/8) * v.m.ue.num) 
+dV.m.ue <- (0.5 * omega.m * chi * mu * num) - (age.in * v.m.ue.num) 
 
-dV.m.e <- ((1/8) * v.m.ue.num) - (lambda.m.v.a * v.m.e.num) + (delta.v.a * i.m.v.a.num) + (delta.v.s * i.m.v.s.num) + (kappa.m * s.m.e.num) - ((1/11) * v.m.e.num)
+dV.m.e <- (age.in * v.m.ue.num) - (lambda.m.v.a * v.m.e.num) + (delta.v.a * i.m.v.a.num) + (delta.v.s * i.m.v.s.num) + (kappa.m * s.m.e.num) - (age.out * v.m.e.num)
 
-dI.m.v.a <- (lambda.m.v.a * v.m.e.num) - (zeta.v * i.m.v.a.num) - (delta.v.a * i.m.v.a.num) - ((1/11) * i.m.v.a.num)
+dI.m.v.a <- (lambda.m.v.a * v.m.e.num) - (zeta.v * i.m.v.a.num) - (delta.v.a * i.m.v.a.num) - (age.out * i.m.v.a.num)
 
-dI.m.v.s <- (zeta.v * i.m.v.a.num) - (delta.v.s * i.m.v.s.num) - ((1/11) * i.m.v.s.num)
+dI.m.v.s <- (zeta.v * i.m.v.a.num) - (delta.v.s * i.m.v.s.num) - (age.out * i.m.v.s.num)
 
 # FEMALES
-dS.f.ue <- (1-(0.5 * omega.f * chi * mu * num)) - ((1/8) * s.f.ue.num)
+dS.f.ue <- (1-(0.5 * omega.f * chi * mu * num)) - (age.in * s.f.ue.num)
 
-dS.f.e <- ((1/8) * s.f.ue.num) - (lambda.f.s.a * s.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.s.s.num) - (kappa.f * s.f.e.num) - ((1/11) * s.f.e.num)
+dS.f.e <- (age.in * s.f.ue.num) - (lambda.f.s.a * s.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.s.s.num) - (kappa.f * s.f.e.num) - (age.out * s.f.e.num)
 
-dI.f.s.a <- (lambda.f.s.a * s.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - ((1/11) * i.f.s.a.num)
+dI.f.s.a <- (lambda.f.s.a * s.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - (age.out * i.f.s.a.num)
 
-dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.s.s.num) - ((1/11) * i.f.s.s.num)
+dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.s.s.num) - (age.out * i.f.s.s.num)
 
 
-dV.f.ue <- (0.5 * omega.f * chi * mu * num) - ((1/8) * v.f.ue.num) 
+dV.f.ue <- (0.5 * omega.f * chi * mu * num) - (age.in * v.f.ue.num) 
 
-dV.f.e <- ((1/8) * v.f.ue.num) - (lambda.f.v.a * v.f.e.num) + (delta.v.a * i.f.v.a.num) + (delta.v.s * i.f.v.s.num) + (kappa.f * s.f.e.num) - ((1/11) * v.f.e.num)
+dV.f.e <- (age.in * v.f.ue.num) - (lambda.f.v.a * v.f.e.num) + (delta.v.a * i.f.v.a.num) + (delta.v.s * i.f.v.s.num) + (kappa.f * s.f.e.num) - (age.out * v.f.e.num)
 
-dI.f.v.a <- (lambda.f.v.a * v.f.e.num) - (zeta.v * i.f.v.a.num) - (delta.v.a * i.f.v.a.num) - ((1/11) * i.f.v.a.num)
+dI.f.v.a <- (lambda.f.v.a * v.f.e.num) - (zeta.v * i.f.v.a.num) - (delta.v.a * i.f.v.a.num) - (age.out * i.f.v.a.num)
 
-dI.f.v.s <- (zeta.v * i.f.v.a.num) - (delta.v.s * i.f.v.s.num) - ((1/11) * i.f.v.s.num)
+dI.f.v.s <- (zeta.v * i.f.v.a.num) - (delta.v.s * i.f.v.s.num) - (age.out * i.f.v.s.num)
 
 # 6.Outputs
 list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s, 
@@ -112,7 +112,8 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
 param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (1.8/365),
                     lifespan = (11*365),
                     dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365),
-                    dur.inf.v.a = (1.5*365), dur.inf.v.s = (1.5*365), 
+                    dur.inf.v.a = (1.5*365), dur.inf.v.s = (1.5*365),
+                    age.in = (1/(8*365)), age.out = (1/(11*365)),
                     omega.m = 0.1, omega.f = 0.40, chi = 0.90,
                     zeta.v = 0.1 , zeta.s = 0.1, kappa.m = 0.0025, kappa.f = 0.0025)
 
