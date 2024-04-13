@@ -60,7 +60,7 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 #kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
 # nu is birthrate
 # MALES
-dS.m.ue <- (1-(0.5 * omega.m * chi * nu * num)) - (age.in * s.m.ue.num)
+dS.m.ue <- ((0.5 * (1-omega.m) * chi * nu * num)) - (age.in * s.m.ue.num)
 
 dS.m.e <- (age.in * s.m.ue.num) - (lambda.m.s.a * s.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.s.s.num) - (kappa.m * s.m.e.num) - (age.out * s.m.e.num)
 
@@ -79,7 +79,7 @@ dI.m.v.s <- (zeta.v * i.m.v.a.num) - (delta.v.s * i.m.v.s.num) - (age.out * i.m.
 
 # FEMALES
 # should it just be (1-omega.f*chi) here? instead of the complement of the whole term?
-dS.f.ue <- (1-(0.5 * omega.f * chi * nu * num)) - (age.in * s.f.ue.num) # - death.rate?
+dS.f.ue <- ((0.5 * (1-omega.f) * chi * nu * num)) - (age.in * s.f.ue.num) # - death.rate?
 
 dS.f.e <- (age.in * s.f.ue.num) - (lambda.f.s.a * s.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.s.s.num) - (kappa.f * s.f.e.num) - (age.out * s.f.e.num) # - death.rate?
 
