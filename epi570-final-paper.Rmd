@@ -1,12 +1,21 @@
 ---
-title: "The influence of expanding sex-specific HPV vaccination efforts on HPV prevalence in the southeastern US, a mathematical SIS-V model"
-author: "EPI-570, Group 2"
+title: "The influence of expanding sex-specific HPV vaccination efforts on HPV prevalence
+  in the southeastern US, a mathematical SIS-V model"
+author:
+  - Bevin Manuelpillai, Lexi Guyah, Simone Anderson,
+  - Gayathri Dhurjati, Kirsten Wade, Thomas Hess
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+pacman::p_load(EpiModel, tidyverse)
 ```
 
 ### Introduction  
@@ -17,22 +26,42 @@ Vaccines protecting against a variety of HPV strains have been available for abo
 HPV vaccination rates are lower and cervical cancer rates higher in the southern US compared to the national average (Hirth 2019), indicating a regional disparity in both the public health and economic burden of HPV infection and HPV-associated diseases.  Average vaccination rates in the southeastern U.S. (56%) are lower than the national average (63%) (St. Jude Children’s Research Hospital, 2023). Vaccination also varies widely by sex, with about 40% of females but only 10% of males reporting receipt of the vaccine among adults in the United States (McElfish, et al. 2020; Williams, et al. 2017).   
 
 In the present study, we aim to understand which approaches to increasing levels of vaccine coverage in the southeastern U.S. have the largest impact on overall HPV prevalence. Specifically, we will answer the following questions:  
-  1. How does expanding levels of full pre-adolescence HPV vaccination for both males and females influence the overall prevalence of HPV among sexually active individuals in the southeastern United States?  
-      1a. How does increasing male vaccination levels to current female levels (equal vaccination between sexes) impact overall HPV prevalence?  
-      1b. How does increasing female vaccination alone impact prevalence?  
-      1c. What is the relationship between increasing both male and female vaccination levels and overall HPV prevalence?  
-  2. How does expanding rates of catch-up vaccination impact overall prevalence?  
-  3. What is the comparative effectiveness of increasing a) pre-adolescent vaccination rates or b) catch-up vaccination rates on reducing the overall prevalence of HPV in the southeast?  
+\hspace*{1cm}1) How does expanding levels of full pre-adolescence HPV vaccination for both males and females influence the overall prevalence of HPV among sexually active individuals in the southeastern United States?  
+\hspace*{2cm}a) How does increasing male vaccination levels to current female levels (equal vaccination between sexes) impact overall HPV prevalence?  
+\hspace*{2cm}b) How does increasing female vaccination alone impact prevalence?  
+\hspace*{2cm}c) What is the relationship between increasing both male and female vaccination levels and overall HPV prevalence?  
+\hspace*{1cm}2) How does expanding rates of catch-up vaccination impact overall prevalence?  
+\hspace*{1cm}3) What is the comparative effectiveness of increasing i) pre-adolescent vaccination rates or ii) catch-up vaccination rates on reducing the overall prevalence of HPV in the southeast?  
   
 ### Methods  
-**Target Population**  
+#### Target population 
 The present study focuses on contiguous US states in the southeastern region (Alabama, Arkansas, Florida, Georgia, Kentucky, Louisiana, Mississippi, North Carolina, South Carolina, Tennessee, Virginia, and West Virginia), as defined by the HPV Vaccination Roundtable of the Southeast, a collaboration between St. Jude Children’s Research Hospital (2023) and representatives from this more highly burdened region. The age range of our target population is based on the assumption that age of legal adulthood in the United States (18 years of age) approximates sexual maturity and activity, thus initiating a period of potential high risk of exposure to HPV, and the average age of marriage for US adults (29 years of age; US Census Bureau 2023) as a proxy for entering a lower exposure period of life. 
-
+  
 *note to edit the age range??*
+  
+#### Model structure  
+
+**Equations** 
+*Males*   
+$dS_m = -\lambda_m N_{sm}+(1-\omega_m) N_m +\delta N_{im} - \mu N_{sm}$
+  
+$dI_m = \lambda_m N_{vm} (1-\psi)+(\lambda_m N_{sm}) N_m -\delta N_{im} - \mu N_{im}$
+  
+$dV_m = -\lambda_m N_{vm} (1-\psi)+(\omega_m \mu N_{m}) - \mu N_{vm}$
+  
+*Females*  
+$dS_f = -\lambda_f N_{sf}+(1-\omega_f) N_f +\delta N_{if} - \mu N_{sf}$
+  
+$dI_f = \lambda_f N_{vf} (1-\psi)+(\lambda_f N_{sf}) N_f -\delta N_{if} - \mu N_{if}$
+  
+$dV_f = -\lambda_f N_{vf} (1-\psi)+(\omega_f \mu N_{f}) - \mu N_{vf}$
 
 
+**Parameters**
 
-
+### Analysis methods
+  
+### Results
   
 
 
