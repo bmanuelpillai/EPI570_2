@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, include=FALSE}
-pacman::p_load(EpiModel, tidyverse)
+pacman::p_load(EpiModel, tidyverse, pacman, ggplot2, reshape2)
 ```
 
 ### Introduction  
