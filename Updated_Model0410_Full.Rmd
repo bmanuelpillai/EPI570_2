@@ -16,12 +16,12 @@ library(tidyr)
 library(reshape2)
 ```
 
-BEVIN IS THE BEST
 
 ```{r}
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
 #1. Track Population Sizes
+    #unvaccinated as S
 m.num = s.m.ue.num + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num
 
 f.num = s.f.ue.num + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num
@@ -37,6 +37,7 @@ ce.f <- (ce.m * m.num) / f.num
 
 #3. Define Lambda
   # For Susceptible Males
+#PROBABILITY CHANGES; giving v. receiving infection
 lambda.m.s.a <- (tau.s) * (ce.m) * (i.f.num / f.num)
 
   # For Susceptible Females
@@ -50,9 +51,10 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 
 
 #4. Define Additional parameters
-  delta.s.a <- 1/dur.inf.s.a
-  delta.s.s <- 1/dur.inf.s.s
-  delta.v.a <- 1/dur.inf.v.a
+  delta.s.a <- 1/dur.inf.asy
+  delta.s.s <- 1/dur.inf.s
+  #Vaccinated clears infections faster
+  delta.v.a <- 1/dur.inf
   delta.v.s <- 1/dur.inf.v.s
 
 #5. Define Differential Equations
