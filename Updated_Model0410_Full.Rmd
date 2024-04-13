@@ -58,7 +58,7 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
   
 #zeta is proportion of asymptomatic that become symptomatic at each timestep, 
 #kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
-# nu is birthrate set at
+# nu is birthrate
 # MALES
 dS.m.ue <- (1-(0.5 * omega.m * chi * nu * num)) - (age.in * s.m.ue.num)
 
