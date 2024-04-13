@@ -78,13 +78,14 @@ dI.m.v.a <- (lambda.m.v.a * v.m.e.num) - (zeta.v * i.m.v.a.num) - (delta.v.a * i
 dI.m.v.s <- (zeta.v * i.m.v.a.num) - (delta.v.s * i.m.v.s.num) - (age.out * i.m.v.s.num)
 
 # FEMALES
-dS.f.ue <- (1-(0.5 * omega.f * chi * nu * num)) - (age.in * s.f.ue.num)
+# should it just be (1-omega.f*chi) here? instead of the complement of the whole term?
+dS.f.ue <- (1-(0.5 * omega.f * chi * nu * num)) - (age.in * s.f.ue.num) # - death.rate?
 
-dS.f.e <- (age.in * s.f.ue.num) - (lambda.f.s.a * s.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.s.s.num) - (kappa.f * s.f.e.num) - (age.out * s.f.e.num)
+dS.f.e <- (age.in * s.f.ue.num) - (lambda.f.s.a * s.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.s.s.num) - (kappa.f * s.f.e.num) - (age.out * s.f.e.num) # - death.rate?
 
-dI.f.s.a <- (lambda.f.s.a * s.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - (age.out * i.f.s.a.num)
+dI.f.s.a <- (lambda.f.s.a * s.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - (age.out * i.f.s.a.num) # -death.rate?
 
-dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.s.s.num) - (age.out * i.f.s.s.num)
+dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.s.s.num) - (age.out * i.f.s.s.num) # -death.rate?
 
 
 dV.f.ue <- (0.5 * omega.f * chi * nu * num) - (age.in * v.f.ue.num) 
@@ -96,6 +97,7 @@ dI.f.v.a <- (lambda.f.v.a * v.f.e.num) - (zeta.v * i.f.v.a.num) - (delta.v.a * i
 dI.f.v.s <- (zeta.v * i.f.v.a.num) - (delta.v.s * i.f.v.s.num) - (age.out * i.f.v.s.num)
 
 # 6.Outputs
+# should we add sv.flow for catch-up vax?
 list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s, 
        dV.m.ue, dV.m.e, dI.m.v.a, dI.m.v.s,
        si.m.flow = (lambda.m.s.a * s.m.e.num),
