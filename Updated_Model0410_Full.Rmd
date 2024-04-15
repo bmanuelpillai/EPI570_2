@@ -51,10 +51,10 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 
 
 #4. Define Additional parameters
-  delta.s.a <- 1/dur.inf.asy
-  delta.s.s <- 1/dur.inf.s
+  delta.s.a <- 1/dur.inf.s.a
+  delta.s.s <- 1/dur.inf.s.s
   #Vaccinated clears infections faster
-  delta.v.a <- 1/dur.inf
+  delta.v.a <- 1/dur.inf.v.a
   delta.v.s <- 1/dur.inf.v.s
 
 #5. Define Differential Equations
