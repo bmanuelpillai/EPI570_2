@@ -37,7 +37,6 @@ ce.f <- (ce.m * m.num) / f.num
 
 #3. Define Lambda
   # For Susceptible Males
-#PROBABILITY CHANGES; giving v. receiving infection
 lambda.m.s.a <- (tau.s) * (ce.m) * (i.f.num / f.num)
 
   # For Susceptible Females
