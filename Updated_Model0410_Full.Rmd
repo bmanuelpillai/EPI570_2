@@ -16,7 +16,6 @@ library(tidyr)
 library(reshape2)
 ```
 
-
 ```{r}
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
