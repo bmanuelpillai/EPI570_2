@@ -102,11 +102,11 @@ dI.f.v.s <- (zeta.v * i.f.v.a.num) - (delta.v.s * i.f.v.s.num) - (age.out * i.f.
 # should we add sv.flow for catch-up vax?
 list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s, 
        dV.m.ue, dV.m.e, dI.m.v.a, dI.m.v.s,
+       dS.f.ue, dS.f.e, dI.f.s.a, dI.f.s.s, 
+       dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
        si.m.flow = (lambda.m.s.a * s.m.e.num),
        vi.m.flow = (lambda.m.v.a * v.m.e.num),
        sv.m.flow = (kappa.m * s.m.e.num),
-       dS.f.ue, dS.f.e, dI.f.s.a, dI.f.s.s, 
-       dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
        si.f.flow = (lambda.f.s.a * s.f.e.num),
        vi.f.flow = (lambda.f.v.a * v.f.e.num),
        sv.f.flow = (kappa.f * s.f.e.num))
