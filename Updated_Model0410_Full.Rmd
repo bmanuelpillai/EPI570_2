@@ -115,8 +115,8 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
        
 param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (1.8/365),
                     nu = (0.01/365),
-                    dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365),
-                    dur.inf.v.a = (1.5*365), dur.inf.v.s = (1.5*365),
+                    dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
+                    dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
                     age.in = (1/(8*365)), age.out = (1/(11*365)),
                     omega.m = 0.1, omega.f = 0.40, chi = 0.90,
                     zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa.m = (0.0025/365), kappa.f = (0.0025/365))
