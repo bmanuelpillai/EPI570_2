@@ -18,19 +18,27 @@ library(dplyr)
 ```
 
 ```{r}
+#Update for BEVIN:
+#uv.m.ue.num = s.m.ue.num
+#uv.m.e.num = s.m.e.num
+#i.m.uv.s.num= i.m.s.s.num
+#uv.f.ue.num = s.f.ue.num
+#uv.f.e.num = uv.f.e.num
+#i.f.uv.s.num= i.f.uv.s.num
+
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
 #1. Track Population Sizes
     #unvaccinated as S
-m.num = s.m.ue.num + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num
+m.num = uv.m.ue.num + uv.m.e.num + i.m.s.a.num + i.m.uv.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + uv.m.e.num
 
-f.num = s.f.ue.num + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num
+f.num = uv.f.ue.num + uv.f.e.num + i.f.s.a.num + i.f.uv.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + uv.f.e.num
 
 num = f.num + m.num
 
 
-i.m.num = i.m.s.a.num + i.m.s.s.num + i.m.v.a.num + i.m.v.s.num
-i.f.num = i.f.s.a.num + i.f.s.s.num + i.f.v.a.num + i.f.v.s.num
+i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num
+i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num
   
 #2. Define Contact Rate
 ce.f <- (ce.m * m.num) / f.num
@@ -62,18 +70,18 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 #kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
 # nu is birthrate
 # MALES
-dS.m.ue <- ((0.5 * (1-omega.m) * chi * nu * num)) - (age.in * s.m.ue.num) - (mu.ue * s.m.ue.num)
+dS.m.ue <- ((0.5 * (1-omega.m) * chi * nu * num)) - (age.in * uv.m.ue.num) - (mu.ue * uv.m.ue.num)
 
-dS.m.e <- (age.in * s.m.ue.num) - (lambda.m.s.a * s.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.s.s.num) - (kappa * s.m.e.num) - (age.out * s.m.e.num) - (mu * s.m.e.num)
+dS.m.e <- (age.in * uv.m.ue.num) - (lambda.m.s.a * uv.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.uv.s.num) - (kappa * uv.m.e.num) - (age.out * uv.m.e.num) - (mu * uv.m.e.num)
 
-dI.m.s.a <- (lambda.m.s.a * s.m.e.num) - (zeta.s * i.m.s.a.num) - (delta.s.a * i.m.s.a.num) - (age.out * i.m.s.a.num) - (mu * i.m.s.a.num)
+dI.m.s.a <- (lambda.m.s.a * uv.m.e.num) - (zeta.s * i.m.s.a.num) - (delta.s.a * i.m.s.a.num) - (age.out * i.m.s.a.num) - (mu * i.m.s.a.num)
 
-dI.m.s.s <- (zeta.s * i.m.s.a.num) - (delta.s.s * i.m.s.s.num) - (age.out * i.m.s.s.num) - (mu * i.m.s.s.num)
+dI.m.s.s <- (zeta.s * i.m.s.a.num) - (delta.s.s * i.m.uv.s.num) - (age.out * i.m.uv.s.num) - (mu * i.m.uv.s.num)
 
 
 dV.m.ue <- (0.5 * omega.m * chi * nu * num) - (age.in * v.m.ue.num) - (mu.ue * v.m.ue.num) 
 
-dV.m.e <- (age.in * v.m.ue.num) - (lambda.m.v.a * v.m.e.num) + (delta.v.a * i.m.v.a.num) + (delta.v.s * i.m.v.s.num) + (kappa * s.m.e.num) - (age.out * v.m.e.num) - (mu * v.m.e.num)
+dV.m.e <- (age.in * v.m.ue.num) - (lambda.m.v.a * v.m.e.num) + (delta.v.a * i.m.v.a.num) + (delta.v.s * i.m.v.s.num) + (kappa * uv.m.e.num) - (age.out * v.m.e.num) - (mu * v.m.e.num)
 
 dI.m.v.a <- (lambda.m.v.a * v.m.e.num) - (zeta.v * i.m.v.a.num) - (delta.v.a * i.m.v.a.num) - (age.out * i.m.v.a.num) - (mu * i.m.v.a.num)
 
@@ -81,18 +89,18 @@ dI.m.v.s <- (zeta.v * i.m.v.a.num) - (delta.v.s * i.m.v.s.num) - (age.out * i.m.
 
 # FEMALES
 # should it just be (1-omega.f*chi) here? instead of the complement of the whole term?
-dS.f.ue <- ((0.5 * (1-omega.f) * chi * nu * num)) - (age.in * s.f.ue.num) - (mu.ue * s.f.ue.num)
+dS.f.ue <- ((0.5 * (1-omega.f) * chi * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
 
-dS.f.e <- (age.in * s.f.ue.num) - (lambda.f.s.a * s.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.s.s.num) - (kappa * s.f.e.num) - (age.out * s.f.e.num) - (mu * s.f.e.num)
+dS.f.e <- (age.in * uv.f.ue.num) - (lambda.f.s.a * uv.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.uv.s.num) - (kappa * uv.f.e.num) - (age.out * uv.f.e.num) - (mu * uv.f.e.num)
 
-dI.f.s.a <- (lambda.f.s.a * s.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - (age.out * i.f.s.a.num) - (mu * i.f.s.a.num)
+dI.f.s.a <- (lambda.f.s.a * uv.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - (age.out * i.f.s.a.num) - (mu * i.f.s.a.num)
 
-dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.s.s.num) - (age.out * i.f.s.s.num) - (mu * i.f.s.s.num)
+dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.uv.s.num) - (age.out * i.f.uv.s.num) - (mu * i.f.uv.s.num)
 
 
 dV.f.ue <- (0.5 * omega.f * chi * nu * num) - (age.in * v.f.ue.num) - (mu.ue * v.f.ue.num) 
 
-dV.f.e <- (age.in * v.f.ue.num) - (lambda.f.v.a * v.f.e.num) + (delta.v.a * i.f.v.a.num) + (delta.v.s * i.f.v.s.num) + (kappa * s.f.e.num) - (age.out * v.f.e.num) - (mu * v.f.e.num)
+dV.f.e <- (age.in * v.f.ue.num) - (lambda.f.v.a * v.f.e.num) + (delta.v.a * i.f.v.a.num) + (delta.v.s * i.f.v.s.num) + (kappa * uv.f.e.num) - (age.out * v.f.e.num) - (mu * v.f.e.num)
 
 dI.f.v.a <- (lambda.f.v.a * v.f.e.num) - (zeta.v * i.f.v.a.num) - (delta.v.a * i.f.v.a.num) - (age.out * i.f.v.a.num) - (mu * i.f.v.a.num)
 
@@ -104,12 +112,12 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
        dV.m.ue, dV.m.e, dI.m.v.a, dI.m.v.s,
        dS.f.ue, dS.f.e, dI.f.s.a, dI.f.s.s, 
        dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
-       si.m.flow = (lambda.m.s.a * s.m.e.num),
+       si.m.flow = (lambda.m.s.a * uv.m.e.num),
        vi.m.flow = (lambda.m.v.a * v.m.e.num),
-       sv.m.flow = (kappa * s.m.e.num),
-       si.f.flow = (lambda.f.s.a * s.f.e.num),
+       sv.m.flow = (kappa * uv.m.e.num),
+       si.f.flow = (lambda.f.s.a * uv.f.e.num),
        vi.f.flow = (lambda.f.v.a * v.f.e.num),
-       sv.f.flow = (kappa * s.f.e.num))
+       sv.f.flow = (kappa * uv.f.e.num))
        )
   })
 }
@@ -123,12 +131,12 @@ param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     omega.m = seq(0.1,0.8, by = 0.2), omega.f = 0.40, chi = 0.90,
                     zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = (0.0025/365), kappa = (0.0025/365))
 
-init <- init.dcm(s.m.ue.num = 1600000, s.m.e.num = 3800000,
-                 i.m.s.a.num = 1300000, i.m.s.s.num = 1300000,
+init <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
+                 i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
                  v.m.ue.num = 304000, v.m.e.num = 304000, 
                  i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
-                 s.f.ue.num = 1700000, s.f.e.num = 3800000, 
-                 i.f.s.a.num = 3000000, i.f.s.s.num = 3000000,
+                 uv.f.ue.num = 1700000, uv.f.e.num = 3800000, 
+                 i.f.s.a.num = 3000000, i.f.uv.s.num = 3000000,
                  v.f.ue.num = 240000, v.f.e.num = 240000, 
                  i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
                  si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
@@ -148,12 +156,12 @@ param2 <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     omega.m = 0.1, omega.f = 0.40, chi = 0.90,
                     zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = seq((0.0025/365), (0.0025*4/365), by = (0.0025/365)))
 
-init2 <- init.dcm(s.m.ue.num = 1600000, s.m.e.num = 3800000,
-                 i.m.s.a.num = 1300000, i.m.s.s.num = 1300000,
+init2 <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
+                 i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
                  v.m.ue.num = 304000, v.m.e.num = 304000, 
                  i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
-                 s.f.ue.num = 1700000, s.f.e.num = 3800000, 
-                 i.f.s.a.num = 3000000, i.f.s.s.num = 3000000,
+                 uv.f.ue.num = 1700000, uv.f.e.num = 3800000, 
+                 i.f.s.a.num = 3000000, i.f.uv.s.num = 3000000,
                  v.f.ue.num = 240000, v.f.e.num = 240000, 
                  i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
                  si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
@@ -164,14 +172,15 @@ control2 <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
 mod2 <- dcm(param2, init2, control2)
 mod2
 ```
+
 Plotting Compartments and Flows
 ```{r Vaccination Scenario 1}
-mod <- mutate_epi(mod, m.num = s.m.ue.num + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num)
+mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + i.m.s.a.num + i.m.uv.s.num+ v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + uv.m.e.num)
 
-mod <- mutate_epi(mod, f.num = s.f.ue.num + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num)
+mod <- mutate_epi(mod, f.num = uv.f.ue.num + uv.f.e.num + i.f.s.a.num + i.f.uv.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + uv.f.e.num)
 
-mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.s.s.num + i.m.v.a.num + i.m.v.s.num)
-mod <- mutate_epi(mod, i.f.num = i.f.s.a.num + i.f.s.s.num + i.f.v.a.num + i.f.v.s.num)
+mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
+mod <- mutate_epi(mod, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
 
 mod <- mutate_epi(mod, m.prev = i.m.num / m.num)
 mod <- mutate_epi(mod, f.prev = i.f.num / f.num)
@@ -196,12 +205,12 @@ plot(mod, y = "vi.f.flow", main = "vi.Females")
 
 Plotting Compartments and Flows
 ```{r Vaccination Scenario 2}
-mod2 <- mutate_epi(mod2, m.num = s.m.ue.num + s.m.e.num + i.m.s.a.num + i.m.s.s.num + v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + s.m.e.num)
+mod2 <- mutate_epi(mod2, m.num = uv.m.ue.num + uv.m.e.num + i.m.s.a.num + i.m.uv.s.num+ v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + uv.m.e.num)
 
-mod2 <- mutate_epi(mod2, f.num = s.f.ue.num + s.f.e.num + i.f.s.a.num + i.f.s.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + s.f.e.num)
+mod2 <- mutate_epi(mod2, f.num = uv.f.ue.num + uv.f.e.num + i.f.s.a.num + i.f.uv.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + uv.f.e.num)
 
-mod2 <- mutate_epi(mod2, i.m.num = i.m.s.a.num + i.m.s.s.num + i.m.v.a.num + i.m.v.s.num)
-mod2 <- mutate_epi(mod2, i.f.num = i.f.s.a.num + i.f.s.s.num + i.f.v.a.num + i.f.v.s.num)
+mod2 <- mutate_epi(mod2, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
+mod2 <- mutate_epi(mod2, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
 
 mod2 <- mutate_epi(mod2, m.prev = i.m.num / m.num)
 mod2 <- mutate_epi(mod2, f.prev = i.f.num / f.num)
