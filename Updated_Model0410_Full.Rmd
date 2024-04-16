@@ -156,6 +156,10 @@ plot(mod, y = "m.prev", main = "Proportional Prevalence for Males")
 plot(mod, y = "f.prev", main = "Proportional Prevalence for Females")
 
 par(mfrow = c(1,2))
+plot(mod, y = "i.m.num", main = "Prevalence for Males")
+plot(mod, y = "i.f.num", main = "Prevalence for Females")
+
+par(mfrow = c(1,2))
 plot(mod, y = "si.m.flow", main = "si.Males")
 plot(mod, y = "si.f.flow", main = "si.Females")
 
@@ -163,4 +167,5 @@ par(mfrow = c(1,2))
 plot(mod, y = "vi.m.flow", main = "vi.Males")
 plot(mod, y = "vi.f.flow", main = "vi.Females")
 ```
-
+Couple of issues with how this output is now.
+We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
