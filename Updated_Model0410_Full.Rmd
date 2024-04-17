@@ -234,3 +234,57 @@ plot(mod2, y = "vi.f.flow", main = "vi.Females")
 ```
 Couple of issues with how this output is now.
 We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
+
+
+```{r Tom's Vaccine Scenarios}
+# Baseline
+# Scenario 1 - decrease sexual contacts for males and females by 50% (possible through condom usage)
+#Chaging c_m and c_f from 0.014 to 0.007
+
+param1 <- param
+param1$ce.m <- param1$ce.m * 0.5
+mod1 <- dcm(param1, init, control)
+df1 <- as.data.frame(mod)
+scen1_inf <- sum(df1$si.flow)
+inf_avert1 <- baseline_inf - scen1_inf
+
+#Scenario 2 - increasing omega or the number fully vaccinated (possible through awareness campaigns)
+#Changing omega from 
+
+param2 <- param
+param2$omega.m <- param2$omega.m * 0.5
+param2$omega.f <- param2$omega.f * 0.5
+mod2 <- dcm(param2, init, control)
+df2 <- as.data.frame(mod2)
+scen2_inf <- sum(df2$si.flow)
+inf_avert2 <- baseline_inf - scen2_inf
+
+#Scenario 3 - increase chi by through increasing the number protected 50% (better vaccine scenario)
+#Changing chi from 0.9 to 0.95
+
+param3 <- param
+param3$chi <- param3$chi * 1.5
+mod3 <- dcm(param3, init, control)
+df3 <- as.data.frame(mod3)
+scen3_inf <- sum(df3$si.flow)
+inf_avert3 <- baseline_inf - scen3_inf
+
+# Print numerical results
+print(c(baseline_inf, scen1_inf, scen2_inf, scen3_inf, scen4_inf))
+print(c(inf_avert1, inf_avert2, inf_avert3, inf_avert4))
+
+# Plot results
+#plot(mod, y = "si.flow", main = "Incidence (Baseline)", ylim = c(0, 0.2))
+#plot(mod, y = c("i.num", "u.num"), main = "Prevalence (Baseline)")
+
+#plot(mod1, y = "si.flow", main = "Incidence (Scenario 1)")
+#plot(mod2, y = "si.flow", main = "Incidence (Scenario 2)")
+#plot(mod3, y = "si.flow", main = "Incidence (Scenario 3)")
+
+#par(mfrow = c(2,2))
+#plot(mod1, y = c("i.num", "u.num"), main = "Prevalence (Scenario 1)")
+#plot(mod2, y = c("i.num", "u.num"), main = "Prevalence (Scenario 2)")
+#plot(mod3, y = c("i.num", "u.num"), main = "Prevalence (Scenario 3)")
+```
+
+
