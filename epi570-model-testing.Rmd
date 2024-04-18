@@ -3,11 +3,6 @@ title: "epi570-model-testing"
 output: pdf_document
 date: "`r Sys.Date()`"
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 setting up / loading packages
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -242,30 +237,30 @@ mod
 
 
 ```{r}
-# Vaccination Scenario 2.) Catch-up Vaccination increased from        
-param2 <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
-                    nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
-                    dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
-                    dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
-                    age.in = (1/(8*365)), age.out = (1/(11*365)),
-                    omega.m = 0.1, omega.f = 0.40, chi = 0.90,
-                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = seq((0.0025/365), (0.0025*4/365), by = (0.0025/365)))
-
-init2 <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
-                 i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
-                 v.m.ue.num = 304000, v.m.e.num = 304000, 
-                 i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
-                 uv.f.ue.num = 1700000, uv.f.e.num = 3800000, 
-                 i.f.s.a.num = 3000000, i.f.uv.s.num = 3000000,
-                 v.f.ue.num = 240000, v.f.e.num = 240000, 
-                 i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
-                 si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
-                 si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
-
-control2 <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
-
-mod2 <- dcm(param2, init2, control2)
-mod2
+# # Vaccination Scenario 2.) Catch-up Vaccination increased from        
+# param2 <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
+#                     nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
+#                     dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
+#                     dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
+#                     age.in = (1/(8*365)), age.out = (1/(11*365)),
+#                     omega.m = 0.1, omega.f = 0.40, chi = 0.90,
+#                     zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = seq((0.0025/365), (0.0025*4/365), by = (0.0025/365)))
+# 
+# init2 <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
+#                  i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
+#                  v.m.ue.num = 304000, v.m.e.num = 304000, 
+#                  i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
+#                  uv.f.ue.num = 1700000, uv.f.e.num = 3800000, 
+#                  i.f.s.a.num = 3000000, i.f.uv.s.num = 3000000,
+#                  v.f.ue.num = 240000, v.f.e.num = 240000, 
+#                  i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
+#                  si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
+#                  si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
+# 
+# control2 <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
+# 
+# mod2 <- dcm(param2, init2, control2)
+# mod2
 ```
 
 Plotting Compartments and Flows
