@@ -26,6 +26,9 @@ library(dplyr)
 #uv.f.e.num = uv.f.e.num
 #i.f.uv.s.num= i.f.uv.s.num
 
+## there seems to be too many .num values. we have 8 compartments per sex, so seems like there should be 8 .num values contributing to m.num ?
+## starting new document to go a little crazy testing things. we can decide what to keep/pitch later
+
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
 #1. Track Population Sizes
