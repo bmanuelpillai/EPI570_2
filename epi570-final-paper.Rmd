@@ -62,6 +62,11 @@ $dV_f = -\lambda_f N_{vf} (1-\psi)+(\omega_f \mu N_{f}) - \mu N_{vf}$
 ### Analysis methods
   
 ### Results
+
+
+## thinking through model edits: recording assumptions
+
+1. adding psi to account for leaky vaccine 
   
 
 

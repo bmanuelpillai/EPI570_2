@@ -26,6 +26,9 @@ library(dplyr)
 #uv.f.e.num = uv.f.e.num
 #i.f.uv.s.num= i.f.uv.s.num
 
+## there seems to be too many .num values. we have 8 compartments per sex, so seems like there should be 8 .num values contributing to m.num ?
+## starting new document to go a little crazy testing things. we can decide what to keep/pitch later
+
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
 #1. Track Population Sizes
@@ -107,7 +110,6 @@ dI.f.v.a <- (lambda.f.v.a * v.f.e.num) - (zeta.v * i.f.v.a.num) - (delta.v.a * i
 dI.f.v.s <- (zeta.v * i.f.v.a.num) - (delta.v.s * i.f.v.s.num) - (age.out * i.f.v.s.num) - (mu * i.f.v.s.num)
 
 # 6.Outputs
-# should we add sv.flow for catch-up vax?
 list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s, 
        dV.m.ue, dV.m.e, dI.m.v.a, dI.m.v.s,
        dS.f.ue, dS.f.e, dI.f.s.a, dI.f.s.s, 
@@ -122,6 +124,10 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
   })
 }
 
+```
+
+
+```{r}
 # Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
 param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
@@ -131,14 +137,17 @@ param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     omega.m = seq(0.1,0.8, by = 0.2), omega.f = 0.40, chi = 0.90,
                     zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = (0.0025/365), kappa = (0.0025/365))
 
-init <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
+init <- init.dcm( # males
+                 uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
                  i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
                  v.m.ue.num = 304000, v.m.e.num = 304000, 
                  i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
+                 # females
                  uv.f.ue.num = 1700000, uv.f.e.num = 3800000, 
                  i.f.s.a.num = 3000000, i.f.uv.s.num = 3000000,
                  v.f.ue.num = 240000, v.f.e.num = 240000, 
                  i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
+                 # flows
                  si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
                  si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
 
@@ -146,7 +155,10 @@ control <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
 
 mod <- dcm(param, init, control)
 mod
+```
 
+
+```{r}
 # Vaccination Scenario 2.) Catch-up Vaccination increased from        
 param2 <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
