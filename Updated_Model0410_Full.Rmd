@@ -248,7 +248,7 @@ plot(mod, y = "vi.f.flow", main = "vi.Females")
 Couple of issues with how this output is now.
 We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
 
-```{r TOM's Contour Plot Code}
+```{r TOM's Contour Plot Code for Vaccine Scenario 1}
 # define two parameters that should vary
 kappa.m <- seq(0.1, 0.2, 0.05)
 kappa.f <- seq(0.3, 0.4, 0.05)
@@ -278,6 +278,8 @@ mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v
 mod <- mutate_epi(mod, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
 mod <- mutate_epi(mod, si.flow = si.m.flow + si.f.flow)
 
+df <- data.frame(mod)
+
 # create a data frame that groups data by parameter set (run)
 # then calculates cumulative incidence in each set
 # then adds in the values of the two varying parameters
@@ -285,94 +287,51 @@ df2 <- group_by(df, run) %>%
   summarise(cumlinc = sum(si.flow)) %>%
   cbind(kappa.m = grid$kappa.m) %>%
   cbind(kappa.f = grid$kappa.f)
-head(df2)
 
-# fancy contour plot; lots of graphics options to explore!
+df3 <- group_by(df, run) %>%
+  summarise(cumlinc2 = sum(si.m.flow)) %>%
+  cbind(kappa.m = grid$kappa.m) %>%
+  cbind(kappa.f = grid$kappa.f)
+
+df4 <- group_by(df, run) %>%
+  summarise(cumlinc3 = sum(si.f.flow)) %>%
+  cbind(kappa.m = grid$kappa.m) %>%
+  cbind(kappa.f = grid$kappa.f)
+
+# contour plot for males and females
 ggplot(df2, aes(kappa.m, kappa.f)) +
   geom_raster(aes(fill = cumlinc), interpolate = TRUE) +
-  geom_contour(aes(z = cumlinc), col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_contour(aes(z = cumlinc), col = "white", alpha = 1, lwd = 1.5) +
   geom_text_contour(aes(z = cumlinc), stroke = 0.1) +
   theme_minimal() +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Kappa M", y = "Kappa F") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1)
+  labs(title = "Contour Plot for Kappa Values among Incident Males and Females", x = "Kappa M", y = "Kappa F") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "G", direction = 1)
 
-ggsave("example.pdf")
-```
+# contour plot for males
+ggplot(df3, aes(kappa.m, kappa.f)) +
+  geom_raster(aes(fill = cumlinc2), interpolate = TRUE) +
+  geom_contour(aes(z = cumlinc2), col = "white", alpha = 1, lwd = 1.5) +
+  geom_text_contour(aes(z = cumlinc2), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(title = "Contour Plot for Kappa Values among Incident Males and Females", x = "Kappa M", y = "Kappa F") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "G", direction = 1)
 
-```{r Tom's Vaccine Scenarios}
-# Baseline
-# Scenario 1 - decrease sexual contacts for males and females by 50% (possible through condom usage)
-#Chaging c_m and c_f from 0.014 to 0.007
-df <- as.data.frame(mod)
+# contour plot for females
+ggplot(df4, aes(kappa.m, kappa.f)) +
+  geom_raster(aes(fill = cumlinc3), interpolate = TRUE) +
+  geom_contour(aes(z = cumlinc3), col = "white", alpha = 1, lwd = 1.5) +
+  geom_text_contour(aes(z = cumlinc3), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(title = "Contour Plot for Kappa Values among Incident Males and Females", x = "Kappa M", y = "Kappa F") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "G", direction = 1)
 
-param1 <- param
-param1$ce.m <- param1$ce.m * 0.5
-mod1 <- dcm(param1, init, control)
-df1 <- as.data.frame(mod)
-#Infections averted for males in scenario 1
-baseline_inf_m <- sum(df$si.m.flow)
-scen1_inf_m <- sum(df1$si.m.flow)
-inf_avert1_m <- baseline_inf_m - scen1_inf_m
-#Infections averted for females in scenario 1
-baseline_inf_f <- sum(df$si.f.flow)
-scen1_inf_f <- sum(df1$si.f.flow)
-inf_avert1_f <- baseline_inf_f - scen1_inf_f
-
-#Scenario 2 - increasing omega or the number fully vaccinated (possible through awareness campaigns)
-#Changing omega from 
-
-baseline_inf <- sum(df$si.flow)
-param2 <- param
-param2$omega.m <- param2$omega.m * 0.5
-param2$omega.f <- param2$omega.f * 0.5
-mod2 <- dcm(param2, init, control)
-df2 <- as.data.frame(mod2)
-scen2_inf <- sum(df2$si.flow)
-inf_avert2 <- baseline_inf - scen2_inf
-#Infections averted for males in scenario 1
-scen2_inf_m <- sum(df2$si.m.flow)
-inf_avert2_m <- baseline_inf_m - scen2_inf_m
-#Infections averted for females in scenario 1
-scen2_inf_f <- sum(df2$si.f.flow)
-inf_avert2_f <- baseline_inf_f - scen2_inf_f
-
-#Scenario 3 - increase chi by through increasing the number protected 50% (better vaccine scenario)
-#Changing chi from 0.9 to 0.95
-
-param3 <- param
-param3$chi <- param3$chi * 1.5
-mod3 <- dcm(param3, init, control)
-df3 <- as.data.frame(mod3)
-scen3_inf <- sum(df3$si.flow)
-inf_avert3 <- baseline_inf - scen3_inf
-#Infections averted for males in scenario 1
-scen3_inf_m <- sum(df3$si.m.flow)
-inf_avert3_m <- baseline_inf_m - scen3_inf_m
-#Infections averted for females in scenario 1
-scen3_inf_f <- sum(df3$si.f.flow)
-inf_avert3_f <- baseline_inf_f - scen3_inf_f
-
-# Print numerical results for males
-print(c(baseline_inf_m, scen1_inf_m, scen2_inf_m, scen3_inf_m))
-print(c(inf_avert1_m, inf_avert2_m, inf_avert3_m))
-
-# Print numerical results for females
-print(c(baseline_inf_f, scen1_inf_f, scen2_inf_f, scen3_inf_f))
-print(c(inf_avert1_f, inf_avert2_f, inf_avert3_f))
-```
-
-```{r}
-# Plot results
-par(mfrow = c(2,3))
-plot(mod1, y = "si.m.flow", main = "Incidence for Males (Scenario 1)")
-plot(mod2, y = "si.m.flow", main = "Incidence for Males (Scenario 2)")
-plot(mod3, y = "si.m.flow", main = "Incidence for Males(Scenario 3)")
-
-plot(mod1, y = "si.f.flow", main = "Incidence for Females (Scenario 1)")
-plot(mod2, y = "si.f.flow", main = "Incidence for Females (Scenario 2)")
-plot(mod3, y = "si.f.flow", main = "Incidence for Females (Scenario 3)")
+#ggsave("example.pdf")
 ```
 
 ```{r}
