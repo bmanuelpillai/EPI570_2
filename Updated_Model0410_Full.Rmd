@@ -248,6 +248,58 @@ plot(mod, y = "vi.f.flow", main = "vi.Females")
 Couple of issues with how this output is now.
 We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
 
+```{r TOM's Contour Plot Code}
+# define two parameters that should vary
+kappa.m <- seq(0.1, 0.2, 0.05)
+kappa.f <- seq(0.3, 0.4, 0.05)
+
+# create a grid of interaction parameter values
+# each row of grid correspond to unique combination of each parameter
+grid <- expand.grid(kappa.m = kappa.m,
+                    kappa.f = kappa.f)
+head(grid, 25)
+table(grid)
+
+# this is length(kappa.m) x length(kappa.f) unique combinations
+nrow(grid)
+
+param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
+                    nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
+                    dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
+                    dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
+                    age.in = (1/(8*365)), age.out = (1/(11*365)),
+                    omega.m = 0.1, omega.f = 0.40, chi = 0.90,
+                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa.m = grid$kappa.m, kappa.f = grid$kappa.f)
+
+#kappa.m = (0.0025/365), kappa.f = (0.0025*4/365)
+
+mod <- dcm(param, init, control)
+mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
+mod <- mutate_epi(mod, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
+mod <- mutate_epi(mod, si.flow = si.m.flow + si.f.flow)
+
+# create a data frame that groups data by parameter set (run)
+# then calculates cumulative incidence in each set
+# then adds in the values of the two varying parameters
+df2 <- group_by(df, run) %>%
+  summarise(cumlinc = sum(si.flow)) %>%
+  cbind(kappa.m = grid$kappa.m) %>%
+  cbind(kappa.f = grid$kappa.f)
+head(df2)
+
+# fancy contour plot; lots of graphics options to explore!
+ggplot(df2, aes(kappa.m, kappa.f)) +
+  geom_raster(aes(fill = cumlinc), interpolate = TRUE) +
+  geom_contour(aes(z = cumlinc), col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_text_contour(aes(z = cumlinc), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(x = "Kappa M", y = "Kappa F") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1)
+
+ggsave("example.pdf")
+```
 
 ```{r Tom's Vaccine Scenarios}
 # Baseline
@@ -323,62 +375,6 @@ plot(mod2, y = "si.f.flow", main = "Incidence for Females (Scenario 2)")
 plot(mod3, y = "si.f.flow", main = "Incidence for Females (Scenario 3)")
 ```
 
-
-```{r TOM's Contour Plot Code}
-# define two parameters that should vary
-kappa.m <- seq(0.1, 0.2, 0.05)
-kappa.f <- seq(0.3, 0.4, 0.05)
-
-# create a grid of interaction parameter values
-# each row of grid correspond to unique combination of each parameter
-grid <- expand.grid(kappa.m = kappa.m,
-                    kappa.f = kappa.f)
-head(grid, 25)
-table(grid)
-
-# this is length(kappa.m) x length(kappa.f) unique combinations
-nrow(grid)
-
-param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
-                    nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
-                    dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
-                    dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
-                    age.in = (1/(8*365)), age.out = (1/(11*365)),
-                    omega.m = 0.1, omega.f = 0.40, chi = 0.90,
-                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa.m = grid$kappa.m, kappa.f = grid$kappa.f)
-
-#kappa.m = (0.0025/365), kappa.f = (0.0025*4/365)
-
-mod <- dcm(param, init, control)
-mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
-mod <- mutate_epi(mod, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
-mod <- mutate_epi(mod, si.flow = si.m.flow + si.f.flow)
-
-# create a data frame that groups data by parameter set (run)
-# then calculates cumulative incidence in each set
-# then adds in the values of the two varying parameters
-df2 <- group_by(df, run) %>%
-  summarise(cumlinc = sum(si.flow)) %>%
-  cbind(kappa.m = grid$kappa.m) %>%
-  cbind(kappa.f = grid$kappa.f)
-head(df2)
-
-# fancy contour plot; lots of graphics options to explore!
-ggplot(df2, aes(kappa.m, kappa.f)) +
-  geom_raster(aes(fill = cumlinc), interpolate = TRUE) +
-  geom_contour(aes(z = cumlinc), col = "white", alpha = 0.5, lwd = 0.5) +
-  geom_text_contour(aes(z = cumlinc), stroke = 0.1) +
-  theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
-  labs(x = "Kappa M", y = "Kappa F") +
-  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1)
-
-ggsave("example.pdf")
-```
-
-
-
 ```{r}
 # Lexi 
 #Scenario: Enhanced vaccine uptake and reduced transmission rates due to preventative measures and a successful vaccination campaign. 
@@ -439,5 +435,3 @@ par(mfrow = c(1,2))
 plot(mod_enhanced_vax, y = "vi.m.flow", main = "vi.Males", legend='full')
 plot(mod_enhanced_vax, y = "vi.f.flow", main = "vi.Females", legend='full')
 ```
-
-Hello world
