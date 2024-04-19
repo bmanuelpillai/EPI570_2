@@ -8,13 +8,14 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-library(pacman)
 library(EpiModel)
 library(ggplot2)
 library(tidyverse)
 library(tidyr)
 library(reshape2)
 library(dplyr)
+library(metR)
+library(viridis)
 ```
 
 ```{r}
@@ -75,7 +76,7 @@ lambda.f.v.a <-  (tau.v) * (ce.f) * (i.m.num / m.num)
 # MALES
 dS.m.ue <- ((0.5 * (1-omega.m) * chi * nu * num)) - (age.in * uv.m.ue.num) - (mu.ue * uv.m.ue.num)
 
-dS.m.e <- (age.in * uv.m.ue.num) - (lambda.m.s.a * uv.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.uv.s.num) - (kappa * uv.m.e.num) - (age.out * uv.m.e.num) - (mu * uv.m.e.num)
+dS.m.e <- (age.in * uv.m.ue.num) - (lambda.m.s.a * uv.m.e.num) + (delta.s.a * i.m.s.a.num) + (delta.s.s * i.m.uv.s.num) - (kappa.m * uv.m.e.num) - (age.out * uv.m.e.num) - (mu * uv.m.e.num)
 
 dI.m.s.a <- (lambda.m.s.a * uv.m.e.num) - (zeta.s * i.m.s.a.num) - (delta.s.a * i.m.s.a.num) - (age.out * i.m.s.a.num) - (mu * i.m.s.a.num)
 
@@ -84,7 +85,7 @@ dI.m.s.s <- (zeta.s * i.m.s.a.num) - (delta.s.s * i.m.uv.s.num) - (age.out * i.m
 
 dV.m.ue <- (0.5 * omega.m * chi * nu * num) - (age.in * v.m.ue.num) - (mu.ue * v.m.ue.num) 
 
-dV.m.e <- (age.in * v.m.ue.num) - (lambda.m.v.a * v.m.e.num) + (delta.v.a * i.m.v.a.num) + (delta.v.s * i.m.v.s.num) + (kappa * uv.m.e.num) - (age.out * v.m.e.num) - (mu * v.m.e.num)
+dV.m.e <- (age.in * v.m.ue.num) - (lambda.m.v.a * v.m.e.num) + (delta.v.a * i.m.v.a.num) + (delta.v.s * i.m.v.s.num) + (kappa.m * uv.m.e.num) - (age.out * v.m.e.num) - (mu * v.m.e.num)
 
 dI.m.v.a <- (lambda.m.v.a * v.m.e.num) - (zeta.v * i.m.v.a.num) - (delta.v.a * i.m.v.a.num) - (age.out * i.m.v.a.num) - (mu * i.m.v.a.num)
 
@@ -94,7 +95,7 @@ dI.m.v.s <- (zeta.v * i.m.v.a.num) - (delta.v.s * i.m.v.s.num) - (age.out * i.m.
 # should it just be (1-omega.f*chi) here? instead of the complement of the whole term?
 dS.f.ue <- ((0.5 * (1-omega.f) * chi * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
 
-dS.f.e <- (age.in * uv.f.ue.num) - (lambda.f.s.a * uv.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.uv.s.num) - (kappa * uv.f.e.num) - (age.out * uv.f.e.num) - (mu * uv.f.e.num)
+dS.f.e <- (age.in * uv.f.ue.num) - (lambda.f.s.a * uv.f.e.num) + (delta.s.a * i.f.s.a.num) + (delta.s.s * i.f.uv.s.num) - (kappa.m * uv.f.e.num) - (age.out * uv.f.e.num) - (mu * uv.f.e.num)
 
 dI.f.s.a <- (lambda.f.s.a * uv.f.e.num) - (zeta.s * i.f.s.a.num) - (delta.s.a * i.f.s.a.num) - (age.out * i.f.s.a.num) - (mu * i.f.s.a.num)
 
@@ -103,7 +104,7 @@ dI.f.s.s <- (zeta.s * i.f.s.a.num) - (delta.s.s * i.f.uv.s.num) - (age.out * i.f
 
 dV.f.ue <- (0.5 * omega.f * chi * nu * num) - (age.in * v.f.ue.num) - (mu.ue * v.f.ue.num) 
 
-dV.f.e <- (age.in * v.f.ue.num) - (lambda.f.v.a * v.f.e.num) + (delta.v.a * i.f.v.a.num) + (delta.v.s * i.f.v.s.num) + (kappa * uv.f.e.num) - (age.out * v.f.e.num) - (mu * v.f.e.num)
+dV.f.e <- (age.in * v.f.ue.num) - (lambda.f.v.a * v.f.e.num) + (delta.v.a * i.f.v.a.num) + (delta.v.s * i.f.v.s.num) + (kappa.f * uv.f.e.num) - (age.out * v.f.e.num) - (mu * v.f.e.num)
 
 dI.f.v.a <- (lambda.f.v.a * v.f.e.num) - (zeta.v * i.f.v.a.num) - (delta.v.a * i.f.v.a.num) - (age.out * i.f.v.a.num) - (mu * i.f.v.a.num)
 
@@ -116,10 +117,10 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
        dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
        si.m.flow = (lambda.m.s.a * uv.m.e.num),
        vi.m.flow = (lambda.m.v.a * v.m.e.num),
-       sv.m.flow = (kappa * uv.m.e.num),
+       sv.m.flow = (kappa.m * uv.m.e.num),
        si.f.flow = (lambda.f.s.a * uv.f.e.num),
        vi.f.flow = (lambda.f.v.a * v.f.e.num),
-       sv.f.flow = (kappa * uv.f.e.num))
+       sv.f.flow = (kappa.f * uv.f.e.num))
        )
   })
 }
@@ -135,7 +136,7 @@ param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
                     age.in = (1/(8*365)), age.out = (1/(11*365)),
                     omega.m = seq(0.1,0.8, by = 0.2), omega.f = 0.40, chi = 0.90,
-                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = (0.0025/365), kappa = (0.0025/365))
+                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa.m = (0.0025/365), kappa.f = (0.0025/365))
 
 init <- init.dcm( # males
                  uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
@@ -166,7 +167,7 @@ param2 <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
                     dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
                     age.in = (1/(8*365)), age.out = (1/(11*365)),
                     omega.m = 0.1, omega.f = 0.40, chi = 0.90,
-                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = seq((0.0025/365), (0.0025*4/365), by = (0.0025/365)))
+                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa.m = (0.0025/365), kappa.f = (0.0025*4/365))
 
 init2 <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
                  i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
@@ -323,17 +324,60 @@ plot(mod3, y = "si.f.flow", main = "Incidence for Females (Scenario 3)")
 ```
 
 
-```{r TOM's Output Code}
-
-
-
-```
-
 ```{r TOM's Contour Plot Code}
+# define two parameters that should vary
+kappa.m <- seq(0.1, 0.2, 0.05)
+kappa.f <- seq(0.3, 0.4, 0.05)
 
+# create a grid of interaction parameter values
+# each row of grid correspond to unique combination of each parameter
+grid <- expand.grid(kappa.m = kappa.m,
+                    kappa.f = kappa.f)
+head(grid, 25)
+table(grid)
 
+# this is length(kappa.m) x length(kappa.f) unique combinations
+nrow(grid)
 
+param <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
+                    nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
+                    dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
+                    dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
+                    age.in = (1/(8*365)), age.out = (1/(11*365)),
+                    omega.m = 0.1, omega.f = 0.40, chi = 0.90,
+                    zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa.m = grid$kappa.m, kappa.f = grid$kappa.f)
+
+#kappa.m = (0.0025/365), kappa.f = (0.0025*4/365)
+
+mod <- dcm(param, init, control)
+mod <- mutate_epi(mod, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
+mod <- mutate_epi(mod, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
+mod <- mutate_epi(mod, si.flow = si.m.flow + si.f.flow)
+
+# create a data frame that groups data by parameter set (run)
+# then calculates cumulative incidence in each set
+# then adds in the values of the two varying parameters
+df2 <- group_by(df, run) %>%
+  summarise(cumlinc = sum(si.flow)) %>%
+  cbind(kappa.m = grid$kappa.m) %>%
+  cbind(kappa.f = grid$kappa.f)
+head(df2)
+
+# fancy contour plot; lots of graphics options to explore!
+ggplot(df2, aes(kappa.m, kappa.f)) +
+  geom_raster(aes(fill = cumlinc), interpolate = TRUE) +
+  geom_contour(aes(z = cumlinc), col = "white", alpha = 0.5, lwd = 0.5) +
+  geom_text_contour(aes(z = cumlinc), stroke = 0.1) +
+  theme_minimal() +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  labs(x = "Kappa M", y = "Kappa F") +
+  scale_fill_viridis(discrete = FALSE, alpha = 1, option = "D", direction = 1)
+
+ggsave("example.pdf")
 ```
+
+
 
 ```{r}
 # Lexi 
