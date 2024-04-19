@@ -335,3 +335,64 @@ plot(mod3, y = "si.f.flow", main = "Incidence for Females (Scenario 3)")
 
 ```
 
+```{r}
+# Lexi 
+#Scenario: Enhanced vaccine uptake and reduced transmission rates due to preventative measures and a successful vaccination campaign. 
+
+# Define new parameters for enhanced vaccination scenario
+param_enhanced_vax <- param.dcm(
+  tau.s = 0.5, # Reduced transmission for susceptible
+  tau.v = 0.2, # Reduced transmission for vaccinated
+  ce.m = (5/365), 
+  nu = (0.01/365), 
+  mu.ue = (0.0025/365), 
+  mu = (0.005/365),
+  dur.inf.s.a = (3*365), 
+  dur.inf.s.s= (1.5*365),
+  dur.inf.v.a = (3*365), 
+  dur.inf.v.s = (1.5*365),
+  age.in = (1/(8*365)), 
+  age.out = (1/(11*365)),
+  omega.m = 0.9,  # Increasing proportion of males vaccinated to 90%
+  omega.f = 0.85,  # Increased proportion of females vaccinated to 90%
+  chi = 0.90, zeta.v = (0.1/365), zeta.s = (0.1/365), kappa = (0.0025/365)
+)
+
+# Run the model with new parameters
+control_enhanced_vax <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
+mod_enhanced_vax <- dcm(param_enhanced_vax, init, control_enhanced_vax)
+
+mod_enhanced_vax <- mutate_epi(mod_enhanced_vax, m.num = uv.m.ue.num + uv.m.e.num + i.m.s.a.num + i.m.uv.s.num+ v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + uv.m.e.num)
+
+mod_enhanced_vax <- mutate_epi(mod_enhanced_vax, f.num = uv.f.ue.num + uv.f.e.num + i.f.s.a.num + i.f.uv.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + uv.f.e.num)
+
+mod_enhanced_vax<- mutate_epi(mod_enhanced_vax, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
+mod_enhanced_vax <- mutate_epi(mod_enhanced_vax, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
+
+mod_enhanced_vax <- mutate_epi(mod_enhanced_vax, m.prev = i.m.num / m.num)
+mod_enhanced_vax <- mutate_epi(mod_enhanced_vax, f.prev = i.f.num / f.num)
+
+
+# Plot results
+data_enhanced_vax <- as.data.frame(mod_enhanced_vax)
+par(mfrow = c(1, 2))
+plot(mod_enhanced_vax, y = "m.prev", main = "Proportional Prevalence for Males")
+plot(mod_enhanced_vax, y = "f.prev", main = "Proportional Prevalence for Females")
+
+par(mfrow = c(1, 2))
+plot(mod_enhanced_vax, y = "si.m.flow", main = "si.Males")
+plot(mod_enhanced_vax, y = "si.f.flow", main = "si.Females")
+
+# Notes: Steady proportional prevalence for both males and females and the number of susceptible individuals for males and females decline over time. 
+
+par(mfrow = c(1,2))
+plot(mod_enhanced_vax, y = "i.m.num", main = "Prevalence for Males")
+plot(mod_enhanced_vax, y = "i.f.num", main = "Prevalence for Females")
+
+# Notes: Decreasing prevalence
+
+par(mfrow = c(1,2))
+plot(mod_enhanced_vax, y = "vi.m.flow", main = "vi.Males", legend='full')
+plot(mod_enhanced_vax, y = "vi.f.flow", main = "vi.Females", legend='full')
+```
+
