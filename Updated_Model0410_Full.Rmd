@@ -229,20 +229,20 @@ mod2 <- mutate_epi(mod2, f.prev = i.f.num / f.num)
 data <- as.data.frame(mod2)
 
 par(mfrow = c(1,2))
-plot(mod2, y = "m.prev", main = "Proportional Prevalence for Males")
-plot(mod2, y = "f.prev", main = "Proportional Prevalence for Females")
+plot(mod, y = "m.prev", main = "Proportional Prevalence for Males")
+plot(mod, y = "f.prev", main = "Proportional Prevalence for Females")
 
 par(mfrow = c(1,2))
-plot(mod2, y = "i.m.num", main = "Prevalence for Males")
-plot(mod2, y = "i.f.num", main = "Prevalence for Females")
+plot(mod, y = "i.m.num", main = "Prevalence for Males")
+plot(mod, y = "i.f.num", main = "Prevalence for Females")
 
 par(mfrow = c(1,2))
-plot(mod2, y = "si.m.flow", main = "si.Males")
-plot(mod2, y = "si.f.flow", main = "si.Females")
+plot(mod, y = "si.m.flow", main = "si.Males")
+plot(mod, y = "si.f.flow", main = "si.Females")
 
 par(mfrow = c(1,2))
-plot(mod2, y = "vi.m.flow", main = "vi.Males")
-plot(mod2, y = "vi.f.flow", main = "vi.Females")
+plot(mod, y = "vi.m.flow", main = "vi.Males")
+plot(mod, y = "vi.f.flow", main = "vi.Females")
 ```
 Couple of issues with how this output is now.
 We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
@@ -252,17 +252,25 @@ We are substainly decreasing the number of infected, but the proportional preval
 # Baseline
 # Scenario 1 - decrease sexual contacts for males and females by 50% (possible through condom usage)
 #Chaging c_m and c_f from 0.014 to 0.007
+df <- as.data.frame(mod)
 
 param1 <- param
 param1$ce.m <- param1$ce.m * 0.5
 mod1 <- dcm(param1, init, control)
 df1 <- as.data.frame(mod)
-scen1_inf <- sum(df1$si.flow)
-inf_avert1 <- baseline_inf - scen1_inf
+#Infections averted for males in scenario 1
+baseline_inf_m <- sum(df$si.m.flow)
+scen1_inf_m <- sum(df1$si.m.flow)
+inf_avert1_m <- baseline_inf_m - scen1_inf_m
+#Infections averted for females in scenario 1
+baseline_inf_f <- sum(df$si.f.flow)
+scen1_inf_f <- sum(df1$si.f.flow)
+inf_avert1_f <- baseline_inf_f - scen1_inf_f
 
 #Scenario 2 - increasing omega or the number fully vaccinated (possible through awareness campaigns)
 #Changing omega from 
 
+baseline_inf <- sum(df$si.flow)
 param2 <- param
 param2$omega.m <- param2$omega.m * 0.5
 param2$omega.f <- param2$omega.f * 0.5
@@ -270,6 +278,12 @@ mod2 <- dcm(param2, init, control)
 df2 <- as.data.frame(mod2)
 scen2_inf <- sum(df2$si.flow)
 inf_avert2 <- baseline_inf - scen2_inf
+#Infections averted for males in scenario 1
+scen2_inf_m <- sum(df2$si.m.flow)
+inf_avert2_m <- baseline_inf_m - scen2_inf_m
+#Infections averted for females in scenario 1
+scen2_inf_f <- sum(df2$si.f.flow)
+inf_avert2_f <- baseline_inf_f - scen2_inf_f
 
 #Scenario 3 - increase chi by through increasing the number protected 50% (better vaccine scenario)
 #Changing chi from 0.9 to 0.95
@@ -280,23 +294,44 @@ mod3 <- dcm(param3, init, control)
 df3 <- as.data.frame(mod3)
 scen3_inf <- sum(df3$si.flow)
 inf_avert3 <- baseline_inf - scen3_inf
+#Infections averted for males in scenario 1
+scen3_inf_m <- sum(df3$si.m.flow)
+inf_avert3_m <- baseline_inf_m - scen3_inf_m
+#Infections averted for females in scenario 1
+scen3_inf_f <- sum(df3$si.f.flow)
+inf_avert3_f <- baseline_inf_f - scen3_inf_f
 
-# Print numerical results
-print(c(baseline_inf, scen1_inf, scen2_inf, scen3_inf, scen4_inf))
-print(c(inf_avert1, inf_avert2, inf_avert3, inf_avert4))
+# Print numerical results for males
+print(c(baseline_inf_m, scen1_inf_m, scen2_inf_m, scen3_inf_m))
+print(c(inf_avert1_m, inf_avert2_m, inf_avert3_m))
 
-# Plot results
-#plot(mod, y = "si.flow", main = "Incidence (Baseline)", ylim = c(0, 0.2))
-#plot(mod, y = c("i.num", "u.num"), main = "Prevalence (Baseline)")
-
-#plot(mod1, y = "si.flow", main = "Incidence (Scenario 1)")
-#plot(mod2, y = "si.flow", main = "Incidence (Scenario 2)")
-#plot(mod3, y = "si.flow", main = "Incidence (Scenario 3)")
-
-#par(mfrow = c(2,2))
-#plot(mod1, y = c("i.num", "u.num"), main = "Prevalence (Scenario 1)")
-#plot(mod2, y = c("i.num", "u.num"), main = "Prevalence (Scenario 2)")
-#plot(mod3, y = c("i.num", "u.num"), main = "Prevalence (Scenario 3)")
+# Print numerical results for females
+print(c(baseline_inf_f, scen1_inf_f, scen2_inf_f, scen3_inf_f))
+print(c(inf_avert1_f, inf_avert2_f, inf_avert3_f))
 ```
 
+```{r}
+# Plot results
+par(mfrow = c(2,3))
+plot(mod1, y = "si.m.flow", main = "Incidence for Males (Scenario 1)")
+plot(mod2, y = "si.m.flow", main = "Incidence for Males (Scenario 2)")
+plot(mod3, y = "si.m.flow", main = "Incidence for Males(Scenario 3)")
+
+plot(mod1, y = "si.f.flow", main = "Incidence for Females (Scenario 1)")
+plot(mod2, y = "si.f.flow", main = "Incidence for Females (Scenario 2)")
+plot(mod3, y = "si.f.flow", main = "Incidence for Females (Scenario 3)")
+```
+
+
+```{r TOM's Output Code}
+
+
+
+```
+
+```{r TOM's Contour Plot Code}
+
+
+
+```
 
