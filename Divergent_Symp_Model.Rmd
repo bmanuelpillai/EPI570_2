@@ -87,7 +87,7 @@ Vaccination <- function(t, t0, parms) {
   dS.m.ue <- ((0.5 * (1-omega.m*chi) * nu*num)) +            # births
              (-age.in * uv.m.ue.num) + (-mu.ue * uv.m.ue.num)  # gen pop
       # entry multiplied by half to account for M/F strata
-      # S populated by complement of proportion vaccinated*proportion immunogenic
+      # S populated by complement of proportion vaccinated*proportion immunologic
 
   # susceptible exposed (18+, proxy for sexually active) [uv.m.e.num]
   dS.m.e <- (age.in * uv.m.ue.num) + (-mu * uv.m.e.num) + (-age.out * uv.m.e.num) +         # general pop
@@ -215,7 +215,7 @@ param <- param.dcm( # FOI parameters
 
 init <- init.dcm( # males
                  uv.m.ue.num = 1.6e6, uv.m.e.num = 3.8e6,
-                 uv.m.i.a.num = 1.3e6, uv.m.i.s.num= 1.3e6,
+                 uv.m.i.a.num = 1.3e6, uv.m.i.s.num = 1.3e6,
                  v.m.ue.num = 3.04e5, v.m.e.num = 3.04e5, 
                  v.m.i.a.num = 1.3e6, v.m.i.s.num = 1.3e6,
                  # females
