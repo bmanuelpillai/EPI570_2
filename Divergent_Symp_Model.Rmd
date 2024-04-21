@@ -358,4 +358,61 @@ Plotting Compartments and Flows
 ```
 Couple of issues with how this output is now.
 We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
+```{r}
+# 11-17 Male vax scenario outcomes
+df<-as.data.frame(mod, run = 1)
+df2<-as.data.frame(mod, run = 2)
+df3<-as.data.frame(mod, run = 3)
+df4<-as.data.frame(mod, run = 4)
+
+
+#Number of Infections Averted in Females
+NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
+NIA1
+
+NIA2<-sum(df$si.f.flow)-sum(df3$si.f.flow)
+NIA2
+
+
+NIA3<-sum(df$si.f.flow)-sum(df4$si.f.flow)
+NIA3
+#Percent Infections Averted in Females
+NIA1/sum(df$si.f.flow)
+NIA2/sum(df$si.f.flow)
+NIA3/sum(df$si.f.flow)
+
+#Number Needed to Treat for Females 
+sum(df2$v.m.ue.num)/NIA1
+sum(df3$v.m.ue.num)/NIA2
+sum(df4$v.m.ue.num)/NIA3
+
+#(sum(df2$v.m.ue.num)+sum(df2$v.m.e.num)+sum(df2$v.m.i.a.num)+sum(df2$v.m.i.s.num))/NIA1
+#(sum(df3$v.m.ue.num)+sum(df3$v.m.e.num)+sum(df3$v.m.i.a.num)+sum(df3$v.m.i.s.num))/NIA2             
+#(sum(df4$v.m.ue.num)+sum(df4$v.m.e.num)+sum(df4$v.m.i.a.num)+sum(df4$v.m.i.s.num))/NIA3
+
+
+
+#Number of Infections Averted in Males
+NIA4<-sum(df$si.m.flow)-sum(df2$si.m.flow)
+NIA4
+
+NIA5<-sum(df$si.m.flow)-sum(df3$si.m.flow)
+NIA5
+
+
+NIA6<-sum(df$si.m.flow)-sum(df4$si.m.flow)
+NIA6
+
+#Percent of Infections Averted in Males
+NIA4/sum(df$si.m.flow)
+NIA5/sum(df$si.m.flow)
+NIA6/sum(df$si.m.flow)
+
+#Number Needed to Treat in Males
+sum(df2$v.m.ue.num)/NIA4
+sum(df3$v.m.ue.num)/NIA5
+sum(df4$v.m.ue.num)/NIA6
+
+
+```
 
