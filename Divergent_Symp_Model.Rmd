@@ -56,15 +56,20 @@ Vaccination <- function(t, t0, parms) {
     
   # susceptibles
     # males
-    lambda.m.s <- (tau) * (ce.m) * (i.f.prev)
+    #lambda.m.s <- (tau) * (ce.m) * (i.f.prev) 
+    lambda.m.s <- (tau) * (ce.m) * (i.f.num / f.num)
     # females
-    lambda.f.s <-  (tau) * (ce.f) * (i.m.prev)
+    #lambda.f.s <-  (tau) * (ce.f) * (i.m.prev)
+    lambda.f.s <-  (tau) * (ce.f) * (i.m.num / m.num)
+    # This is a constant while the force of infection wont change based on the changing prevalence in males
   
   # vaccinated
     # males
-    lambda.m.v <- (tau)*(1-psi) * (ce.m)*(i.f.prev) 
+    lambda.m.v <- (tau)*(1-psi) * (ce.m)*(i.f.num / f.num)
+    #lambda.m.v <- (tau)*(1-psi) * (ce.m)*(i.f.prev) 
     # females
-    lambda.f.v <-  (tau)*(1-psi) * (ce.f)*(i.m.prev)
+    lambda.f.v <-  (tau)*(1-psi) * (ce.f)*(i.m.num / m.num)
+    #lambda.f.v <-  (tau)*(1-psi) * (ce.f)*(i.m.prev)
 
 
 #4. Define Additional parameters #########################################################
@@ -286,9 +291,6 @@ males:
 par(mfrow = c(1,1))
 plot(mod, y = c("uv.m.ue.num", 'uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
                 legend='full')
-
-plot(mod, y = c("f.num", "m.num"),
-                legend = 'full')
 ```
 
 ```{r}
