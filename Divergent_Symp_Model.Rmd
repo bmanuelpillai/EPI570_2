@@ -61,7 +61,7 @@ Vaccination <- function(t, t0, parms) {
     # females
     #lambda.f.s <-  (tau) * (ce.f) * (i.m.prev)
     lambda.f.s <-  (tau) * (ce.f) * (i.m.num / m.num)
-    # This is a constant while the force of infection wont change based on the changing prevalence in males
+    # This is a constant while the force of infection wont change based on the changing prevalence in males. How can we include the population prevalence and population specific prevalence
   
   # vaccinated
     # males
