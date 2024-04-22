@@ -235,6 +235,8 @@ init <- init.dcm( # males
                  si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
 
 
+
+
 control <- control.dcm(nsteps = (50*365), new.mod = Vaccination)
 
 mod <- dcm(param, init, control)
