@@ -218,20 +218,20 @@ param <- param.dcm( # FOI parameters
                     # zeta is the proportion of susceptible that become symptomatic
                     zeta.v = (0.2) , zeta.s = (0.2))
 
+
 init <- init.dcm( # males
-                 uv.m.ue.num = 1.6e6, uv.m.e.num = 3.8e6,
-                 uv.m.i.a.num = 1.3e6, uv.m.i.s.num = 1.3e6,
-                 v.m.ue.num = 3.04e5, v.m.e.num = 3.04e5, 
-                 v.m.i.a.num = 1.3e6, v.m.i.s.num = 1.3e6,
+                 uv.m.ue.num = 1.6e6, uv.m.e.num = 8.2e6,
+                 uv.m.i.a.num = 2.8e5, uv.m.i.s.num= 2.5e6,
+                 v.m.ue.num = 3.04e5, v.m.e.num = 1e7, 
+                 v.m.i.a.num = 3.2e6, v.m.i.s.num = 3.6e5,
                  # females
-                 uv.f.ue.num = 1.7e6, uv.f.e.num = 3.8e6, 
-                 uv.f.i.a.num = 3e6, uv.f.i.s.num = 3e6,
-                 v.f.ue.num = 2.4e5, v.f.e.num = 2.4e5, 
-                 v.f.i.a.num = 1.3e6, v.f.i.s.num = 1.3e6,
+                 uv.f.ue.num = 1.7e6, uv.f.e.num = 5.8e6, 
+                 uv.f.i.a.num = 3.5e6, uv.f.i.s.num = 3.7e5,
+                 v.f.ue.num = 2.4e5, v.f.e.num = 3.2e6, 
+                 v.f.i.a.num = 9e6, v.f.i.s.num = 1e6,
                  # flows
                  si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
                  si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
-
 
 
 
