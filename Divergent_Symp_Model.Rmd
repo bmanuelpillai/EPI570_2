@@ -56,11 +56,13 @@ Vaccination <- function(t, t0, parms) {
     
   # susceptibles
     # males
-    #lambda.m.s <- (tau) * (ce.m) * (i.f.prev) 
+    #lambda.m.s.ex <- (tau) * (ce.m) * (i.f.prev) 
     lambda.m.s <- (tau) * (ce.m) * (i.f.num / f.num)
+    #lambda.m.s <- lambda.m.s.ex + lambda.m.s.in
     # females
-    #lambda.f.s <-  (tau) * (ce.f) * (i.m.prev)
+    #lambda.f.s.ex <-  (tau) * (ce.f) * (i.m.prev)
     lambda.f.s <-  (tau) * (ce.f) * (i.m.num / m.num)
+    #lambda.f.s <- lambda.f.s.ex + lambda.f.s.in
     # This is a constant while the force of infection wont change based on the changing prevalence in males. How can we include the population prevalence and population specific prevalence
   
   # vaccinated
@@ -361,6 +363,8 @@ Plotting Compartments and Flows
 Couple of issues with how this output is now.
 We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
 ```{r}
+#Direct and Indirect Effects graphed.
+
 # 11-17 Male vax scenario outcomes
 df<-as.data.frame(mod, run = 1)
 df2<-as.data.frame(mod, run = 2)
@@ -414,7 +418,5 @@ NIA6/sum(df$si.m.flow)
 sum(df2$v.m.ue.num)/NIA4
 sum(df3$v.m.ue.num)/NIA5
 sum(df4$v.m.ue.num)/NIA6
-
-
 ```
 
