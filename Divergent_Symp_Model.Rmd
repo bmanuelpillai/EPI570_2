@@ -405,11 +405,50 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
 
 
 
-```{r}
+```{r Prevalence Graphed for Vaccination Scenarios}
+########################Omega.m Vaccination
 par(mfrow = c(1,2))
-plot(mod, y = "m.prev", main = "Proportional Prevalence for Males")
-plot(mod, y = "f.prev", main = "Proportional Prevalence for Females")
-legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.3","omega.m = 0.5", "omega.m = 0.7"), col = c("red", "blue", "green", "purple"), pch = 19)
+plot(mod, y = "m.prev", 
+     main = "Increase Childhood Male Vaccination\nProportional Prevalence\nMales",
+     xlim = c(750, 15000),
+     ylim = c(0.6,0.8))
+legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+plot(mod, y = "f.prev", 
+     main = "Increase Childhood Male Vaccination\nProportional Prevalence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c(0.6,0.8))
+legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+########################Kappa Vaccination
+par(mfrow = c(1,2))
+plot(mod2, y = "m.prev", 
+     main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence\nMales",
+     xlim = c(750, 15000),
+     ylim = c(0.6,0.8))
+legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+plot(mod2, y = "f.prev", 
+     main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c(0.6,0.8))
+legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+########################Omega.f Vaccination
+par(mfrow = c(1,2))
+plot(mod3, y = "m.prev", 
+     main = "Increase Childhood Female Vaccination\nProportional Prevalence\nMales",
+     xlim = c(750, 15000),
+     ylim = c(0.6,0.8))
+legend("topright", legend = c("omega.f = 0.3", "omega.m = 0.4","omega.m = 0.5", "omega.m = 0.6"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+plot(mod3, y = "f.prev", 
+     main = "Increase Childhood Female Vaccination\nProportional Prevalence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c(0.6,0.8))
+legend("topright", legend = c("omega.m = 0.3", "omega.m = 0.4","omega.m = 0.5", "omega.m = 0.6"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+
 ```
 
 ```{r}
@@ -632,171 +671,150 @@ legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 
 
 
 
-```{r Omega.m Vaccinatinon}
-#Direct and Indirect Effects graphed.
-# 11-17 Male vax scenario outcomes
-df<-as.data.frame(mod, run = 1)
+```{r Omega.m Vaccination}
+# Isolate Runs
+df1<-as.data.frame(mod, run = 1)
 df2<-as.data.frame(mod, run = 2)
 df3<-as.data.frame(mod, run = 3)
 df4<-as.data.frame(mod, run = 4)
 
-#Number of Infections Averted in Females
-NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
-NIA1
+# Vaccination Measures for Females
+NIAF2 <- sum(df1$si.f.flow) - sum(df2$si.f.flow)
+NIAF3 <- sum(df1$si.f.flow) - sum(df3$si.f.flow)
+NIAF4 <- sum(df1$si.f.flow) - sum(df4$si.f.flow)
 
-NIA2<-sum(df$si.f.flow)-sum(df3$si.f.flow)
-NIA2
+Percent_Averted_Females <- c(NIAF2*100 / sum(df1$si.f.flow),
+                             NIAF3*100 / sum(df1$si.f.flow),
+                             NIAF4*100 / sum(df1$si.f.flow))
+
+NNT_Females <- c(sum(df2$v.m.ue.num) / NIAF2,
+                 sum(df3$v.m.ue.num) / NIAF3,
+                 sum(df4$v.m.ue.num) / NIAF4)
+
+# Vaccination Measures for Females
+NIAM2 <- sum(df1$si.m.flow) - sum(df2$si.m.flow)
+NIAM3 <- sum(df1$si.m.flow) - sum(df3$si.m.flow)
+NIAM4 <- sum(df1$si.m.flow) - sum(df4$si.m.flow)
+
+Percent_Averted_Males <- c(NIAM2*100 / sum(df1$si.m.flow),
+                           NIAM3*100 / sum(df1$si.m.flow),
+                           NIAM4*100 / sum(df1$si.m.flow))
+
+NNT_Males <- c(sum(df2$v.m.ue.num) / NIAM2,
+               sum(df3$v.m.ue.num) / NIAM3,
+               sum(df4$v.m.ue.num) / NIAM4)
+
+# Combine Results
+male_vaccination <- data.frame(
+  Scenario = c("omega.m = 0.2", "omega.m = 0.3", "omega.m = 0.4"),
+  NIA_Female = c(NIAF2, NIAF3, NIAF4),
+  Percent_Averted_Female = Percent_Averted_Females,
+  NNT_Female = NNT_Females,
+  NIA_Male = c(NIAM2, NIAM3, NIAM4),
+  Percent_Averted_Male = Percent_Averted_Males,
+  NNT_Male = NNT_Males
+)
 
 
-NIA3<-sum(df$si.f.flow)-sum(df4$si.f.flow)
-NIA3
-#Percent Infections Averted in Females
-NIA1/sum(df$si.f.flow)
-NIA2/sum(df$si.f.flow)
-NIA3/sum(df$si.f.flow)
-
-#Number Needed to Treat for Females 
-sum(df2$v.m.ue.num)/NIA1
-sum(df3$v.m.ue.num)/NIA2
-sum(df4$v.m.ue.num)/NIA3
-
-#(sum(df2$v.m.ue.num)+sum(df2$v.m.e.num)+sum(df2$v.m.i.a.num)+sum(df2$v.m.i.s.num))/NIA1
-#(sum(df3$v.m.ue.num)+sum(df3$v.m.e.num)+sum(df3$v.m.i.a.num)+sum(df3$v.m.i.s.num))/NIA2             
-#(sum(df4$v.m.ue.num)+sum(df4$v.m.e.num)+sum(df4$v.m.i.a.num)+sum(df4$v.m.i.s.num))/NIA3
-
-
-
-#Number of Infections Averted in Males
-NIA4<-sum(df$si.m.flow)-sum(df2$si.m.flow)
-NIA4
-
-NIA5<-sum(df$si.m.flow)-sum(df3$si.m.flow)
-NIA5
-
-
-NIA6<-sum(df$si.m.flow)-sum(df4$si.m.flow)
-NIA6
-
-#Percent of Infections Averted in Males
-NIA4/sum(df$si.m.flow)
-NIA5/sum(df$si.m.flow)
-NIA6/sum(df$si.m.flow)
-
-#Number Needed to Treat in Males
-sum(df2$v.m.ue.num)/NIA4
-sum(df3$v.m.ue.num)/NIA5
-sum(df4$v.m.ue.num)/NIA6
+View(male_vaccination)
 ```
-```{r Kappa Vaccination}
-#Direct and Indirect Effects graphed.
-# 11-17 Male vax scenario outcomes
-df<-as.data.frame(mod2,  run = 1)
+
+```{r Omega.m Vaccination}
+# Isolate Runs
+df1<-as.data.frame(mod2, run = 1)
 df2<-as.data.frame(mod2, run = 2)
 df3<-as.data.frame(mod2, run = 3)
 df4<-as.data.frame(mod2, run = 4)
 
-#Number of Infections Averted in Females
-NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
-NIA1
+# Vaccination Measures for Females
+NIAF2 <- sum(df1$si.f.flow) - sum(df2$si.f.flow)
+NIAF3 <- sum(df1$si.f.flow) - sum(df3$si.f.flow)
+NIAF4 <- sum(df1$si.f.flow) - sum(df4$si.f.flow)
 
-NIA2<-sum(df$si.f.flow)-sum(df3$si.f.flow)
-NIA2
+Percent_Averted_Females <- c(NIAF2*100 / sum(df1$si.f.flow),
+                             NIAF3*100 / sum(df1$si.f.flow),
+                             NIAF4*100 / sum(df1$si.f.flow))
+
+NNT_Females <- c(sum(df2$v.m.ue.num) / NIAF2,
+                 sum(df3$v.m.ue.num) / NIAF3,
+                 sum(df4$v.m.ue.num) / NIAF4)
+
+# Vaccination Measures for Females
+NIAM2 <- sum(df1$si.m.flow) - sum(df2$si.m.flow)
+NIAM3 <- sum(df1$si.m.flow) - sum(df3$si.m.flow)
+NIAM4 <- sum(df1$si.m.flow) - sum(df4$si.m.flow)
+
+Percent_Averted_Males <- c(NIAM2*100 / sum(df1$si.m.flow),
+                           NIAM3*100 / sum(df1$si.m.flow),
+                           NIAM4*100 / sum(df1$si.m.flow))
+
+NNT_Males <- c(sum(df2$v.m.ue.num) / NIAM2,
+               sum(df3$v.m.ue.num) / NIAM3,
+               sum(df4$v.m.ue.num) / NIAM4)
+
+# Combine Results
+catch_up_vaccination <- data.frame(
+  Scenario = c("2% per Year", "3% per Year", "4% per Year"),
+  NIA_Female = c(NIAF2, NIAF3, NIAF4),
+  Percent_Averted_Female = Percent_Averted_Females,
+  NNT_Female = NNT_Females,
+  NIA_Male = c(NIAM2, NIAM3, NIAM4),
+  Percent_Averted_Male = Percent_Averted_Males,
+  NNT_Male = NNT_Males
+)
 
 
-NIA3<-sum(df$si.f.flow)-sum(df4$si.f.flow)
-NIA3
-#Percent Infections Averted in Females
-NIA1/sum(df$si.f.flow)
-NIA2/sum(df$si.f.flow)
-NIA3/sum(df$si.f.flow)
-
-#Number Needed to Treat for Females 
-sum(df2$v.m.ue.num)/NIA1
-sum(df3$v.m.ue.num)/NIA2
-sum(df4$v.m.ue.num)/NIA3
-
-#(sum(df2$v.m.ue.num)+sum(df2$v.m.e.num)+sum(df2$v.m.i.a.num)+sum(df2$v.m.i.s.num))/NIA1
-#(sum(df3$v.m.ue.num)+sum(df3$v.m.e.num)+sum(df3$v.m.i.a.num)+sum(df3$v.m.i.s.num))/NIA2             
-#(sum(df4$v.m.ue.num)+sum(df4$v.m.e.num)+sum(df4$v.m.i.a.num)+sum(df4$v.m.i.s.num))/NIA3
-
-
-
-#Number of Infections Averted in Males
-NIA4<-sum(df$si.m.flow)-sum(df2$si.m.flow)
-NIA4
-
-NIA5<-sum(df$si.m.flow)-sum(df3$si.m.flow)
-NIA5
-
-
-NIA6<-sum(df$si.m.flow)-sum(df4$si.m.flow)
-NIA6
-
-#Percent of Infections Averted in Males
-NIA4/sum(df$si.m.flow)
-NIA5/sum(df$si.m.flow)
-NIA6/sum(df$si.m.flow)
-
-#Number Needed to Treat in Males
-sum(df2$v.m.ue.num)/NIA4
-sum(df3$v.m.ue.num)/NIA5
-sum(df4$v.m.ue.num)/NIA6
+View(catch_up_vaccination)
 ```
-```{r Omega.f Vaccinatinon}
-#Direct and Indirect Effects graphed.
-# 11-17 Male vax scenario outcomes
-df<-as.data.frame(mod3, run = 1)
+
+```{r Omega.f Vaccination}
+# Isolate Runs
+df1<-as.data.frame(mod3, run = 1)
 df2<-as.data.frame(mod3, run = 2)
 df3<-as.data.frame(mod3, run = 3)
 df4<-as.data.frame(mod3, run = 4)
 
-#Number of Infections Averted in Females
-NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
-NIA1
+# Vaccination Measures for Females
+NIAF2 <- sum(df1$si.f.flow) - sum(df2$si.f.flow)
+NIAF3 <- sum(df1$si.f.flow) - sum(df3$si.f.flow)
+NIAF4 <- sum(df1$si.f.flow) - sum(df4$si.f.flow)
 
-NIA2<-sum(df$si.f.flow)-sum(df3$si.f.flow)
-NIA2
+Percent_Averted_Females <- c(NIAF2*100 / sum(df1$si.f.flow),
+                             NIAF3*100 / sum(df1$si.f.flow),
+                             NIAF4*100 / sum(df1$si.f.flow))
+
+NNT_Females <- c(sum(df2$v.m.ue.num) / NIAF2,
+                 sum(df3$v.m.ue.num) / NIAF3,
+                 sum(df4$v.m.ue.num) / NIAF4)
+
+# Vaccination Measures for Females
+NIAM2 <- sum(df1$si.m.flow) - sum(df2$si.m.flow)
+NIAM3 <- sum(df1$si.m.flow) - sum(df3$si.m.flow)
+NIAM4 <- sum(df1$si.m.flow) - sum(df4$si.m.flow)
+
+Percent_Averted_Males <- c(NIAM2*100 / sum(df1$si.m.flow),
+                           NIAM3*100 / sum(df1$si.m.flow),
+                           NIAM4*100 / sum(df1$si.m.flow))
+
+NNT_Males <- c(sum(df2$v.m.ue.num) / NIAM2,
+               sum(df3$v.m.ue.num) / NIAM3,
+               sum(df4$v.m.ue.num) / NIAM4)
+
+# Combine Results
+female_vaccination <- data.frame(
+  Scenario = c("omega.f = 0.4", "omega.f = 0.5", "omega.f = 0.6"),
+  NIA_Female = c(NIAF2, NIAF3, NIAF4),
+  Percent_Averted_Female = Percent_Averted_Females,
+  NNT_Female = NNT_Females,
+  NIA_Male = c(NIAM2, NIAM3, NIAM4),
+  Percent_Averted_Male = Percent_Averted_Males,
+  NNT_Male = NNT_Males
+)
 
 
-NIA3<-sum(df$si.f.flow)-sum(df4$si.f.flow)
-NIA3
-#Percent Infections Averted in Females
-NIA1/sum(df$si.f.flow)
-NIA2/sum(df$si.f.flow)
-NIA3/sum(df$si.f.flow)
-
-#Number Needed to Treat for Females 
-sum(df2$v.m.ue.num)/NIA1
-sum(df3$v.m.ue.num)/NIA2
-sum(df4$v.m.ue.num)/NIA3
-
-#(sum(df2$v.m.ue.num)+sum(df2$v.m.e.num)+sum(df2$v.m.i.a.num)+sum(df2$v.m.i.s.num))/NIA1
-#(sum(df3$v.m.ue.num)+sum(df3$v.m.e.num)+sum(df3$v.m.i.a.num)+sum(df3$v.m.i.s.num))/NIA2             
-#(sum(df4$v.m.ue.num)+sum(df4$v.m.e.num)+sum(df4$v.m.i.a.num)+sum(df4$v.m.i.s.num))/NIA3
-
-
-
-#Number of Infections Averted in Males
-NIA4<-sum(df$si.m.flow)-sum(df2$si.m.flow)
-NIA4
-
-NIA5<-sum(df$si.m.flow)-sum(df3$si.m.flow)
-NIA5
-
-
-NIA6<-sum(df$si.m.flow)-sum(df4$si.m.flow)
-NIA6
-
-#Percent of Infections Averted in Males
-NIA4/sum(df$si.m.flow)
-NIA5/sum(df$si.m.flow)
-NIA6/sum(df$si.m.flow)
-
-#Number Needed to Treat in Males
-sum(df2$v.m.ue.num)/NIA4
-sum(df3$v.m.ue.num)/NIA5
-sum(df4$v.m.ue.num)/NIA6
+View(female_vaccination)
 ```
+
 
 
 
