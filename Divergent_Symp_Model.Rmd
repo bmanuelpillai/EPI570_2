@@ -11,15 +11,14 @@ pacman::p_load(pacman, EpiModel, ggplot2, tidyverse, reshape2)
 ```
 
 **PENDING THOUGHTS**
-- add external FOI?
-- decide between progressing from asymptomatic to symptomatic vs. divering symptomatic and asymptomatic
+Can't get the combined vaccine scenario to work. Thinking about scraping that, also in the interest of time.
 
 build model foundation:
     - conceptualized as relatively low baseline vaccination rate with 9vHPV vaccine
     - vaccine assumed to have immunogenecity (~97% produce sufficient response)
     - vaccinated people assumed to become infected through vaccine leak (~90% efficacy)
     - vaccine assumed to act through prevention of infection in vaccinated people (lower FOI) 
-```{r}
+```{r Vaccination Model}
 Vaccination <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
     
@@ -100,7 +99,7 @@ Vaccination <- function(t, t0, parms) {
   dS.m.e <- (age.in * uv.m.ue.num) + (-mu * uv.m.e.num) + (-age.out * uv.m.e.num) +         # general pop
             (-lambda.m.s * zeta.s * uv.m.e.num) + (-lambda.m.s * (1-zeta.s) * uv.m.e.num) + # exposure
             (delta.s.a * uv.m.i.a.num) + (delta.s.s * uv.m.i.s.num) +                       # recovery
-            (-kappa.m * uv.m.e.num)                                                         # catch-up vax
+            (-kappa * uv.m.e.num)                                                         # catch-up vax
   
  # infected asymptomatic [uv.m.i.a.num]
   dI.m.s.a <- (-age.out * uv.m.i.a.num) + (-mu * uv.m.i.a.num) +  # general pop
@@ -122,7 +121,7 @@ Vaccination <- function(t, t0, parms) {
   dV.m.e <- (age.in * v.m.ue.num) + (-age.out * v.m.e.num) + (-mu * v.m.e.num) +         # general pop
             (-lambda.m.v * (zeta.v) * v.m.e.num) + (-lambda.m.v * (1- zeta.v) * v.m.e.num) + # exposure
             (delta.v.a * v.m.i.a.num) + (delta.v.s * v.m.i.s.num) +                      # recovery
-            (kappa.m * uv.m.e.num)                                                       # catch-up vax
+            (kappa * uv.m.e.num)                                                       # catch-up vax
 
   # infected asymptomatic [v.m.i.a.num]
   dI.m.v.a <- (-age.out * v.m.i.a.num) + (-mu * v.m.i.a.num) +        # gen pop
@@ -142,7 +141,7 @@ Vaccination <- function(t, t0, parms) {
   dS.f.e <- (age.in * uv.f.ue.num) + (-mu * uv.f.e.num) + (-age.out * uv.f.e.num) +       # general pop
             (-lambda.f.s * zeta.s * uv.f.e.num) + (-lambda.f.s * (1-zeta.s) * uv.f.e.num) +   # exposure
             (delta.s.a * uv.f.i.a.num) + (delta.s.s * uv.f.i.s.num) +                     # recovery
-            (-kappa.f * uv.f.e.num)                                                       # catch-up vax
+            (-kappa * uv.f.e.num)                                                       # catch-up vax
   
   # infected, asymptomatic [uv.f.i.a.num]
   dI.f.s.a <- (-age.out * uv.f.i.a.num) + (-mu * uv.f.i.a.num) +  # general pop
@@ -163,7 +162,7 @@ Vaccination <- function(t, t0, parms) {
   dV.f.e <- (age.in * v.f.ue.num) + (-age.out * v.f.e.num) + (-mu * v.f.e.num) +       # gen pop
             (-lambda.f.v * zeta.v * v.f.e.num) + (-lambda.f.v * (1-zeta.v) * v.f.e.num) +  # infection
             (delta.v.a * v.f.i.a.num) + (delta.v.s * v.f.i.s.num) +                    # recovery
-            (kappa.f * uv.f.e.num)                                                       # catch-up vax
+            (kappa * uv.f.e.num)                                                       # catch-up vax
 
   # infected, asymptomatic [v.f.i.a.num]
   dI.f.v.a <- (-age.out * v.f.i.a.num) + (-mu * v.f.i.a.num) +        # gen pop
@@ -183,10 +182,10 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
        dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
        si.m.flow = (lambda.m.s * uv.m.e.num),
        vi.m.flow = (lambda.m.v * v.m.e.num),
-       sv.m.flow = (kappa.m * uv.m.e.num),
+       sv.m.flow = (kappa * uv.m.e.num),
        si.f.flow = (lambda.f.s * uv.f.e.num),
        vi.f.flow = (lambda.f.v * v.f.e.num),
-       sv.f.flow = (kappa.f * uv.f.e.num))
+       sv.f.flow = (kappa * uv.f.e.num))
        )
   })
 }
@@ -194,7 +193,7 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
 ```
 
 
-```{r}
+```{r Omega.f Vaccination}
 # Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
 param <- param.dcm( # FOI parameters
                     tau = 0.60, psi = 0.90, 
@@ -215,7 +214,7 @@ param <- param.dcm( # FOI parameters
                     dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
                     # vaccine parameters
                     omega.m = seq(0.1,0.8, by = 0.2), omega.f = 0.40, 
-                    chi = 0.97, kappa.m = (0.0025/365), kappa.f = (0.0025/365),
+                    chi = 0.97, kappa = (0.0025/365),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
                     zeta.v = (0.2) , zeta.s = (0.2))
@@ -244,34 +243,67 @@ mod
 ```
 
 
-```{r}
-# # Vaccination Scenario 2.) Catch-up Vaccination increased from        
-# param2 <- param.dcm( tau.s = 0.74, tau.v = 0.31, ce.m = (5/365),
-#                     nu = (0.01/365), mu.ue = (0.0025/365), mu = (0.005/365),
-#                     dur.inf.s.a = (3*365), dur.inf.s.s= (1.5*365),
-#                     dur.inf.v.a = (3*365), dur.inf.v.s = (1.5*365),
-#                     age.in = (1/(8*365)), age.out = (1/(11*365)),
-#                     omega.m = 0.1, omega.f = 0.40, chi = 0.90,
-#                     zeta.v = (0.1/365) , zeta.s = (0.1/365), kappa = seq((0.0025/365), (0.0025*4/365), by = (0.0025/365)))
-# 
-# init2 <- init.dcm(uv.m.ue.num = 1600000, uv.m.e.num = 3800000,
-#                  i.m.s.a.num = 1300000, i.m.uv.s.num= 1300000,
-#                  v.m.ue.num = 304000, v.m.e.num = 304000, 
-#                  i.m.v.a.num = 1300000, i.m.v.s.num = 1300000,
-#                  uv.f.ue.num = 1700000, uv.f.e.num = 3800000, 
-#                  i.f.s.a.num = 3000000, i.f.uv.s.num = 3000000,
-#                  v.f.ue.num = 240000, v.f.e.num = 240000, 
-#                  i.f.v.a.num = 1300000, i.f.v.s.num = 1300000,
-#                  si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
-#                  si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
-# 
-# control2 <- control.dcm(nsteps = (28*365), new.mod = Vaccination)
-# 
-# mod2 <- dcm(param2, init2, control2)
-# mod2
+```{r Kappa Vaccination}
+# Vaccination Scenario 2.) Catch-up Vaccination increased from 0.01 to 0.04
+param2 <- param.dcm( # FOI parameters
+                    tau = 0.60, psi = 0.90, 
+                    # contact parameter : changing this because we have a per-act tau (not per-partner)
+                    # ce.m = (5/365),
+# ce.m = (per-act transmission prob)(avg # sex acts per partner)(avg # diff partners per year)
+# (1.5)(16)
+                    ce.m = (30/365),
+                    # general pop parameters
+                    i.f.prev = 0.4, # US population prevalence of HPV amoung women
+                    i.m.prev = 0.4, # US population prevalence of HPV amoung men
+                    nu = (((20)/1000)/365), # this rate is the whole US, not age-group specific - needs fixing
+                    mu.ue = (50/1e5)/365, mu = (100/1e5)/365, # these rates are estimated for teens & young adults, respectively
+                    age.in = (1/(7*365)), age.out = (1/(47*365)),
+                    # recovery parameters
+                        # assumed duration symptomatic is sub-component of total time infected
+                    dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
+                    dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
+                    # vaccine parameters
+                    omega.m = 0.10, omega.f = 0.40, 
+                    chi = 0.97, kappa = (seq((0.01/365), (0.05/365), by = (0.01/265))),
+                    # symptomatic parameters
+                    # zeta is the proportion of susceptible that become symptomatic
+                    zeta.v = (0.2) , zeta.s = (0.2))
+
+mod2 <- dcm(param2, init, control)
+mod2
+```
+```{r Omega.f Vaccination}
+# Vaccination Scenario 3.) Combine previous scenarios
+param3 <- param.dcm( # FOI parameters
+                    tau = 0.60, psi = 0.90, 
+                    # contact parameter : changing this because we have a per-act tau (not per-partner)
+                    # ce.m = (5/365),
+# ce.m = (per-act transmission prob)(avg # sex acts per partner)(avg # diff partners per year)
+# (1.5)(16)
+                    ce.m = (30/365),
+                    # general pop parameters
+                    i.f.prev = 0.4, # US population prevalence of HPV amoung women
+                    i.m.prev = 0.4, # US population prevalence of HPV amoung men
+                    nu = (((20)/1000)/365), # this rate is the whole US, not age-group specific - needs fixing
+                    mu.ue = (50/1e5)/365, mu = (100/1e5)/365, # these rates are estimated for teens & young adults, respectively
+                    age.in = (1/(7*365)), age.out = (1/(47*365)),
+                    # recovery parameters
+                        # assumed duration symptomatic is sub-component of total time infected
+                    dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
+                    dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
+                    # vaccine parameters
+                    omega.m = 0.1, omega.f = c(0.40, 0.5, 0.6, 0.7), 
+                    chi = 0.97, kappa = (0.01/365),
+                    # symptomatic parameters
+                    # zeta is the proportion of susceptible that become symptomatic
+                    zeta.v = (0.2) , zeta.s = (0.2))
+
+mod3 <- dcm(param3, init, control)
+mod3
 ```
 
-Plotting Compartments and Flows
+
+Plotting Omega Vaccine Scenario
 ```{r Vaccination Scenario 1}
 mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
@@ -284,10 +316,6 @@ mod <- mutate_epi(mod, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.
 
 mod <- mutate_epi(mod, m.prev = i.m.num / m.num)
 mod <- mutate_epi(mod, f.prev = i.f.num / f.num)
-
-data <- as.data.frame(mod)
-
-data01 <- as.data.frame(mod, run=1)
 ```
 
 males: 
@@ -308,6 +336,7 @@ plot(mod, y = c("v.m.ue.num", 'v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", main = "Proportional Prevalence for Males")
 plot(mod, y = "f.prev", main = "Proportional Prevalence for Females")
+legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.3","omega.m = 0.5", "omega.m = 0.7"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
 
 ```{r}
@@ -325,54 +354,218 @@ plot(mod, y = "f.num", main = "Population Size (Females)")
 par(mfrow = c(1,2))
 plot(mod, y = "si.m.flow", main = "si.Males")
 plot(mod, y = "si.f.flow", main = "si.Females")
+legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.3","omega.m = 0.5", "omega.m = 0.7"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
 
 ```{r}
 par(mfrow = c(1,2))
 plot(mod, y = "vi.m.flow", main = "vi.Males", legend='full')
 plot(mod, y = "vi.f.flow", main = "vi.Females", legend='full')
+legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.3","omega.m = 0.5", "omega.m = 0.7"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
-
-Plotting Compartments and Flows
+Plotting Kappa Vaccine Scenario
 ```{r Vaccination Scenario 2}
-# mod2 <- mutate_epi(mod2, m.num = uv.m.ue.num + uv.m.e.num + i.m.s.a.num + i.m.uv.s.num+ v.m.ue.num + v.m.e.num + i.m.v.a.num + i.m.v.s.num + uv.m.e.num)
-# 
-# mod2 <- mutate_epi(mod2, f.num = uv.f.ue.num + uv.f.e.num + i.f.s.a.num + i.f.uv.s.num + v.f.ue.num + v.f.e.num + i.f.v.a.num + i.f.v.s.num + uv.f.e.num)
-# 
-# mod2 <- mutate_epi(mod2, i.m.num = i.m.s.a.num + i.m.uv.s.num+ i.m.v.a.num + i.m.v.s.num)
-# mod2 <- mutate_epi(mod2, i.f.num = i.f.s.a.num + i.f.uv.s.num + i.f.v.a.num + i.f.v.s.num)
-# 
-# mod2 <- mutate_epi(mod2, m.prev = i.m.num / m.num)
-# mod2 <- mutate_epi(mod2, f.prev = i.f.num / f.num)
-# data <- as.data.frame(mod2)
-# 
-# par(mfrow = c(1,2))
-# plot(mod2, y = "m.prev", main = "Proportional Prevalence for Males")
-# plot(mod2, y = "f.prev", main = "Proportional Prevalence for Females")
-# 
-# par(mfrow = c(1,2))
-# plot(mod2, y = "i.m.num", main = "Prevalence for Males")
-# plot(mod2, y = "i.f.num", main = "Prevalence for Females")
-# 
-# par(mfrow = c(1,2))
-# plot(mod2, y = "si.m.flow", main = "si.Males")
-# plot(mod2, y = "si.f.flow", main = "si.Females")
-# 
-# par(mfrow = c(1,2))
-# plot(mod2, y = "vi.m.flow", main = "vi.Males")
-# plot(mod2, y = "vi.f.flow", main = "vi.Females")
-```
-Couple of issues with how this output is now.
-We are substainly decreasing the number of infected, but the proportional prevalence is almost unchanged. I think this has to do with the inflow and outflows of each compartment.
-```{r}
-#Direct and Indirect Effects graphed.
+mod2 <- mutate_epi(mod2, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
 
+mod2 <- mutate_epi(mod2, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod2 <- mutate_epi(mod2, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod2 <- mutate_epi(mod2, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+
+mod2 <- mutate_epi(mod2, m.prev = i.m.num / m.num)
+mod2 <- mutate_epi(mod2, f.prev = i.f.num / f.num)
+
+data <- as.data.frame(mod2)
+
+data02 <- as.data.frame(mod2, run=1)
+```
+
+males: 
+```{r}
+par(mfrow = c(1,1))
+plot(mod2, y = c("uv.m.ue.num", 'uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+                legend='full')
+```
+
+```{r}
+par(mfrow = c(1,1))
+plot(mod2, y = c("v.m.ue.num", 'v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+                legend='full', run=1)
+```
+
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod2, y = "m.prev", main = "Proportional Prevalence for Males")
+plot(mod2, y = "f.prev", main = "Proportional Prevalence for Females")
+legend("bottomright", legend = c("kappa = 0.01", "kappa = 0.02","kappa = 0.03", "kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod2, y = "i.m.num", main = "Prevalence for Males")
+plot(mod2, y = "i.f.num", main = "Prevalence for Females")
+
+par(mfrow = c(1,2))
+plot(mod2, y = "m.num", main = "Population Size (Males)")
+plot(mod2, y = "f.num", main = "Population Size (Females)")
+
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod2, y = "si.m.flow", main = "si.Males")
+plot(mod2, y = "si.f.flow", main = "si.Females")
+legend("bottomright", legend = c("kappa = 0.01", "kappa = 0.02","kappa = 0.03", "kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod2, y = "vi.m.flow", main = "vi.Males", legend='full')
+plot(mod2, y = "vi.f.flow", main = "vi.Females", legend='full')
+legend("bottomright", legend = c("kappa = 0.01", "kappa = 0.02","kappa = 0.03", "kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+```
+
+
+
+Plotting Omega + Kappa Vaccine Scenario
+```{r Vaccination Scenario 2}
+mod3 <- mutate_epi(mod3, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod3 <- mutate_epi(mod3, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod3 <- mutate_epi(mod3, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod3 <- mutate_epi(mod3, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+
+mod3 <- mutate_epi(mod3, m.prev = i.m.num / m.num)
+mod3 <- mutate_epi(mod3, f.prev = i.f.num / f.num)
+
+data <- as.data.frame(mod3)
+
+data03 <- as.data.frame(mod3, run=1)
+```
+
+males: 
+```{r}
+par(mfrow = c(1,1))
+plot(mod3, y = c("uv.m.ue.num", 'uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+                legend='full')
+```
+
+```{r}
+par(mfrow = c(1,1))
+plot(mod3, y = c("v.m.ue.num", 'v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+                legend='full', run=1)
+```
+
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod3, y = "m.prev", main = "Proportional Prevalence for Males")
+plot(mod3, y = "f.prev", main = "Proportional Prevalence for Females")
+legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod3, y = "i.m.num", main = "Prevalence for Males")
+plot(mod3, y = "i.f.num", main = "Prevalence for Females")
+
+par(mfrow = c(1,2))
+plot(mod3, y = "m.num", main = "Population Size (Males)")
+plot(mod3, y = "f.num", main = "Population Size (Females)")
+
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod3, y = "si.m.flow", main = "si.Males")
+plot(mod3, y = "si.f.flow", main = "si.Females")
+legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod3, y = "vi.m.flow", main = "vi.Males", legend='full')
+plot(mod3, y = "vi.f.flow", main = "vi.Females", legend='full')
+legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+```
+
+```{r Vaccine Impact analysis Failed Function}
+# simulation <- c("mod")
+# 
+# effects <- function(X){
+#     df<-as.data.frame(X, run = 1)
+#     df2<-as.data.frame(X, run = 2)
+#     df3<-as.data.frame(X, run = 3)
+#     df4<-as.data.frame(X, run = 4)
+#   
+#     # Calculate metrics
+#     metrics <- list(
+#         # Number of Infections Averted in Females
+#         NIA_females = c(
+#             sum(df$si.f.flow)-sum(df2$si.f.flow),
+#             sum(df$si.f.flow)-sum(df3$si.f.flow),
+#             sum(df$si.f.flow)-sum(df4$si.f.flow)
+#         ),
+#       
+#         # Percent Infections Averted in Females
+#         percent_averted_females = c(
+#             (sum(df$si.f.flow)-sum(df2$si.f.flow))/sum(df$si.f.flow),
+#             (sum(df$si.f.flow)-sum(df3$si.f.flow))/sum(df$si.f.flow),
+#             (sum(df$si.f.flow)-sum(df4$si.f.flow))/sum(df$si.f.flow)
+#         ),
+#       
+#         # Number Needed to Treat for Females 
+#         NNT_females = c(
+#             sum(df2$v.m.ue.num)/(sum(df$si.f.flow)-sum(df2$si.f.flow)),
+#             sum(df3$v.m.ue.num)/(sum(df$si.f.flow)-sum(df3$si.f.flow)),
+#             sum(df4$v.m.ue.num)/(sum(df$si.f.flow)-sum(df4$si.f.flow))
+#         ),
+#       
+#         # Number of Infections Averted in Males
+#         NIA_males = c(
+#             sum(df$si.m.flow)-sum(df2$si.m.flow),
+#             sum(df$si.m.flow)-sum(df3$si.m.flow),
+#             sum(df$si.m.flow)-sum(df4$si.m.flow)
+#         ),
+#       
+#         # Percent of Infections Averted in Males
+#         percent_averted_males = c(
+#             (sum(df$si.m.flow)-sum(df2$si.m.flow))/sum(df$si.m.flow),
+#             (sum(df$si.m.flow)-sum(df3$si.m.flow))/sum(df$si.m.flow),
+#             (sum(df$si.m.flow)-sum(df4$si.m.flow))/sum(df$si.m.flow)
+#         ),
+#       
+#         # Number Needed to Treat in Males
+#         NNT_males = c(
+#             sum(df2$v.m.ue.num)/(sum(df$si.m.flow)-sum(df2$si.m.flow)),
+#             sum(df3$v.m.ue.num)/(sum(df$si.m.flow)-sum(df3$si.m.flow)),
+#             sum(df4$v.m.ue.num)/(sum(df$si.m.flow)-sum(df4$si.m.flow))
+#         )
+#     )
+#   
+#     return(metrics)
+# }
+# 
+# results <- lapply(simulation, effects)
+
+
+```
+
+
+
+```{r Omega.m Vaccinatinon}
+#Direct and Indirect Effects graphed.
 # 11-17 Male vax scenario outcomes
 df<-as.data.frame(mod, run = 1)
 df2<-as.data.frame(mod, run = 2)
 df3<-as.data.frame(mod, run = 3)
 df4<-as.data.frame(mod, run = 4)
-
 
 #Number of Infections Averted in Females
 NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
@@ -421,4 +614,116 @@ sum(df2$v.m.ue.num)/NIA4
 sum(df3$v.m.ue.num)/NIA5
 sum(df4$v.m.ue.num)/NIA6
 ```
+```{r Kappa Vaccination}
+#Direct and Indirect Effects graphed.
+# 11-17 Male vax scenario outcomes
+df<-as.data.frame(mod2,  run = 1)
+df2<-as.data.frame(mod2, run = 2)
+df3<-as.data.frame(mod2, run = 3)
+df4<-as.data.frame(mod2, run = 4)
+
+#Number of Infections Averted in Females
+NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
+NIA1
+
+NIA2<-sum(df$si.f.flow)-sum(df3$si.f.flow)
+NIA2
+
+
+NIA3<-sum(df$si.f.flow)-sum(df4$si.f.flow)
+NIA3
+#Percent Infections Averted in Females
+NIA1/sum(df$si.f.flow)
+NIA2/sum(df$si.f.flow)
+NIA3/sum(df$si.f.flow)
+
+#Number Needed to Treat for Females 
+sum(df2$v.m.ue.num)/NIA1
+sum(df3$v.m.ue.num)/NIA2
+sum(df4$v.m.ue.num)/NIA3
+
+#(sum(df2$v.m.ue.num)+sum(df2$v.m.e.num)+sum(df2$v.m.i.a.num)+sum(df2$v.m.i.s.num))/NIA1
+#(sum(df3$v.m.ue.num)+sum(df3$v.m.e.num)+sum(df3$v.m.i.a.num)+sum(df3$v.m.i.s.num))/NIA2             
+#(sum(df4$v.m.ue.num)+sum(df4$v.m.e.num)+sum(df4$v.m.i.a.num)+sum(df4$v.m.i.s.num))/NIA3
+
+
+
+#Number of Infections Averted in Males
+NIA4<-sum(df$si.m.flow)-sum(df2$si.m.flow)
+NIA4
+
+NIA5<-sum(df$si.m.flow)-sum(df3$si.m.flow)
+NIA5
+
+
+NIA6<-sum(df$si.m.flow)-sum(df4$si.m.flow)
+NIA6
+
+#Percent of Infections Averted in Males
+NIA4/sum(df$si.m.flow)
+NIA5/sum(df$si.m.flow)
+NIA6/sum(df$si.m.flow)
+
+#Number Needed to Treat in Males
+sum(df2$v.m.ue.num)/NIA4
+sum(df3$v.m.ue.num)/NIA5
+sum(df4$v.m.ue.num)/NIA6
+```
+```{r Omega.f Vaccinatinon}
+#Direct and Indirect Effects graphed.
+# 11-17 Male vax scenario outcomes
+df<-as.data.frame(mod3, run = 1)
+df2<-as.data.frame(mod3, run = 2)
+df3<-as.data.frame(mod3, run = 3)
+df4<-as.data.frame(mod3, run = 4)
+
+#Number of Infections Averted in Females
+NIA1<-sum(df$si.f.flow)-sum(df2$si.f.flow)
+NIA1
+
+NIA2<-sum(df$si.f.flow)-sum(df3$si.f.flow)
+NIA2
+
+
+NIA3<-sum(df$si.f.flow)-sum(df4$si.f.flow)
+NIA3
+#Percent Infections Averted in Females
+NIA1/sum(df$si.f.flow)
+NIA2/sum(df$si.f.flow)
+NIA3/sum(df$si.f.flow)
+
+#Number Needed to Treat for Females 
+sum(df2$v.m.ue.num)/NIA1
+sum(df3$v.m.ue.num)/NIA2
+sum(df4$v.m.ue.num)/NIA3
+
+#(sum(df2$v.m.ue.num)+sum(df2$v.m.e.num)+sum(df2$v.m.i.a.num)+sum(df2$v.m.i.s.num))/NIA1
+#(sum(df3$v.m.ue.num)+sum(df3$v.m.e.num)+sum(df3$v.m.i.a.num)+sum(df3$v.m.i.s.num))/NIA2             
+#(sum(df4$v.m.ue.num)+sum(df4$v.m.e.num)+sum(df4$v.m.i.a.num)+sum(df4$v.m.i.s.num))/NIA3
+
+
+
+#Number of Infections Averted in Males
+NIA4<-sum(df$si.m.flow)-sum(df2$si.m.flow)
+NIA4
+
+NIA5<-sum(df$si.m.flow)-sum(df3$si.m.flow)
+NIA5
+
+
+NIA6<-sum(df$si.m.flow)-sum(df4$si.m.flow)
+NIA6
+
+#Percent of Infections Averted in Males
+NIA4/sum(df$si.m.flow)
+NIA5/sum(df$si.m.flow)
+NIA6/sum(df$si.m.flow)
+
+#Number Needed to Treat in Males
+sum(df2$v.m.ue.num)/NIA4
+sum(df3$v.m.ue.num)/NIA5
+sum(df4$v.m.ue.num)/NIA6
+```
+
+
 
