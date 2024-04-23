@@ -213,7 +213,7 @@ param <- param.dcm( # FOI parameters
                     dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
                     dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
                     # vaccine parameters
-                    omega.m = seq(0.1,0.8, by = 0.2), omega.f = 0.40, 
+                    omega.m = c(0.1,0.2,0.3,0.4), omega.f = 0.40, 
                     chi = 0.97, kappa = (0.0025/365),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
@@ -264,7 +264,7 @@ param2 <- param.dcm( # FOI parameters
                     dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
                     # vaccine parameters
                     omega.m = 0.10, omega.f = 0.40, 
-                    chi = 0.97, kappa = (seq((0.01/365), (0.05/365), by = (0.01/265))),
+                    chi = 0.97, kappa = (seq((0.01/365), (0.1/365), by = (0.01/265))),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
                     zeta.v = (0.2) , zeta.s = (0.2))
@@ -292,7 +292,7 @@ param3 <- param.dcm( # FOI parameters
                     dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
                     dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
                     # vaccine parameters
-                    omega.m = 0.1, omega.f = c(0.40, 0.5, 0.6, 0.7), 
+                    omega.m = 0.1, omega.f = c(0.30, 0.40, 0.50, 0.60), 
                     chi = 0.97, kappa = (0.01/365),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
