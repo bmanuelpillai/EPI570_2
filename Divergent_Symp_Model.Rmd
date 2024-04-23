@@ -264,7 +264,7 @@ param2 <- param.dcm( # FOI parameters
                     dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
                     # vaccine parameters
                     omega.m = 0.10, omega.f = 0.40, 
-                    chi = 0.97, kappa = (seq((0.01/365), (0.1/365), by = (0.01/265))),
+                    chi = 0.97, kappa = c((0.01/365), (0.02/365), (0.03/365), (0.04/354)),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
                     zeta.v = (0.2) , zeta.s = (0.2))
@@ -316,20 +316,93 @@ mod <- mutate_epi(mod, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.
 
 mod <- mutate_epi(mod, m.prev = i.m.num / m.num)
 mod <- mutate_epi(mod, f.prev = i.f.num / f.num)
+
+model1 <- as.data.frame(mod)
 ```
 
-males: 
-```{r}
-par(mfrow = c(1,1))
-plot(mod, y = c("uv.m.ue.num", 'uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-                legend='full')
+
+```{r Omega.m = 1 Graphs}
+par(mfrow = c(2,2))
+plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 1)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 1)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
+          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 1)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
+          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 1)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
 ```
 
-```{r}
-par(mfrow = c(1,1))
-plot(mod, y = c("v.m.ue.num", 'v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-                legend='full', run=1)
+```{r Omega.m = 2 Graphs}
+par(mfrow = c(2,2))
+plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 2)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 2)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
+          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 2)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
+          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 2)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
 ```
+
+```{r Omega.m = 3 Graphs}
+par(mfrow = c(2,2))
+plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 3)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 3)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
+          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 3)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
+          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 3)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+```
+```{r Omega.m = 4 Graphs}
+par(mfrow = c(2,2))
+plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 4)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 4)
+     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
+          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 4)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
+plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
+          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
+          xlim = c(750, 15000), run = 4)
+     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+```
+
+
+
+
 
 
 ```{r}
