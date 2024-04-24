@@ -805,4 +805,51 @@ View(joint_vaccination)
 ```
 
 
-c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60")
+
+```{r}
+ggplot(joint_vaccination, aes(x = Scenario)) +
+  geom_bar(aes(y = NNT_Female, fill = "Female"), stat = "identity", position = position_dodge(width = 0.9)) +
+  geom_bar(aes(y = NNT_Male, fill = "Male"), stat = "identity", position = position_dodge(width = 0.9)) +
+  labs(title = "NNT for Females vs Males",
+       x = "Scenario",
+       y = "NNT",
+       fill = "Gender") +
+  scale_fill_manual(values = c("blue", "red"), labels = c("Female", "Male")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+mod<-mutate_epi(mod, ce.f=param$ce.m*m.num/f.num)
+
+plot(mod, y="ce.f", ylim=c(3,3.2))
+abline(h=param$ce.m, lty=2, lwd=2)
+head(as.data.frame(mod))
+```
+
+
+
+```{r}
+#Omega.m Scenario
+#Overall Effect
+df1<-as.data.frame(mod2, run = 1)
+df2<-as.data.frame(mod2, run = 2)
+df3<-as.data.frame(mod2, run = 3)
+df4<-as.data.frame(mod2, run = 4)
+
+
+NIA2 <- (sum(df1$si.f.flow)+sum(df1$si.m.flow)) - (sum(df2$si.f.flow)+sum(df2$si.m.flow))
+NIA3 <- (sum(df1$si.f.flow)+sum(df1$si.m.flow)) - (sum(df3$si.f.flow)+sum(df3$si.m.flow))
+NIA4 <- (sum(df1$si.f.flow)+sum(df1$si.m.flow)) - (sum(df4$si.f.flow)+sum(df4$si.m.flow))
+#Direct Effects
+NIAF2*(3.04e5+2.4e5+(sum(df2$v.m.ue.num)-3.04e5)+(sum(df2$v.f.ue.num)-2.4e5)*(.97/51254000))
+DE2<- NIAF2*(sum(df2$v.m.ue.num)+sum(df2$v.f.ue.num)*(.97/51254000))
+DE3<-NIAF3*(sum(df3$v.m.ue.num)+sum(df3$v.f.ue.num)*(.97/51254000))
+DE4<-NIAF4*(sum(df4$v.m.ue.num)+sum(df4$v.f.ue.num)*(.97/51254000))
+#Indirect Effects
+NIA2-DE2
+NIA3-DE3
+NIA4-DE4
+#Hi
+```
+
