@@ -419,7 +419,7 @@ mod4 <- mutate_epi(mod4, f.prev = i.f.num / f.num)
 model4 <- as.data.frame(mod4)
 ```
 
-```{r Unvaccinated Compartment asymptomatic Graphs}
+```{r Unvaccinated Asymptomatic Graphs}
 par(mfrow = c(2,3))
 
 plot(mod2, y = c('uv.m.i.a.num'),
@@ -454,132 +454,84 @@ plot(mod4, y = c('uv.f.i.a.num'),
      legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 ```
-```{r Unvaccinated Sympomatic}
+```{r Unvaccinated Symptomatic Graphs}
 par(mfrow = c(2,3))
 plot(mod2, y = c('uv.m.i.s.num'),
-          main = "Unvaccinated symptomatic\nMales\n(Male Vaccination)",
-          xlim = c(), ylim = c())
+          main = "Unvaccinated Symptomatic\nMales\n(Male Vaccination)",
+          xlim = c(750, 15000))
      legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
      
 plot(mod3, y = c('uv.m.i.s.num'),
-          main = "Unvaccinated symptomatic\nMales\n(Catch-Up Vaccination)",
-          xlim = c(), ylim = c())
+          main = "Unvaccinated Symptomatic\nMales\n(Catch-Up Vaccination)",
+          xlim = c(750, 15000))
      legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
      
 plot(mod4, y = c('uv.m.i.s.num'),
           main = "Unvaccinated Symptomatic\nMales\n(Combination Vaccination)",
-          xlim = c(), ylim = c())
+          xlim = c(750, 15000))
      legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
      
 ############# Females
 plot(mod2, y = c('uv.f.i.s.num'),
           main = "Unvaccinated Symptomatic\nFemales\n(Male Vaccination)",
-          xlim = c(), ylim = c())
+          xlim = c(750, 15000))
      legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
      
 plot(mod3, y = c('uv.f.i.s.num'),
           main = "Unvaccinated Symptomatic\nFemales\n(Catch-Up Vaccination)",
-          xlim = c(), ylim = c())
+          xlim = c(750, 15000))
      legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
      
 plot(mod4, y = c('uv.f.i.s.num'),
           main = "Unvaccinated Symptomatic\nFemales\n(Combination Vaccination)",
-          xlim = c(), ylim = c())
+          xlim = c(750, 15000))
      legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 ```
 
-
-
-```{r Omega.m = 1 Graphs}
-par(mfrow = c(2,2))
-plot(mod1, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 1)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod1, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 1)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-plot(mod1, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
-          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 1)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod1, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
-          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 1)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
+```{r Unexposed Graphs}
+par(mfrow = c(2,3))
+plot(mod2, y = c('uv.m.e.num'),
+          main = "Unexposed\nMales\n(Male Vaccination)",
+          xlim = c(750, 15000), ylim = c(500000,1200000))
+     legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod3, y = c('uv.m.e.num'),
+          main = "Unexposed\nMales\n(Catch-Up Vaccination)",
+          xlim = c(750, 15000), ylim = c(500000,1200000))
+     legend("bottomright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod4, y = c('uv.m.e.num'),
+          main = "Unexposed\nMales\n(Combination Vaccination)",
+          xlim = c(750, 15000), ylim = c(500000,1200000))
+     legend("bottomright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+############# Females
+plot(mod2, y = c('uv.f.e.num'),
+          main = "Unexposed\nFemales\n(Male Vaccination)",
+          xlim = c(750, 15000), ylim = c(500000, 1200000))
+     legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod3, y = c('uv.f.e.num'),
+          main = "Unexposed\nFemales\n(Catch-Up Vaccination)",
+          xlim = c(750, 15000), ylim = c(500000,1200000))
+     legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod4, y = c('uv.f.e.num'),
+          main = "Unexposed\nFemales\n(Combination Vaccination)",
+          xlim = c(750, 15000), ylim = c(500000,1200000))
+     legend("bottomright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 ```
-
-```{r Omega.m = 2 Graphs}
-par(mfrow = c(2,2))
-plot(mod1, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 2)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod1, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 2)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-plot(mod1, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
-          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 2)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod1, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
-          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 2)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-```
-
-```{r Omega.m = 3 Graphs}
-par(mfrow = c(2,2))
-plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 3)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 3)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
-          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 3)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
-          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 3)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-```
-```{r Omega.m = 4 Graphs}
-par(mfrow = c(2,2))
-plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-          main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 4)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-          main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 4)
-     legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
-          main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 4)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
-          main = "Vaccinated females Over Time\n(Baseline Vaccination)",
-          xlim = c(750, 15000), run = 4)
-     legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-```
-
 
 ```{r Prevalence Graphed for Vaccination Scenarios}
 ########################Omega.m Vaccination
 par(mfrow = c(1,2))
-plot(mod, y = "m.prev", 
+plot(mod2, y = "m.prev", 
      main = "Increase Childhood Male Vaccination\nProportional Prevalence\nMales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
 legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-plot(mod, y = "f.prev", 
+plot(mod2, y = "f.prev", 
      main = "Increase Childhood Male Vaccination\nProportional Prevalence\nFemales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
@@ -587,27 +539,27 @@ legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", 
 
 ########################Kappa Vaccination
 par(mfrow = c(1,2))
-plot(mod2, y = "m.prev", 
+plot(mod3, y = "m.prev", 
      main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence\nMales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-plot(mod2, y = "f.prev", 
+plot(mod3, y = "f.prev", 
      main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence\nFemales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-########################Omega.f Vaccination
+######################## Omega.f Vaccination
 par(mfrow = c(1,2))
-plot(mod3, y = "m.prev", 
+plot(mod4, y = "m.prev", 
      main = "Combined Vaccine Scenario\nProportional Prevalence\nMales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
 legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-plot(mod3, y = "f.prev", 
+plot(mod4, y = "f.prev", 
      main = "Combined Vaccine Scenario\nProportional Prevalence\nFemales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
@@ -616,30 +568,11 @@ legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2%
 
 ```
 
-```{r}
-par(mfrow = c(1,2))
-plot(mod, y = "i.m.num", main = "Prevalence for Males")
-plot(mod, y = "i.f.num", main = "Prevalence for Females")
 
-par(mfrow = c(1,2))
-plot(mod, y = "m.num", main = "Population Size (Males)")
-plot(mod, y = "f.num", main = "Population Size (Females)")
 
-```
 
-```{r}
-par(mfrow = c(1,2))
-plot(mod, y = "si.m.flow", main = "si.Males")
-plot(mod, y = "si.f.flow", main = "si.Females")
-legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.3","omega.m = 0.5", "omega.m = 0.7"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
 
-```{r}
-par(mfrow = c(1,2))
-plot(mod, y = "vi.m.flow", main = "vi.Males", legend='full')
-plot(mod, y = "vi.f.flow", main = "vi.Females", legend='full')
-legend("bottomright", legend = c("omega.m = 0.1", "omega.m = 0.3","omega.m = 0.5", "omega.m = 0.7"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
+
 Plotting Kappa Vaccine Scenario
 ```{r Vaccination Scenario 2}
 mod2 <- mutate_epi(mod2, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
@@ -726,18 +659,7 @@ data <- as.data.frame(mod3)
 data03 <- as.data.frame(mod3, run=1)
 ```
 
-males: 
-```{r}
-par(mfrow = c(1,1))
-plot(mod3, y = c("uv.m.ue.num", 'uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-                legend='full')
-```
 
-```{r}
-par(mfrow = c(1,1))
-plot(mod3, y = c("v.m.ue.num", 'v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-                legend='full', run=1)
-```
 
 
 ```{r}
@@ -747,16 +669,7 @@ plot(mod3, y = "f.prev", main = "Proportional Prevalence for Females")
 legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
 
-```{r}
-par(mfrow = c(1,2))
-plot(mod3, y = "i.m.num", main = "Prevalence for Males")
-plot(mod3, y = "i.f.num", main = "Prevalence for Females")
 
-par(mfrow = c(1,2))
-plot(mod3, y = "m.num", main = "Population Size (Males)")
-plot(mod3, y = "f.num", main = "Population Size (Females)")
-
-```
 
 ```{r}
 par(mfrow = c(1,2))
@@ -771,70 +684,6 @@ plot(mod3, y = "vi.m.flow", main = "vi.Males", legend='full')
 plot(mod3, y = "vi.f.flow", main = "vi.Females", legend='full')
 legend("topright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
-
-```{r Vaccine Impact analysis Failed Function}
-# simulation <- c("mod")
-# 
-# effects <- function(X){
-#     df<-as.data.frame(X, run = 1)
-#     df2<-as.data.frame(X, run = 2)
-#     df3<-as.data.frame(X, run = 3)
-#     df4<-as.data.frame(X, run = 4)
-#   
-#     # Calculate metrics
-#     metrics <- list(
-#         # Number of Infections Averted in Females
-#         NIA_females = c(
-#             sum(df$si.f.flow)-sum(df2$si.f.flow),
-#             sum(df$si.f.flow)-sum(df3$si.f.flow),
-#             sum(df$si.f.flow)-sum(df4$si.f.flow)
-#         ),
-#       
-#         # Percent Infections Averted in Females
-#         percent_averted_females = c(
-#             (sum(df$si.f.flow)-sum(df2$si.f.flow))/sum(df$si.f.flow),
-#             (sum(df$si.f.flow)-sum(df3$si.f.flow))/sum(df$si.f.flow),
-#             (sum(df$si.f.flow)-sum(df4$si.f.flow))/sum(df$si.f.flow)
-#         ),
-#       
-#         # Number Needed to Treat for Females 
-#         NNT_females = c(
-#             sum(df2$v.m.ue.num)/(sum(df$si.f.flow)-sum(df2$si.f.flow)),
-#             sum(df3$v.m.ue.num)/(sum(df$si.f.flow)-sum(df3$si.f.flow)),
-#             sum(df4$v.m.ue.num)/(sum(df$si.f.flow)-sum(df4$si.f.flow))
-#         ),
-#       
-#         # Number of Infections Averted in Males
-#         NIA_males = c(
-#             sum(df$si.m.flow)-sum(df2$si.m.flow),
-#             sum(df$si.m.flow)-sum(df3$si.m.flow),
-#             sum(df$si.m.flow)-sum(df4$si.m.flow)
-#         ),
-#       
-#         # Percent of Infections Averted in Males
-#         percent_averted_males = c(
-#             (sum(df$si.m.flow)-sum(df2$si.m.flow))/sum(df$si.m.flow),
-#             (sum(df$si.m.flow)-sum(df3$si.m.flow))/sum(df$si.m.flow),
-#             (sum(df$si.m.flow)-sum(df4$si.m.flow))/sum(df$si.m.flow)
-#         ),
-#       
-#         # Number Needed to Treat in Males
-#         NNT_males = c(
-#             sum(df2$v.m.ue.num)/(sum(df$si.m.flow)-sum(df2$si.m.flow)),
-#             sum(df3$v.m.ue.num)/(sum(df$si.m.flow)-sum(df3$si.m.flow)),
-#             sum(df4$v.m.ue.num)/(sum(df$si.m.flow)-sum(df4$si.m.flow))
-#         )
-#     )
-#   
-#     return(metrics)
-# }
-# 
-# results <- lapply(simulation, effects)
-
-
-```
-
-
 
 ```{r Omega.m Vaccination}
 # Isolate Runs
