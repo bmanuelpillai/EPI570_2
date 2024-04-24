@@ -703,6 +703,7 @@ plot(mod3, y = "si.f.flow", main = "si.Females")
 legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
 
+
 ```{r}
 par(mfrow = c(1,2))
 plot(mod3, y = "vi.m.flow", main = "vi.Males", legend='full')
