@@ -104,7 +104,7 @@ Vaccination <- function(t, t0, parms) {
   dS.m.e <- (age.in * uv.m.ue.num) + (-mu * uv.m.e.num) + (-age.out * uv.m.e.num) +         # general pop
             (-lambda.m.s * zeta.s * uv.m.e.num) + (-lambda.m.s * (1-zeta.s) * uv.m.e.num) + # exposure
             (delta.s.a * uv.m.i.a.num) + (delta.s.s * uv.m.i.s.num) +                       # recovery
-            (-kappa * uv.m.e.num)                                                         # catch-up vax
+            (-kappa * uv.m.e.num)                                                           # catch-up vax
   
  # infected asymptomatic [uv.m.i.a.num]
   dI.m.s.a <- (-age.out * uv.m.i.a.num) + (-mu * uv.m.i.a.num) +  # general pop
@@ -112,9 +112,10 @@ Vaccination <- function(t, t0, parms) {
               (-delta.s.a * uv.m.i.a.num)                         # recovery
     
   # infected symptomatic [uv.m.i.s.num]
-  dI.m.s.s <- (lambda.m.s * zeta.s * uv.m.e.num) +               # symptomatic infection
-              (-delta.s.s * uv.m.i.s.num) +                        # recovery
-              (-age.out * uv.m.i.s.num) + (-mu * uv.m.i.s.num)       # general pop
+  dI.m.s.s <- (-age.out * uv.m.i.s.num) + (-mu * uv.m.i.s.num) +      # general pop
+              (lambda.m.s * zeta.s * uv.m.e.num) +               # symptomatic infection
+              (-delta.s.s * uv.m.i.s.num)                        # recovery
+              
 
 
 # MALES : VACCINATED
@@ -202,7 +203,7 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
 # Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
 param <- param.dcm( # FOI PARAMETERS
                     tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
-                    psi = 0.90, # Gardasil Merck vaccine efficacy
+                    psi = 0.90, # Gardasil Merck vaccine efficacy for warts
                     ce.m.in = (25/365), # contact parameter assumed based on sexual activity data
                     ce.m.ex = (5/365),
                     
@@ -225,14 +226,16 @@ param <- param.dcm( # FOI PARAMETERS
                     # omegas assumed from national average UTD; southeastern disparity; sex-specific disparity (Prabhu, et al. 2021)
                     # values are for age cohort per year (not overall prevalence of vax)
                       # overall coverage about 50% overall; 60% females; 45% males (CDC VaxView-Teen)
-                    omega.m = 0.15, omega.f = 0.20, 
+                    # omega.m = 0.15, omega.f = 0.20, 
+                    omega.m = 0.45, omega.f = 0.60, 
                     chi = 0.95, # estimates for 9vHPV >90% through 90mo; weighted down, no booster (Olsson, et al. 2020)
                     kappa = ((0.01)/365), # catch-up vax rates assumed 1% in adults from 2011-2016
                     # symptomatic parameters
-                    # zeta is the proportion of susceptible that become symptomatic
-                    zeta.v = (0.2) , zeta.s = (0.2))
+                    # zeta is the proportion that becomes symptomatic (Chession, et al. 2014)
+                    zeta.v = (0.1) , zeta.s = (0.1))
 
-
+# numbers based on Simone's excel table, restricted to unexposed 10-18, exposed 19-29 in study region.
+    # assumed 40% unvax infected starting; 5% vax infected starting; unvax symptomatic 20% starting, vax symptomatic 10% starting
 init <- init.dcm( # males
                  uv.m.ue.num = 3.5e6, uv.m.e.num = 2.1e6,
                  uv.m.i.a.num = 1.1e6, uv.m.i.s.num= 2.8e5,
@@ -392,11 +395,23 @@ mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.
 mod <- mutate_epi(mod, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
                                v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
 
+mod <- mutate_epi(mod, m.e.num = uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                                 v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod <- mutate_epi(mod, f.e.num = uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                                 v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
 mod <- mutate_epi(mod, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
 mod <- mutate_epi(mod, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
 
-mod <- mutate_epi(mod, m.prev = i.m.num / m.num)
-mod <- mutate_epi(mod, f.prev = i.f.num / f.num)
+
+
+mod <- mutate_epi(mod, m.prev = i.m.num / m.e.num)
+mod <- mutate_epi(mod, f.prev = i.f.num / f.e.num)
+mod <- mutate_epi(mod, m.vax = v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+mod <- mutate_epi(mod, f.vax = v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+mod <- mutate_epi(mod, m.vax.prev = m.vax/m.num)
+mod <- mutate_epi(mod, f.vax.prev = f.vax/f.num)
 
 model1 <- as.data.frame(mod)
 ```
@@ -422,6 +437,7 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
 ```
 
+run 2 graphs
 ```{r Omega.m = 2 Graphs}
 par(mfrow = c(2,2))
 plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
@@ -442,6 +458,7 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
 ```
 
+run 3 graphs
 ```{r Omega.m = 3 Graphs}
 par(mfrow = c(2,2))
 plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
@@ -461,6 +478,8 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
           xlim = c(750, 15000), run = 3)
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
 ```
+
+run 4 graph
 ```{r Omega.m = 4 Graphs}
 par(mfrow = c(2,2))
 plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
@@ -482,24 +501,27 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
 ```
 
 
-
-
-
-
 ```{r Prevalence Graphed for Vaccination Scenarios}
 ########################Omega.m Vaccination
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", 
-     main = "Increase Childhood Male Vaccination\nProportional Prevalence\nMales",
-     xlim = c(750, 15000),
-     ylim = c(0.6,0.8))
-legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     main = "Prevalence of infection, males")
 
 plot(mod, y = "f.prev", 
-     main = "Increase Childhood Male Vaccination\nProportional Prevalence\nFemales",
-     xlim = c(750, 15000),
-     ylim = c(0.6,0.8))
-legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     main = "Prevalence of infection, females")
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(mod, y = "m.vax.prev", 
+     main = "Prevalence of vax, males")
+
+plot(mod, y = "f.vax.prev", 
+     main = "Prevalence of vax, females")
+```
+
+
+```{r}
 
 ########################Kappa Vaccination
 par(mfrow = c(1,2))
