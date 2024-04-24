@@ -192,27 +192,87 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
 
 ```
 
-
-```{r Omega.f Vaccination}
+## BASELINE PARAMETERS / INTIIALS
+```{r}
 # Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
-param <- param.dcm( # FOI parameters
-                    tau = 0.60, psi = 0.90, 
-                    # contact parameter : changing this because we have a per-act tau (not per-partner)
-                    # ce.m = (5/365),
-# ce.m = (per-act transmission prob)(avg # sex acts per partner)(avg # diff partners per year)
-# (1.5)(16)
-                    ce.m = (30/365),
-                    # general pop parameters
+param <- param.dcm( # FOI PARAMETERS
+                    tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
+                    psi = 0.90, # Gardasil Merck vaccine efficacy
+                    ce.m = (30/365), # contact parameter assumed based on sexual activity data
+                    
+                    # GENERAL POP PARAMETERS
+                    # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.4, # US population prevalence of HPV amoung women
                     i.m.prev = 0.4, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # this rate is the whole US, not age-group specific - needs fixing
-                    mu.ue = (50/1e5)/365, mu = (100/1e5)/365, # these rates are estimated for teens & young adults, respectively
+                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    mu.ue = (60/1e5)/365, # estimated all-cause mortality 2019 0-14 for study region
+                    mu = (400/1e5)/365, # estimated all-cause mortality 2019 15-65 for study region
                     age.in = (1/(7*365)), age.out = (1/(47*365)),
-                    # recovery parameters
-                        # assumed duration symptomatic is sub-component of total time infected
-                    dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
-                    dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
-                    # vaccine parameters
+                    
+                    # RECOVERY PARAMETERS
+                        # assumed median duration w/o variation by symptoms
+                        dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365), 
+                        # assumed reduction in duration due to vaccination
+                        dur.inf.v.a = (1.25*365), dur.inf.v.s = (1.25*365),
+                    
+                    # VACCINE PARAMETERS
+                    # omegas assumed from national average UTD; southeastern disparity; sex-specific disparity
+                    omega.m = 0.4, omega.f = 0.6, 
+                    chi = 0.92, # estimates for 9vHPV >90% through 90mo; weighted down for incr age band (Olsson, et al. 2020)
+                    kappa = ((0.02)/365), # catch-up vax rates assumed 1% in adults from 2011-2016
+                    # symptomatic parameters
+                    # zeta is the proportion of susceptible that become symptomatic
+                    zeta.v = (0.2) , zeta.s = (0.2))
+
+
+init <- init.dcm( # males
+                 uv.m.ue.num = 1.6e6, uv.m.e.num = 8.2e6,
+                 uv.m.i.a.num = 2.8e5, uv.m.i.s.num= 2.5e6,
+                 v.m.ue.num = 3.04e5, v.m.e.num = 1e7, 
+                 v.m.i.a.num = 3.2e6, v.m.i.s.num = 3.6e5,
+                 # females
+                 uv.f.ue.num = 1.7e6, uv.f.e.num = 5.8e6, 
+                 uv.f.i.a.num = 3.5e6, uv.f.i.s.num = 3.7e5,
+                 v.f.ue.num = 2.4e5, v.f.e.num = 3.2e6, 
+                 v.f.i.a.num = 9e6, v.f.i.s.num = 1e6,
+                 # flows
+                 si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
+                 si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
+
+
+
+control <- control.dcm(nsteps = (50*365), new.mod = Vaccination)
+
+mod <- dcm(param, init, control)
+mod
+```
+
+
+
+## INTERVENTION SCENARIO #1: MALE VACCINATION INCREASED
+```{r Omega.f Vaccination}
+# Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
+param <- param.dcm( # FOI PARAMETERS
+                    tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
+                    psi = 0.90, # Gardasil Merck vaccine efficacy
+                    ce.m = (30/365), # contact parameter assumed based on sexual activity data
+                    
+                    # GENERAL POP PARAMETERS
+                    # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
+                    i.f.prev = 0.4, # US population prevalence of HPV amoung women
+                    i.m.prev = 0.4, # US population prevalence of HPV amoung men
+                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    mu.ue = (60/1e5)/365, # estimated all-cause mortality 2019 0-14 for study region
+                    mu = (400/1e5)/365, # estimated all-cause mortality 2019 15-65 for study region
+                    age.in = (1/(7*365)), age.out = (1/(47*365)),
+                    
+                    # RECOVERY PARAMETERS
+                        # assumed median duration w/o variation by symptoms
+                        dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365), 
+                        # assumed reduction in duration due to vaccination
+                        dur.inf.v.a = (1.25*365), dur.inf.v.s = (1.25*365),
+                    
+                    # VACCINE PARAMETERS
                     omega.m = c(0.1,0.2,0.3,0.4), omega.f = 0.40, 
                     chi = 0.97, kappa = (0.0025/365),
                     # symptomatic parameters
@@ -245,24 +305,27 @@ mod
 
 ```{r Kappa Vaccination}
 # Vaccination Scenario 2.) Catch-up Vaccination increased from 0.01 to 0.04
-param2 <- param.dcm( # FOI parameters
-                    tau = 0.60, psi = 0.90, 
-                    # contact parameter : changing this because we have a per-act tau (not per-partner)
-                    # ce.m = (5/365),
-# ce.m = (per-act transmission prob)(avg # sex acts per partner)(avg # diff partners per year)
-# (1.5)(16)
-                    ce.m = (30/365),
-                    # general pop parameters
+param2 <- param.dcm( # FOI PARAMETERS
+                    tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
+                    psi = 0.90, # Gardasil Merck vaccine efficacy
+                    ce.m = (30/365), # contact parameter assumed based on sexual activity data
+                    
+                    # GENERAL POP PARAMETERS
+                    # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.4, # US population prevalence of HPV amoung women
                     i.m.prev = 0.4, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # this rate is the whole US, not age-group specific - needs fixing
-                    mu.ue = (50/1e5)/365, mu = (100/1e5)/365, # these rates are estimated for teens & young adults, respectively
+                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    mu.ue = (60/1e5)/365, # estimated all-cause mortality 2019 0-14 for study region
+                    mu = (400/1e5)/365, # estimated all-cause mortality 2019 15-65 for study region
                     age.in = (1/(7*365)), age.out = (1/(47*365)),
-                    # recovery parameters
-                        # assumed duration symptomatic is sub-component of total time infected
-                    dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
-                    dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
-                    # vaccine parameters
+                    
+                    # RECOVERY PARAMETERS
+                        # assumed median duration w/o variation by symptoms
+                        dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365), 
+                        # assumed reduction in duration due to vaccination
+                        dur.inf.v.a = (1.25*365), dur.inf.v.s = (1.25*365),
+                    
+                    # VACCINE PARAMETERS
                     omega.m = 0.10, omega.f = 0.40, 
                     chi = 0.97, kappa = c((0.01/365), (0.02/365), (0.03/365), (0.04/354)),
                     # symptomatic parameters
@@ -272,26 +335,32 @@ param2 <- param.dcm( # FOI parameters
 mod2 <- dcm(param2, init, control)
 mod2
 ```
+
+
 ```{r Omega.f Vaccination}
 # Vaccination Scenario 3.) Combine previous scenarios
-param3 <- param.dcm( # FOI parameters
-                    tau = 0.60, psi = 0.90, 
-                    # contact parameter : changing this because we have a per-act tau (not per-partner)
-                    # ce.m = (5/365),
-# ce.m = (per-act transmission prob)(avg # sex acts per partner)(avg # diff partners per year)
-# (1.5)(16)
-                    ce.m = (30/365),
-                    # general pop parameters
+param3 <- param.dcm( # FOI PARAMETERS
+                    tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
+                    psi = 0.90, # Gardasil Merck vaccine efficacy
+                    ce.m = (30/365), # contact parameter assumed based on sexual activity data
+                    
+                    # GENERAL POP PARAMETERS
+                    # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.4, # US population prevalence of HPV amoung women
                     i.m.prev = 0.4, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # this rate is the whole US, not age-group specific - needs fixing
-                    mu.ue = (50/1e5)/365, mu = (100/1e5)/365, # these rates are estimated for teens & young adults, respectively
+                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    mu.ue = (60/1e5)/365, # estimated all-cause mortality 2019 0-14 for study region
+                    mu = (400/1e5)/365, # estimated all-cause mortality 2019 15-65 for study region
                     age.in = (1/(7*365)), age.out = (1/(47*365)),
-                    # recovery parameters
-                        # assumed duration symptomatic is sub-component of total time infected
-                    dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.25*365),
-                    dur.inf.v.a = (1.25*365), dur.inf.v.s = (1*365),
-                    # vaccine parameters
+                    
+                    # RECOVERY PARAMETERS
+                        # assumed median duration w/o variation by symptoms
+                        dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365), 
+                        # assumed reduction in duration due to vaccination
+                        dur.inf.v.a = (1.25*365), dur.inf.v.s = (1.25*365),
+                    
+                    
+                    # VACCINE PARAMETERS
                     omega.m = 0.1, omega.f = c(0.30, 0.40, 0.50, 0.60), 
                     chi = 0.97, kappa = (0.01/365),
                     # symptomatic parameters
