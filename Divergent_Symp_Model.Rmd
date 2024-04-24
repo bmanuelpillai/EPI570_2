@@ -488,7 +488,7 @@ plot(mod4, y = c('uv.f.i.s.num'),
      legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 ```
 
-```{r Unexposed Graphs}
+```{r Susceptible Graphs}
 par(mfrow = c(2,3))
 plot(mod2, y = c('uv.m.e.num'),
           main = "Unexposed\nMales\n(Male Vaccination)",
@@ -564,133 +564,108 @@ plot(mod4, y = "f.prev",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
 legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
-
-
 ```
-
-
-
-
-
-
-Plotting Kappa Vaccine Scenario
-```{r Vaccination Scenario 2}
-mod2 <- mutate_epi(mod2, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
-                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
-
-mod2 <- mutate_epi(mod2, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
-                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
-
-mod2 <- mutate_epi(mod2, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
-mod2 <- mutate_epi(mod2, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
-
-mod2 <- mutate_epi(mod2, m.prev = i.m.num / m.num)
-mod2 <- mutate_epi(mod2, f.prev = i.f.num / f.num)
-
-data <- as.data.frame(mod2)
-
-data02 <- as.data.frame(mod2, run=1)
-```
-
-males: 
-```{r}
-par(mfrow = c(1,1))
-plot(mod2, y = c("uv.m.ue.num", 'uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
-                legend='full')
-```
-
-```{r}
-par(mfrow = c(1,1))
-plot(mod2, y = c("v.m.ue.num", 'v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
-                legend='full', run=1)
-```
-
-
-```{r}
+```{r Flows Graphed for Vaccination Scenarios}
+########################Omega.m Vaccination
 par(mfrow = c(1,2))
-plot(mod2, y = "m.prev", main = "Proportional Prevalence for Males")
-plot(mod2, y = "f.prev", main = "Proportional Prevalence for Females")
-legend("bottomright", legend = c("kappa = 0.01", "kappa = 0.02","kappa = 0.03", "kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
+plot(mod2, y = "si.m.flow", 
+     main = "Increase Childhood Male Vaccination\nSusceptible Incidence\nMales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-```{r}
+plot(mod2, y = "si.f.flow", 
+     main = "Increase Childhood Male Vaccination\nSusceptible Incidence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+########################Kappa Vaccination
 par(mfrow = c(1,2))
-plot(mod2, y = "i.m.num", main = "Prevalence for Males")
-plot(mod2, y = "i.f.num", main = "Prevalence for Females")
+plot(mod3, y = "si.m.flow", 
+     main = "Increase Adult Catch-Up Vaccination\nSusceptible Incidence\nMales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
+plot(mod3, y = "si.f.flow", 
+     main = "Increase Adult Catch-Up Vaccination\nSusceptible Incidence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+######################## Omega.f Vaccination
 par(mfrow = c(1,2))
-plot(mod2, y = "m.num", main = "Population Size (Males)")
-plot(mod2, y = "f.num", main = "Population Size (Females)")
+plot(mod4, y = "si.m.flow", 
+     main = "Combined Vaccine Scenario\nSusceptible Incidence\nMales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
+plot(mod4, y = "si.f.flow", 
+     main = "Combined Vaccine Scenario\nSusceptibleIncidence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 ```
 
-```{r}
+
+```{r Flows Graphed for Vaccination Scenarios}
+########################Omega.m Vaccination
 par(mfrow = c(1,2))
-plot(mod2, y = "si.m.flow", main = "si.Males")
-plot(mod2, y = "si.f.flow", main = "si.Females")
-legend("bottomright", legend = c("kappa = 0.01", "kappa = 0.02","kappa = 0.03", "kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
+plot(mod2, y = "vi.m.flow", 
+     main = "Increase Childhood Male Vaccination\nIncidence\nMales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-```{r}
+plot(mod2, y = "vi.f.flow", 
+     main = "Increase Childhood Male Vaccination\nIncidence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+########################Kappa Vaccination
 par(mfrow = c(1,2))
-plot(mod2, y = "vi.m.flow", main = "vi.Males", legend='full')
-plot(mod2, y = "vi.f.flow", main = "vi.Females", legend='full')
-legend("bottomright", legend = c("kappa = 0.01", "kappa = 0.02","kappa = 0.03", "kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
+plot(mod3, y = "vi.m.flow", 
+     main = "Increase Adult Catch-Up Vaccination\nIncidence\nMales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
+plot(mod3, y = "vi.f.flow", 
+     main = "Increase Adult Catch-Up Vaccination\nIncidence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
-
-Plotting Omega + Kappa Vaccine Scenario
-```{r Vaccination Scenario 2}
-mod3 <- mutate_epi(mod3, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
-                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
-
-mod3 <- mutate_epi(mod3, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
-                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
-
-mod3 <- mutate_epi(mod3, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
-mod3 <- mutate_epi(mod3, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
-
-mod3 <- mutate_epi(mod3, m.prev = i.m.num / m.num)
-mod3 <- mutate_epi(mod3, f.prev = i.f.num / f.num)
-
-data <- as.data.frame(mod3)
-
-data03 <- as.data.frame(mod3, run=1)
-```
-
-
-
-
-```{r}
+######################## Omega.f Vaccination
 par(mfrow = c(1,2))
-plot(mod3, y = "m.prev", main = "Proportional Prevalence for Males")
-plot(mod3, y = "f.prev", main = "Proportional Prevalence for Females")
-legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+plot(mod4, y = "vi.m.flow", 
+     main = "Combined Vaccine Scenario\nIncidence\nMales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+plot(mod4, y = "vi.f.flow", 
+     main = "Combined Vaccine Scenario\nIncidence\nFemales",
+     xlim = c(750, 15000),
+     ylim = c())
+legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 ```
 
 
 
-```{r}
-par(mfrow = c(1,2))
-plot(mod3, y = "si.m.flow", main = "si.Males")
-plot(mod3, y = "si.f.flow", main = "si.Females")
-legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
 
-```{r}
-par(mfrow = c(1,2))
-plot(mod3, y = "vi.m.flow", main = "vi.Males", legend='full')
-plot(mod3, y = "vi.f.flow", main = "vi.Females", legend='full')
-legend("topright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
-```
+
+
 
 ```{r Omega.m Vaccination}
 # Isolate Runs
-df1<-as.data.frame(mod, run = 1)
-df2<-as.data.frame(mod, run = 2)
-df3<-as.data.frame(mod, run = 3)
-df4<-as.data.frame(mod, run = 4)
+df1<-as.data.frame(mod2, run = 1)
+df2<-as.data.frame(mod2, run = 2)
+df3<-as.data.frame(mod2, run = 3)
+df4<-as.data.frame(mod2, run = 4)
 
 # Vaccination Measures for Females
 NIAF2 <- sum(df1$si.f.flow) - sum(df2$si.f.flow)
@@ -733,12 +708,12 @@ male_vaccination <- data.frame(
 View(male_vaccination)
 ```
 
-```{r Omega.m Vaccination}
+```{r Kappa Vaccination}
 # Isolate Runs
-df1<-as.data.frame(mod2, run = 1)
-df2<-as.data.frame(mod2, run = 2)
-df3<-as.data.frame(mod2, run = 3)
-df4<-as.data.frame(mod2, run = 4)
+df1<-as.data.frame(mod3, run = 1)
+df2<-as.data.frame(mod3, run = 2)
+df3<-as.data.frame(mod3, run = 3)
+df4<-as.data.frame(mod3, run = 4)
 
 # Vaccination Measures for Females
 NIAF2 <- sum(df1$si.f.flow) - sum(df2$si.f.flow)
@@ -783,10 +758,10 @@ View(catch_up_vaccination)
 
 ```{r Omega.m + kappa Vaccination}
 # Isolate Runs
-df1<-as.data.frame(mod3, run = 1)
-df2<-as.data.frame(mod3, run = 2)
-df3<-as.data.frame(mod3, run = 3)
-df4<-as.data.frame(mod3, run = 4)
+df1<-as.data.frame(mod4, run = 1)
+df2<-as.data.frame(mod4, run = 2)
+df3<-as.data.frame(mod4, run = 3)
+df4<-as.data.frame(mod4, run = 4)
 
 # Vaccination Measures for Females
 NIAF2 <- sum(df1$si.f.flow) - sum(df2$si.f.flow)
