@@ -805,5 +805,4 @@ View(joint_vaccination)
 ```
 
 
-
-
+c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60")
