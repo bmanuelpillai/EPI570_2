@@ -195,7 +195,7 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
 ## BASELINE PARAMETERS / INTIIALS
 ```{r}
 # Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
-param <- param.dcm( # FOI PARAMETERS
+param1 <- param.dcm( # FOI PARAMETERS
                     tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
                     psi = 0.90, # Gardasil Merck vaccine efficacy
                     ce.m = (30/365), # contact parameter assumed based on sexual activity data
@@ -243,8 +243,8 @@ init <- init.dcm( # males
 
 control <- control.dcm(nsteps = (50*365), new.mod = Vaccination)
 
-mod <- dcm(param, init, control)
-mod
+mod1 <- dcm(param1, init, control)
+mod1
 ```
 
 
@@ -252,7 +252,7 @@ mod
 ## INTERVENTION SCENARIO #1: MALE VACCINATION INCREASED
 ```{r Omega.f Vaccination}
 # Vaccination Scenario 1.) Male vaccination at birth increased from 0.1 to 0.8 by 0.2       
-param <- param.dcm( # FOI PARAMETERS
+param2 <- param.dcm( # FOI PARAMETERS
                     tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
                     psi = 0.90, # Gardasil Merck vaccine efficacy
                     ce.m = (30/365), # contact parameter assumed based on sexual activity data
@@ -280,32 +280,14 @@ param <- param.dcm( # FOI PARAMETERS
                     zeta.v = (0.2) , zeta.s = (0.2))
 
 
-init <- init.dcm( # males
-                 uv.m.ue.num = 1.6e6, uv.m.e.num = 8.2e6,
-                 uv.m.i.a.num = 2.8e5, uv.m.i.s.num= 2.5e6,
-                 v.m.ue.num = 3.04e5, v.m.e.num = 1e7, 
-                 v.m.i.a.num = 3.2e6, v.m.i.s.num = 3.6e5,
-                 # females
-                 uv.f.ue.num = 1.7e6, uv.f.e.num = 5.8e6, 
-                 uv.f.i.a.num = 3.5e6, uv.f.i.s.num = 3.7e5,
-                 v.f.ue.num = 2.4e5, v.f.e.num = 3.2e6, 
-                 v.f.i.a.num = 9e6, v.f.i.s.num = 1e6,
-                 # flows
-                 si.m.flow = 0, vi.m.flow = 0, sv.m.flow = 0,
-                 si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
-
-
-
-control <- control.dcm(nsteps = (50*365), new.mod = Vaccination)
-
-mod <- dcm(param, init, control)
-mod
+mod2 <- dcm(param2, init, control)
+mod2
 ```
 
-
+## INTERVENTION SCENARIO #2: CATCH-UP VACCINATION INCREASED
 ```{r Kappa Vaccination}
 # Vaccination Scenario 2.) Catch-up Vaccination increased from 0.01 to 0.04
-param2 <- param.dcm( # FOI PARAMETERS
+param3 <- param.dcm( # FOI PARAMETERS
                     tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
                     psi = 0.90, # Gardasil Merck vaccine efficacy
                     ce.m = (30/365), # contact parameter assumed based on sexual activity data
@@ -327,19 +309,20 @@ param2 <- param.dcm( # FOI PARAMETERS
                     
                     # VACCINE PARAMETERS
                     omega.m = 0.10, omega.f = 0.40, 
-                    chi = 0.97, kappa = c((0.01/365), (0.02/365), (0.03/365), (0.04/354)),
+                    chi = 0.97, kappa = c((0.01/365), (0.02/365), (0.03/365), (0.04/365)),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
                     zeta.v = (0.2) , zeta.s = (0.2))
 
-mod2 <- dcm(param2, init, control)
-mod2
+
+mod3 <- dcm(param3, init, control)
+mod3
 ```
 
-
-```{r Omega.f Vaccination}
+## INTERVENTION SCENARIO #3: COMBINED VACCINATION STRATEGY
+```{r Combined Vaccination}
 # Vaccination Scenario 3.) Combine previous scenarios
-param3 <- param.dcm( # FOI PARAMETERS
+param4 <- param.dcm( # FOI PARAMETERS
                     tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
                     psi = 0.90, # Gardasil Merck vaccine efficacy
                     ce.m = (30/365), # contact parameter assumed based on sexual activity data
@@ -361,50 +344,167 @@ param3 <- param.dcm( # FOI PARAMETERS
                     
                     
                     # VACCINE PARAMETERS
-                    omega.m = 0.1, omega.f = c(0.30, 0.40, 0.50, 0.60), 
-                    chi = 0.97, kappa = (0.01/365),
+                    omega.m = seq(0.1, 0.4, by = 0.1), omega.f = 0.30, 
+                    chi = 0.97, kappa = c((0.01/365), (0.02/365), (0.03/365), (0.04/354)),
                     # symptomatic parameters
                     # zeta is the proportion of susceptible that become symptomatic
                     zeta.v = (0.2) , zeta.s = (0.2))
 
-mod3 <- dcm(param3, init, control)
-mod3
+
+
+mod4 <- dcm(param4, init, control)
+mod4
 ```
 
 
 Plotting Omega Vaccine Scenario
 ```{r Vaccination Scenario 1}
-mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+mod1 <- mutate_epi(mod1, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
 
-mod <- mutate_epi(mod, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+mod1 <- mutate_epi(mod1, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
                                v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
 
-mod <- mutate_epi(mod, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
-mod <- mutate_epi(mod, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+mod1 <- mutate_epi(mod1, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod1 <- mutate_epi(mod1, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
 
-mod <- mutate_epi(mod, m.prev = i.m.num / m.num)
-mod <- mutate_epi(mod, f.prev = i.f.num / f.num)
+mod1 <- mutate_epi(mod1, m.prev = i.m.num / m.num)
+mod1 <- mutate_epi(mod1, f.prev = i.f.num / f.num)
 
-model1 <- as.data.frame(mod)
+model1 <- as.data.frame(mod1)
+
+
+mod2 <- mutate_epi(mod2, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod2 <- mutate_epi(mod2, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod2 <- mutate_epi(mod2, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod2 <- mutate_epi(mod2, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+
+mod2 <- mutate_epi(mod2, m.prev = i.m.num / m.num)
+mod2 <- mutate_epi(mod2, f.prev = i.f.num / f.num)
+
+model2 <- as.data.frame(mod2)
+
+
+mod3 <- mutate_epi(mod3, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod3 <- mutate_epi(mod3, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod3 <- mutate_epi(mod3, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod3 <- mutate_epi(mod3, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+
+mod3 <- mutate_epi(mod3, m.prev = i.m.num / m.num)
+mod3 <- mutate_epi(mod3, f.prev = i.f.num / f.num)
+
+model3 <- as.data.frame(mod3)
+
+
+mod4 <- mutate_epi(mod4, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod4 <- mutate_epi(mod4, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod4 <- mutate_epi(mod4, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod4 <- mutate_epi(mod4, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+
+mod4 <- mutate_epi(mod4, m.prev = i.m.num / m.num)
+mod4 <- mutate_epi(mod4, f.prev = i.f.num / f.num)
+
+model4 <- as.data.frame(mod4)
 ```
+
+```{r Unvaccinated Compartment asymptomatic Graphs}
+par(mfrow = c(2,3))
+
+plot(mod2, y = c('uv.m.i.a.num'),
+          main = "Unvaccinated Asymptomatic\nMales\n(Male Vaccination)",
+          xlim = c(750, 15000), ylim = c(6000000, 10000000))
+     legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod3, y = c('uv.m.i.a.num'),
+          main = "Unvaccinated Asymptomatic\nMales\n(Catch-Up Vaccination)",
+          xlim = c(750, 15000), ylim = c(6000000, 10000000))
+     legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod4, y = c('uv.m.i.a.num'),
+          main = "Unvaccinated Asymptomatic\nMales\n(Combination Vaccination)",
+          xlim = c(750, 15000), ylim = c(6000000, 10000000))
+     legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+############# Females
+plot(mod2, y = c('uv.f.i.a.num'),
+          main = "Unvaccinated Asymptomatic\nFemales\n(Male Vaccination)",
+          xlim = c(750, 15000), ylim = c(6000000, 10000000))
+     legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod3, y = c('uv.f.i.a.num'),
+          main = "Unvaccinated Asymptomatic\nFemales\n(Catch-Up Vaccination)",
+          xlim = c(750, 15000), ylim = c(6000000, 10000000))
+     legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod4, y = c('uv.f.i.a.num'),
+          main = "Unvaccinated Asymptomatic\nFemales\n(Combination Vaccination)",
+          xlim = c(750, 15000), ylim = c(6000000, 10000000))
+     legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+
+```
+```{r Unvaccinated Sympomatic}
+par(mfrow = c(2,3))
+plot(mod2, y = c('uv.m.i.s.num'),
+          main = "Unvaccinated symptomatic\nMales\n(Male Vaccination)",
+          xlim = c(), ylim = c())
+     legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod3, y = c('uv.m.i.s.num'),
+          main = "Unvaccinated symptomatic\nMales\n(Catch-Up Vaccination)",
+          xlim = c(), ylim = c())
+     legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod4, y = c('uv.m.i.s.num'),
+          main = "Unvaccinated Symptomatic\nMales\n(Combination Vaccination)",
+          xlim = c(), ylim = c())
+     legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+############# Females
+plot(mod2, y = c('uv.f.i.s.num'),
+          main = "Unvaccinated Symptomatic\nFemales\n(Male Vaccination)",
+          xlim = c(), ylim = c())
+     legend("topright", legend = c("omega.m = 0.1", "omega.m = 0.2","omega.m = 0.3", "omega.m = 0.4"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod3, y = c('uv.f.i.s.num'),
+          main = "Unvaccinated Symptomatic\nFemales\n(Catch-Up Vaccination)",
+          xlim = c(), ylim = c())
+     legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+     
+plot(mod4, y = c('uv.f.i.s.num'),
+          main = "Unvaccinated Symptomatic\nFemales\n(Combination Vaccination)",
+          xlim = c(), ylim = c())
+     legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+```
+
 
 
 ```{r Omega.m = 1 Graphs}
 par(mfrow = c(2,2))
-plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+plot(mod1, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
           main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 1)
      legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+plot(mod1, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
           main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 1)
      legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
+plot(mod1, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
           main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 1)
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
+plot(mod1, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
           main = "Vaccinated females Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 1)
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
@@ -412,19 +512,19 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
 
 ```{r Omega.m = 2 Graphs}
 par(mfrow = c(2,2))
-plot(mod, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
+plot(mod1, y = c('uv.m.e.num', 'uv.m.i.a.num', 'uv.m.i.s.num'),
           main = "Unvaccinated Males Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 2)
      legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
+plot(mod1, y = c('v.m.e.num', 'v.m.i.a.num', 'v.m.i.s.num'),
           main = "Vaccinated Males Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 2)
      legend("topright", legend = c("Susceptible Males", "Asymptomatic Males","Symptomatic Males"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
-plot(mod, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
+plot(mod1, y = c('uv.f.e.num', 'uv.f.i.a.num', 'uv.f.i.s.num'),
           main = "Unvaccinated females Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 2)
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19, cex = 0.6)
-plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
+plot(mod1, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
           main = "Vaccinated females Over Time\n(Baseline Vaccination)",
           xlim = c(750, 15000), run = 2)
      legend("topright", legend = c("Susceptible females", "Asymptomatic females","Symptomatic females"), col = c("red", "blue", "green"), pch = 19,cex = 0.6)
@@ -470,10 +570,6 @@ plot(mod, y = c('v.f.e.num', 'v.f.i.a.num', 'v.f.i.s.num'),
 ```
 
 
-
-
-
-
 ```{r Prevalence Graphed for Vaccination Scenarios}
 ########################Omega.m Vaccination
 par(mfrow = c(1,2))
@@ -506,16 +602,16 @@ legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% p
 ########################Omega.f Vaccination
 par(mfrow = c(1,2))
 plot(mod3, y = "m.prev", 
-     main = "Increase Childhood Female Vaccination\nProportional Prevalence\nMales",
+     main = "Combined Vaccine Scenario\nProportional Prevalence\nMales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
-legend("topright", legend = c("omega.f = 0.3", "omega.m = 0.4","omega.m = 0.5", "omega.m = 0.6"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod3, y = "f.prev", 
-     main = "Increase Childhood Female Vaccination\nProportional Prevalence\nFemales",
+     main = "Combined Vaccine Scenario\nProportional Prevalence\nFemales",
      xlim = c(750, 15000),
      ylim = c(0.6,0.8))
-legend("topright", legend = c("omega.m = 0.3", "omega.m = 0.4","omega.m = 0.5", "omega.m = 0.6"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
+legend("topright", legend = c("omega.m = 0.1 + 1% per Year", "omega.m = 0.2 + 2% per Year","omega.m = 0.3 + 3% per Year", "omega.m = 0.4 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 
 ```
@@ -673,7 +769,7 @@ legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 
 par(mfrow = c(1,2))
 plot(mod3, y = "vi.m.flow", main = "vi.Males", legend='full')
 plot(mod3, y = "vi.f.flow", main = "vi.Females", legend='full')
-legend("bottomright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
+legend("topright", legend = c("omega.m = 0.1 + kappa = 0.01", "omega.m = 0.3 + kappa = 0.02","omega.m = 0.5 + kappa = 0.03", "omega.m = 0.7 + kappa = 0.04"), col = c("red", "blue", "green", "purple"), pch = 19)
 ```
 
 ```{r Vaccine Impact analysis Failed Function}
@@ -836,7 +932,7 @@ catch_up_vaccination <- data.frame(
 View(catch_up_vaccination)
 ```
 
-```{r Omega.f Vaccination}
+```{r Omega.m + kappa Vaccination}
 # Isolate Runs
 df1<-as.data.frame(mod3, run = 1)
 df2<-as.data.frame(mod3, run = 2)
@@ -870,8 +966,8 @@ NNT_Males <- c(sum(df2$v.m.ue.num) / NIAM2,
                sum(df4$v.m.ue.num) / NIAM4)
 
 # Combine Results
-female_vaccination <- data.frame(
-  Scenario = c("omega.f = 0.4", "omega.f = 0.5", "omega.f = 0.6"),
+joint_vaccination <- data.frame(
+  Scenario = c("omega.m = 0.2 + kappa = 0.02", "omega.m = 0.3 + kappa = 0.03", "omega.m = 0.4 + kappa = 0.04"),
   NIA_Female = c(NIAF2, NIAF3, NIAF4),
   Percent_Averted_Female = Percent_Averted_Females,
   NNT_Female = NNT_Females,
@@ -881,7 +977,7 @@ female_vaccination <- data.frame(
 )
 
 
-View(female_vaccination)
+View(joint_vaccination)
 ```
 
 
