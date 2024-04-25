@@ -734,7 +734,7 @@ NNT_Males <- c(sum(df2$v.m.ue.num) / NIAM2,
 
 # Combine Results
 male_vaccination <- data.frame(
-  Scenario = c("omega.m = 0.2", "omega.m = 0.3", "omega.m = 0.4"),
+  Scenario = c("omega.m = 0.50", "omega.m = 0.55", "omega.m = 0.60"),
   NIA_Female = c(NIAF2, NIAF3, NIAF4),
   Percent_Averted_Female = Percent_Averted_Females,
   NNT_Female = NNT_Females,
@@ -830,7 +830,7 @@ NNT_Males <- c(sum(df2$v.m.ue.num) / NIAM2,
 
 # Combine Results
 joint_vaccination <- data.frame(
-  Scenario = c("omega.m = 0.2 + kappa = 0.02", "omega.m = 0.3 + kappa = 0.03", "omega.m = 0.4 + kappa = 0.04"),
+  Scenario = c("omega.m = 0.50 + kappa = 0.02", "omega.m = 0.55 + kappa = 0.03", "omega.m = 0.60 + kappa = 0.04"),
   NIA_Female = c(NIAF2, NIAF3, NIAF4),
   Percent_Averted_Female = Percent_Averted_Females,
   NNT_Female = NNT_Females,
