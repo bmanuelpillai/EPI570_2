@@ -872,3 +872,56 @@ kable(table_output, format = "html", caption = "Summary of HPV Vaccination Scena
   row_spec(0, bold = TRUE, align = "center")
 ```
 
+```{r}
+merged_scenarios <- rbind(male_vaccination, catch_up_vaccination, joint_vaccination)
+ggplot(merged_scenarios, aes(x = Scenario)) +
+  geom_bar(aes(y = NNT_Female, fill = "Female"), stat = "identity", position = position_dodge(width = 0.9)) +
+  geom_bar(aes(y = NNT_Male, fill = "Male"), stat = "identity", position = position_dodge(width = 0.9)) +
+  labs(title = "NNT for Females vs Males",
+       x = "Scenario",
+       y = "NNT",
+       fill = "Gender") +
+  scale_fill_manual(values = c("blue", "red"), labels = c("Female", "Male")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+tidy_data <- merged_scenarios %>%
+  pivot_longer(cols = starts_with("NIA_"), 
+               names_to = "Gender",
+               values_to = "NIA") %>%
+  mutate(Gender = factor(ifelse(str_detect(Gender, "Female"), "Female", "Male")),
+         Scenario = factor(Scenario))
+
+# Create the bar graph
+ggplot(tidy_data, aes(x = Scenario, y = NIA, fill = Gender)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(title = "NIA by Scenario",
+       x = "Scenario",
+       y = "NIA",
+       fill = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+tidy_data <- merged_scenarios %>%
+  pivot_longer(cols = starts_with("Percent_"), 
+               names_to = "Gender",
+               values_to = "PIA") %>%
+  mutate(Gender = factor(ifelse(str_detect(Gender, "Female"), "Female", "Male")),
+         Scenario = factor(Scenario))
+
+# Create the bar graph
+ggplot(tidy_data, aes(x = Scenario, y = PIA, fill = Gender)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(title = "PIA by Scenario",
+       x = "Scenario",
+       y = "PIA",
+       fill = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+#test
+```
+
