@@ -842,3 +842,33 @@ joint_vaccination <- data.frame(
 
 View(joint_vaccination)
 ```
+
+# Vaccination Impact Analysis Table 
+```{r}
+library(knitr)
+library(kableExtra)
+library(dplyr)
+
+male_vaccination$Scenario_Type <- "Increased Childhood Male Vaccination Scenario"
+catch_up_vaccination$Scenario_Type <- "Increased Adult Catch-Up Vaccination Scenario"
+joint_vaccination$Scenario_Type <- "Combined Vaccination Scenario"
+
+combined_data <- bind_rows(male_vaccination, catch_up_vaccination, joint_vaccination)
+
+table_output <- combined_data %>%
+  select(Scenario_Type, Scenario, everything()) %>%
+  arrange(Scenario_Type, Scenario)
+
+kable(table_output, format = "html", caption = "Summary of HPV Vaccination Scenarios", digits = 2, big.mark = ",") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>%
+  column_spec(1, bold = TRUE, border_right = TRUE) %>%
+  column_spec(2, bold = TRUE) %>%
+  column_spec(3, width = "3in") %>%
+  column_spec(4, width = "3in") %>%
+  column_spec(5, width = "3in") %>%
+  column_spec(6, width = "3in") %>%
+  column_spec(7, width = "3in") %>%
+  column_spec(8, width = "3in") %>%
+  row_spec(0, bold = TRUE, align = "center")
+```
+
