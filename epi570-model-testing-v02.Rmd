@@ -924,18 +924,12 @@ kable(table_output, format = "html", caption = "Summary of HPV Vaccination Scena
 
 ```{r}
 merged_scenarios <- rbind(male_vaccination, catch_up_vaccination, joint_vaccination)
-ggplot(merged_scenarios, aes(x = Scenario)) +
-  geom_bar(aes(y = NNT_Female, fill = "Female"), stat = "identity", position = position_dodge(width = 0.9)) +
-  geom_bar(aes(y = NNT_Male, fill = "Male"), stat = "identity", position = position_dodge(width = 0.9)) +
-  labs(title = "NNT for Females vs Males",
-       x = "Scenario",
-       y = "NNT",
-       fill = "Gender") +
-  scale_fill_manual(values = c("blue", "red"), labels = c("Female", "Male")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.2 + kappa = 0.02"]<-"kappa = 0.02 + omega.m = 0.2"
+merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.3 + kappa = 0.03"]<-"kappa = 0.03 + omega.m = 0.3"
+merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.4 + kappa = 0.04"]<-"kappa = 0.04 + omega.m = 0.4"
 ```
 ```{r}
+
 tidy_data <- merged_scenarios %>%
   pivot_longer(cols = starts_with("NIA_"), 
                names_to = "Gender",
@@ -943,15 +937,19 @@ tidy_data <- merged_scenarios %>%
   mutate(Gender = factor(ifelse(str_detect(Gender, "Female"), "Female", "Male")),
          Scenario = factor(Scenario))
 
-# Create the bar graph
+library(scales)
+
 ggplot(tidy_data, aes(x = Scenario, y = NIA, fill = Gender)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   labs(title = "NIA by Scenario",
        x = "Scenario",
        y = "NIA",
        fill = "Gender") +
+  scale_y_continuous(labels = comma) + 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
 ```
 ```{r}
 tidy_data <- merged_scenarios %>%
@@ -988,5 +986,10 @@ ggplot(tidy_data, aes(x = Scenario, y = NNT, fill = Gender)) +
        fill = "Gender") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+```{r}
+merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.2 + kappa = 0.02"]<-"kappa = 0.02 + omega.m = 0.2"
+merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.3 + kappa = 0.03"]<-"kappa = 0.03 + omega.m = 0.3"
+merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.4 + kappa = 0.04"]<-"kappa = 0.04 + omega.m = 0.4"
 ```
 
