@@ -19,3 +19,60 @@ $dI_f = \lambda_f N_{vf} (1-\psi)+(\lambda_f N_{sf}) N_f -\delta N_{if} - \mu N_
   
 $dV_f = -\lambda_f N_{vf} (1-\psi)+(\omega_f \mu N_{f}) - \mu N_{vf}$
 
+
+
+
+## Updated Differential Equations
+
+**Males**
+Susceptible unexposed (11-18 yrs old):
+$$\frac{dS_{m,ue}}{dt} = 0.5 \cdot (1 - \omega_m \cdot \chi) \cdot \nu \cdot n - \text{age}_{\text{in}} \cdot S_{m,ue} - \mu_{ue} \cdot S_{m,ue}$$
+
+Susceptible exposed (18+, proxy for sexually active):
+$$\frac{dS_{m,e}}{dt} = \text{age}_{\text{in}} \cdot S_{m,ue} - \mu \cdot S_{m,e} - \text{age}_{\text{out}} \cdot S_{m,e} - \lambda_{m,s} \cdot \zeta_s \cdot S_{m,e} - \lambda_{m,s} \cdot (1 - \zeta_s) \cdot S_{m,e} + \delta_{s,a} \cdot I_{m,a} + \delta_{s,s} \cdot I_{m,s} - \kappa \cdot S_{m,e}$$
+
+Infected asymptomatic:
+$$\frac{dI_{m,a}}{dt} = -\text{age}_{\text{out}} \cdot I_{m,a} - \mu \cdot I_{m,a} + \lambda_{m,s} \cdot (1 - \zeta_s) \cdot S_{m,e} - \delta_{s,a} \cdot I_{m,a}$$
+
+Infected symptomatic:
+$$\frac{dI_{m,s}}{dt} = -\text{age}_{\text{out}} \cdot I_{m,s} - \mu \cdot I_{m,s} + \lambda_{m,s} \cdot \zeta_s \cdot S_{m,e} - \delta_{s,s} \cdot I_{m,s}$$
+
+**Males: Vaccinated**
+Vaccinated unexposed:
+$$\frac{dV_{m,ue}}{dt} = 0.5 \cdot \omega_m \cdot \chi \cdot \nu \cdot n - \text{age}_{\text{in}} \cdot V_{m,ue} - \mu_{ue} \cdot V_{m,ue}$$
+
+Vaccinated exposed/sexually active:
+$$\frac{dV_{m,e}}{dt} = \text{age}_{\text{in}} \cdot V_{m,ue} - \text{age}_{\text{out}} \cdot V_{m,e} - \mu \cdot V_{m,e} - \lambda_{m,v} \cdot \zeta_v \cdot V_{m,e} - \lambda_{m,v} \cdot (1 - \zeta_v) \cdot V_{m,e} + \delta_{v,a} \cdot I_{m,a} + \delta_{v,s} \cdot I_{m,s} + \kappa \cdot S_{m,e}$$
+
+Infected asymptomatic:
+$$\frac{dI_{m,v,a}}{dt} = -\text{age}_{\text{out}} \cdot I_{m,v,a} - \mu \cdot I_{m,v,a} + \lambda_{m,v} \cdot (1 - \zeta_v) \cdot V_{m,e} - \delta_{v,a} \cdot I_{m,v,a}$$
+
+Infected symptomatic:
+$$\frac{dI_{m,v,s}}{dt} = -\text{age}_{\text{out}} \cdot I_{m,v,s} - \mu \cdot I_{m,v,s} + \lambda_{m,v} \cdot \zeta_v \cdot V_{m,e} - \delta_{v,s} \cdot I_{m,v,s}$$
+
+
+**Females**
+Susceptible unexposed (11-18 yrs old):
+$$\frac{dS_{f,ue}}{dt} = 0.5 \cdot (1 - \omega_m \cdot \chi) \cdot \nu \cdot n - \text{age}_{\text{in}} \cdot S_{f,ue} - \mu_{ue} \cdot S_{f,ue}$$
+
+Susceptible exposed (18+, proxy for sexually active):
+$$\frac{dS_{f,e}}{dt} = \text{age}_{\text{in}} \cdot S_{f,ue} - \mu \cdot S_{f,e} - \text{age}_{\text{out}} \cdot S_{f,e} - \lambda_{f,s} \cdot \zeta_s \cdot S_{f,e} - \lambda_{f,s} \cdot (1 - \zeta_s) \cdot S_{f,e} + \delta_{s,a} \cdot I_{f,a} + \delta_{s,s} \cdot I_{f,s} - \kappa \cdot S_{f,e}$$
+
+Infected asymptomatic:
+$$\frac{dI_{f,a}}{dt} = -\text{age}_{\text{out}} \cdot I_{f,a} - \mu \cdot I_{f,a} + \lambda_{f,s} \cdot (1 - \zeta_s) \cdot S_{f,e} - \delta_{s,a} \cdot I_{f,a}$$
+
+Infected symptomatic:
+$$\frac{dI_{f,s}}{dt} = -\text{age}_{\text{out}} \cdot I_{f,s} - \mu \cdot I_{f,s} + \lambda_{f,s} \cdot \zeta_s \cdot S_{f,e} - \delta_{s,s} \cdot I_{f,s}$$
+
+**Females: Vaccinated**
+Vaccinated unexposed:
+$$\frac{dV_{f,ue}}{dt} = 0.5 \cdot \omega_f \cdot \chi \cdot \nu \cdot n - \text{age}_{\text{in}} \cdot V_{f,ue} - \mu_{ue} \cdot V_{f,ue}$$
+
+Vaccinated exposed/sexually active:
+$$\frac{dV_{f,e}}{dt} = \text{age}_{\text{in}} \cdot V_{f,ue} - \text{age}_{\text{out}} \cdot V_{f,e} - \mu \cdot V_{f,e} - \lambda_{f,v} \cdot \zeta_v \cdot V_{f,e} - \lambda_{f,v} \cdot (1 - \zeta_v) \cdot V_{f,e} + \delta_{v,a} \cdot I_{f,a} + \delta_{v,s} \cdot I_{f,s} + \kappa \cdot S_{f,e}$$
+
+Infected asymptomatic:
+$$\frac{dI_{f,v,a}}{dt} = -\text{age}_{\text{out}} \cdot I_{f,v,a} - \mu \cdot I_{f,v,a} + \lambda_{f,v} \cdot (1 - \zeta_v) \cdot V_{f,e} - \delta_{v,a} \cdot I_{f,v,a}$$
+
+Infected symptomatic:
+$$\frac{dI_{f,v,s}}{dt} = -\text{age}_{\text{out}} \cdot I_{f,v,s} - \mu \cdot I_{f,v,s} + \lambda_{f,v} \cdot \zeta_v \cdot V_{f,e} - \delta_{v,s} \cdot I_{f,v,s}$$
