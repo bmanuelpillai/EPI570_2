@@ -2,6 +2,8 @@
 title: "epi570-model-testing"
 output: pdf_document
 date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: inline
 ---
 setting up / loading packages
 ```{r setup, include=FALSE}
@@ -747,6 +749,22 @@ male_vaccination <- data.frame(
 View(male_vaccination)
 ```
 
+```{r Simone Vaccination Scenario #1 Output for NNT}
+ggplot(male_vaccination, aes(x = Scenario)) +
+  geom_bar(aes(y = NNT_Female, fill = "Female"), stat = "identity", position = position_dodge(width = 0.9)) +
+  geom_bar(aes(y = NNT_Male, fill = "Male"), stat = "identity", position = position_dodge(width = 0.9)) +
+  labs(title = "NNT for Females vs Males",
+       x = "Scenario",
+       y = "NNT",
+       fill = "Gender") +
+  scale_fill_manual(values = c("blue", "red"), labels = c("Female", "Male")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+
 ```{r Kappa Vaccination}
 # Isolate Runs
 df1<-as.data.frame(mod3, run = 1)
@@ -795,6 +813,24 @@ catch_up_vaccination <- data.frame(
 View(catch_up_vaccination)
 ```
 
+
+```{r Simone Vaccination Scenario #2 Output for NNT}
+ggplot(catch_up_vaccination, aes(x = Scenario)) +
+  geom_bar(aes(y = NNT_Female, fill = "Female"), stat = "identity", position = position_dodge(width = 0.9)) +
+  geom_bar(aes(y = NNT_Male, fill = "Male"), stat = "identity", position = position_dodge(width = 0.9)) +
+  labs(title = "NNT for Females vs Males",
+       x = "Scenario",
+       y = "NNT",
+       fill = "Gender") +
+  scale_fill_manual(values = c("blue", "red"), labels = c("Female", "Male")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+
+
 ```{r Omega.m + kappa Vaccination}
 # Isolate Runs
 df1<-as.data.frame(mod4, run = 1)
@@ -842,6 +878,20 @@ joint_vaccination <- data.frame(
 
 View(joint_vaccination)
 ```
+
+```{r Simone Vaccination Scenario #3 Output for NNT}
+ggplot(joint_vaccination, aes(x = Scenario)) +
+  geom_bar(aes(y = NNT_Female, fill = "Female"), stat = "identity", position = position_dodge(width = 0.9)) +
+  geom_bar(aes(y = NNT_Male, fill = "Male"), stat = "identity", position = position_dodge(width = 0.9)) +
+  labs(title = "NNT for Females vs Males",
+       x = "Scenario",
+       y = "NNT",
+       fill = "Gender") +
+  scale_fill_manual(values = c("blue", "red"), labels = c("Female", "Male")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 
 # Vaccination Impact Analysis Table 
 ```{r}
