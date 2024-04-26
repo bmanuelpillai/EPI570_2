@@ -922,6 +922,21 @@ ggplot(tidy_data, aes(x = Scenario, y = PIA, fill = Gender)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 ```{r}
-#test
+tidy_data <- merged_scenarios %>%
+  pivot_longer(cols = starts_with("NNT_"), 
+               names_to = "Gender",
+               values_to = "NNT") %>%
+  mutate(Gender = factor(ifelse(str_detect(Gender, "Female"), "Female", "Male")),
+         Scenario = factor(Scenario))
+
+# Create the bar graph
+ggplot(tidy_data, aes(x = Scenario, y = NNT, fill = Gender)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(title = "NNT by Scenario",
+       x = "Scenario",
+       y = "NNT",
+       fill = "Gender") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
