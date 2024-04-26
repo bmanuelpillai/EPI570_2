@@ -959,15 +959,19 @@ tidy_data <- merged_scenarios %>%
   mutate(Gender = factor(ifelse(str_detect(Gender, "Female"), "Female", "Male")),
          Scenario = factor(Scenario))
 
-# Create the bar graph
+
 ggplot(tidy_data, aes(x = Scenario, y = PIA, fill = Gender)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   labs(title = "PIA by Scenario",
        x = "Scenario",
        y = "PIA",
        fill = "Gender") +
+  scale_y_continuous(labels = scales::percent_format(scale = 1)) +  # Format y-axis labels as percentage
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
 ```
 ```{r}
 tidy_data <- merged_scenarios %>%
@@ -977,7 +981,6 @@ tidy_data <- merged_scenarios %>%
   mutate(Gender = factor(ifelse(str_detect(Gender, "Female"), "Female", "Male")),
          Scenario = factor(Scenario))
 
-# Create the bar graph
 ggplot(tidy_data, aes(x = Scenario, y = NNT, fill = Gender)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   labs(title = "NNT by Scenario",
@@ -987,9 +990,5 @@ ggplot(tidy_data, aes(x = Scenario, y = NNT, fill = Gender)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
-```{r}
-merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.2 + kappa = 0.02"]<-"kappa = 0.02 + omega.m = 0.2"
-merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.3 + kappa = 0.03"]<-"kappa = 0.03 + omega.m = 0.3"
-merged_scenarios$Scenario[merged_scenarios$Scenario == "omega.m = 0.4 + kappa = 0.04"]<-"kappa = 0.04 + omega.m = 0.4"
-```
+
 
