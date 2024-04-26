@@ -567,13 +567,13 @@ plot(mod4, y = c('uv.f.e.num'),
 ########################Omega.m Vaccination
 par(mfrow = c(1,2))
 plot(mod2, y = "m.prev", 
-     main = "Increase Childhood Male Vaccination\nProportional Prevalence\nMales",
+     main = "Increase Childhood Male Vaccination\nProportional Prevalence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod2, y = "f.prev", 
-     main = "Increase Childhood Male Vaccination\nProportional Prevalence\nFemales",
+     main = "Increase Childhood Male Vaccination\nProportional Prevalence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -581,13 +581,13 @@ legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55
 ########################Kappa Vaccination
 par(mfrow = c(1,2))
 plot(mod3, y = "m.prev", 
-     main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence\nMales",
+     main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod3, y = "f.prev", 
-     main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence\nFemales",
+     main = "Increase Adult Catch-Up Vaccination\nProportional Prevalence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -595,13 +595,13 @@ legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% p
 ######################## Omega.f Vaccination
 par(mfrow = c(1,2))
 plot(mod4, y = "m.prev", 
-     main = "Combined Vaccine Scenario\nProportional Prevalence\nMales",
+     main = "Combined Vaccine Scenario\nProportional Prevalence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 2% per Year","omega.m = 0.55 + 3% per Year", "omega.m = 0.60 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod4, y = "f.prev", 
-     main = "Combined Vaccine Scenario\nProportional Prevalence\nFemales",
+     main = "Combined Vaccine Scenario\nProportional Prevalence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 2% per Year","omega.m = 0.55 + 3% per Year", "omega.m = 0.60 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -610,13 +610,13 @@ legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 
 ########################Omega.m Vaccination
 par(mfrow = c(1,2))
 plot(mod2, y = "si.m.flow", 
-     main = "Increase Childhood Male Vaccination\nSusceptible Incidence\nMales",
+     main = "Increase Childhood Male Vaccination\nSusceptible Incidence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod2, y = "si.f.flow", 
-     main = "Increase Childhood Male Vaccination\nSusceptible Incidence\nFemales",
+     main = "Increase Childhood Male Vaccination\nSusceptible Incidence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -624,13 +624,13 @@ legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55
 ########################Kappa Vaccination
 par(mfrow = c(1,2))
 plot(mod3, y = "si.m.flow", 
-     main = "Increase Adult Catch-Up Vaccination\nSusceptible Incidence\nMales",
+     main = "Increase Adult Catch-Up Vaccination\nSusceptible Incidence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod3, y = "si.f.flow", 
-     main = "Increase Adult Catch-Up Vaccination\nSusceptible Incidence\nFemales",
+     main = "Increase Adult Catch-Up Vaccination\nSusceptible Incidence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -638,13 +638,13 @@ legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% p
 ######################## Omega.f Vaccination
 par(mfrow = c(1,2))
 plot(mod4, y = "si.m.flow", 
-     main = "Combined Vaccine Scenario\nSusceptible Incidence\nMales",
+     main = "Combined Vaccine Scenario\nSusceptible Incidence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 2% per Year","omega.m = 0.55 + 3% per Year", "omega.m = 0.60 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod4, y = "si.f.flow", 
-     main = "Combined Vaccine Scenario\nSusceptibleIncidence\nFemales",
+     main = "Combined Vaccine Scenario\nSusceptibleIncidence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 2% per Year","omega.m = 0.55 + 3% per Year", "omega.m = 0.60 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -655,13 +655,13 @@ legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 
 ########################Omega.m Vaccination
 par(mfrow = c(1,2))
 plot(mod2, y = "vi.m.flow", 
-     main = "Increase Childhood Male Vaccination\nIncidence\nMales",
+     main = "Increase Childhood Male Vaccination\nIncidence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod2, y = "vi.f.flow", 
-     main = "Increase Childhood Male Vaccination\nIncidence\nFemales",
+     main = "Increase Childhood Male Vaccination\nIncidence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55", "omega.m = 0.60"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -669,13 +669,13 @@ legend("topright", legend = c("omega.m = 0.45", "omega.m = 0.50","omega.m = 0.55
 ########################Kappa Vaccination
 par(mfrow = c(1,2))
 plot(mod3, y = "vi.m.flow", 
-     main = "Increase Adult Catch-Up Vaccination\nIncidence\nMales",
+     main = "Increase Adult Catch-Up Vaccination\nIncidence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod3, y = "vi.f.flow", 
-     main = "Increase Adult Catch-Up Vaccination\nIncidence\nFemales",
+     main = "Increase Adult Catch-Up Vaccination\nIncidence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
@@ -683,13 +683,13 @@ legend("topright", legend = c("1% per Year", "2% per Year", "3% per Year", "4% p
 ######################## Omega.f Vaccination
 par(mfrow = c(1,2))
 plot(mod4, y = "vi.m.flow", 
-     main = "Combined Vaccine Scenario\nIncidence\nMales",
+     main = "Combined Vaccine Scenario\nIncidence Males",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 2% per Year","omega.m = 0.55 + 3% per Year", "omega.m = 0.60 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
 
 plot(mod4, y = "vi.f.flow", 
-     main = "Combined Vaccine Scenario\nIncidence\nFemales",
+     main = "Combined Vaccine Scenario\nIncidence Females",
      xlim = c(750, 15000),
      ylim = c())
 legend("topright", legend = c("omega.m = 0.45 + 1% per Year", "omega.m = 0.50 + 2% per Year","omega.m = 0.55 + 3% per Year", "omega.m = 0.60 + 4% per Year"), col = c("red", "blue", "green", "purple"), pch = 19, cex = 0.6)
