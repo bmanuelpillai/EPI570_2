@@ -268,6 +268,8 @@ control.o <- control.dcm(nsteps = (80*365), new.mod = Vaccination.o)
 
 mod <- dcm(param.o, init, control.o)
 mod
+
+omega <- as.data.frame(mod)
 ```
 
 
@@ -308,17 +310,14 @@ model1 <- as.data.frame(mod)
 
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", 
-     main = "Proportional Prevalence Males\n(Increase Childhood Male Vac.)",
-     ylim = c(0.2,0.6),
-     col = "blue") +
-    abline(v = 5475, lty = 2)
-
+     main = "Proportional Prevalence Males\n(Catch Up Vac.)",
+     ylim = c(0.5,0.65), xlim = c(11000, 30000),
+     col = "blue")
 
 plot(mod, y = "f.prev", 
-     main = "Proportional Prevalence Females\n(Increase Childhood Male Vac.)",
-     ylim = c(0.2,0.6), 
-     col = "pink") +
-    abline(v = 5475, lty = 2)
+     main = "Proportional Prevalence Females\n(Catch Up Vac.)",
+     ylim = c(0.5,0.65), xlim = c(11000, 30000),
+     col = "pink")
 
 ```
 
@@ -326,43 +325,48 @@ plot(mod, y = "f.prev",
 ```{r, vax prevalence}
 par(mfrow = c(1,2))
 plot(mod, y = "m.vax.prev", 
-     main = "Proportional Prevalence Males\n(Increase Childhood Male Vac.)",
-     ylim = c(0.2,0.6),
-     col = "blue") +
-    abline(v = 5475, lty = 2)
-
+     main = "Proportional Prevalence Vaccinated Males\n(Catch Up Vac.)",
+     ylim = c(0.4,0.65), xlim = c(11000, 30000),
+     col = "blue")
 
 plot(mod, y = "f.vax.prev", 
-     main = "Proportional Prevalence Females\n(Increase Childhood Male Vac.)",
-     ylim = c(0.2,0.6), 
-     col = "pink") +
-    abline(v = 5475, lty = 2)
+     main = "Proportional Prevalence Vaccinated Females\n(Catch Up Vac.)",
+     ylim = c(0.4,0.65), xlim = c(11000, 30000),
+     col = "pink")
 ```
 ```{r Incidence}
-par(mfrow = c(2,2))
+par(mfrow = c(1,2))
 plot(mod, y = "si.m.flow", 
-     main = "Incidence Males\n(Increase Childhood Male Vac.)",
-     col = "blue") +
-    abline(v = 5475, lty = 2)
+     main = "Incidence Males\n(Catch Up Vac.)",
+     col = "blue",
+     xlim = c(11000, 30000),
+     ylim = c(5000, 10000)) 
 
 plot(mod, y = "si.f.flow", 
-     main = "Incidence Females\n(Increase Childhood Male Vac.)", 
-     col = "pink") +
-    abline(v = 5475, lty = 2)
+     main = "Incidence Females\n(Catch Up Vac.)", 
+     col = "pink",
+     xlim = c(11000, 30000),
+     ylim = c(5000, 10000))
 
+par(mfrow = c(1,2))
 plot(mod, y = "vi.m.flow", 
-     main = "Incidence Vaccinated Males\n(Increase Childhood Male Vac.)",
-     col = "blue") +
-    abline(v = 5475, lty = 2)
+     main = "Incidence Vaccinated Males\n(Catch Up Vac.)",
+     col = "blue",
+     xlim = c(11000, 30000),
+     ylim = c(2500, 5000))
 
 
 plot(mod, y = "vi.f.flow", 
-     main = "Incidence Vaccinated Females\n(Increase Childhood Male Vac.)", 
-     col = "pink") +
-    abline(v = 5475, lty = 2)
+     main = "Incidence Vaccinated Females\n(Catch Up Vac.)", 
+     col = "pink",
+     xlim = c(11000, 30000),
+     ylim = c(2500, 5000))
 ```
 
-```{r NNT}
+```{r, pop sizes}
+par(mfrow = c(1,2))
+plot(mod, y = c("m.num", 'f.num'), 
+     main = "population sizes")
 
 ```
 
@@ -373,5 +377,4 @@ plot(mod, y = "vi.f.flow",
 par(mfrow = c(1,2))
 plot(mod, y = c("m.num", 'f.num'), 
      main = "population sizes")
-
 ```

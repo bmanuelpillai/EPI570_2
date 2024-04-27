@@ -265,6 +265,8 @@ control.b <- control.dcm(nsteps = (80*365), new.mod = Vaccination.b)
 
 mod <- dcm(param.b, init, control.b)
 mod
+
+baseline <- as.data.frame(mod)
 ```
 
 
@@ -303,30 +305,60 @@ model1 <- as.data.frame(mod)
 
 ## plots
 ```{r, prevalence of infection}
+
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", 
-     main = "Prevalence of infection, males")
+     main = "Proportional Prevalence Males\n(Baseline)",
+     ylim = c(0.5,0.65), xlim = c(11000, 30000),
+     col = "blue")
 
 plot(mod, y = "f.prev", 
-     main = "Prevalence of infection, females")
+     main = "Proportional Prevalence Females\n(Baseline)",
+     ylim = c(0.5,0.65), xlim = c(11000, 30000),
+     col = "pink")
+
 ```
 
 
 ```{r, vax prevalence}
 par(mfrow = c(1,2))
 plot(mod, y = "m.vax.prev", 
-     main = "Prevalence of vax, males")
+     main = "Proportional Prevalence Vaccinated Males\n(Baseline)",
+     ylim = c(0.4,0.65), xlim = c(11000, 30000),
+     col = "blue")
 
 plot(mod, y = "f.vax.prev", 
-     main = "Prevalence of vax, females")
+     main = "Proportional Prevalence Vaccinated Females\n(Baseline)",
+     ylim = c(0.4,0.65), xlim = c(11000, 30000),
+     col = "pink")
 ```
-
-
-```{r, pop sizes}
+```{r Incidence}
 par(mfrow = c(1,2))
-plot(mod, y = c("m.num", 'f.num'), 
-     main = "population sizes")
+plot(mod, y = "si.m.flow", 
+     main = "Incidence Males\n(Baseline)",
+     col = "blue",
+     xlim = c(11000, 30000),
+     ylim = c(5000, 10000)) 
 
+plot(mod, y = "si.f.flow", 
+     main = "Incidence Females\n(Baseline)", 
+     col = "pink",
+     xlim = c(11000, 30000),
+     ylim = c(5000, 10000))
+
+par(mfrow = c(1,2))
+plot(mod, y = "vi.m.flow", 
+     main = "Incidence Vaccinated Males\n(Baseline)",
+     col = "blue",
+     xlim = c(11000, 30000),
+     ylim = c(2500, 4500))
+
+
+plot(mod, y = "vi.f.flow", 
+     main = "Incidence Vaccinated Females\n(Baseline)", 
+     col = "pink",
+     xlim = c(11000, 30000),
+     ylim = c(2500, 4500))
 ```
 
 

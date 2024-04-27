@@ -1,0 +1,58 @@
+---
+title: "Vaccine Effects Calculated"
+author: "Bevin Manuelpillai"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+***Run other Scripts First***
+```{r Number of Infections Averted}
+# Number of Infections Averted Overall
+NIA_omega <- (sum(omega$si.f.flow)+sum(omega$si.m.flow)) - (sum(baseline$si.f.flow)+sum(baseline$si.m.flow))
+
+NIA_kappa <- (sum(kappa$si.f.flow)+sum(kappa$si.m.flow)) - (sum(kappa$si.f.flow)+sum(kappa$si.m.flow))
+
+
+# Number of Infections Averted Males
+NIAM_omega <- (sum(omega$si.m.flow)) - (sum(baseline$si.m.flow))
+
+NIAM_kappa <- (sum(kappa$si.m.flow)) - (sum(baseline$si.m.flow))
+
+# Number of Infections Averted Females
+NIAF_omega <- (sum(omega$si.f.flow)) - (sum(baseline$si.f.flow))
+
+NIAF_kappa <- (sum(kappa$si.f.flow)) - (sum(baseline$si.f.flow))
+```
+
+```{r Percent Cases Averted}
+# Percent of Cases Averted Overall
+PIA_omega <- (NIA_omega*100 / sum(baseline$si.m.flow + baseline$si.f.flow))
+PIA_kappa <- (NIA_kappa*100 / sum(baseline$si.m.flow + baseline$si.f.flow))
+
+# Percent of Cases Averted Males
+PIAM_omega <- (NIAM_omega*100 / sum(baseline$si.m.flow))
+PIAM_kappa <- (NIAM_kappa*100 / sum(baseline$si.m.flow))
+
+# Percent of Cases Averted Females
+PIAF_omega <- (NIAF_omega*100 / sum(baseline$si.f.flow))
+PIAF_kappa <- (NIAF_kappa*100 / sum(baseline$si.f.flow))
+```
+
+```{r Number Needed to Treat}
+# Number Needed to Treat Overall
+NNT_omega <- sum(omega$v.m.ue.num + omega$v.f.ue.num) / NIA_omega
+NNT_kappa <- sum(kappa$v.m.ue.num + kappa$v.f.ue.num) / NIA_kappa
+# Number Needed to Treat Males
+NNTM_omega <- sum(omega$v.m.ue.num) / NIAM_omega
+NNTM_kappa <- sum(kappa$v.m.ue.num) / NIAM_kappa
+
+# Number Needed to Treat Females
+NNTF_omega <- sum(omega$v.f.ue.num) / NIAF_omega
+NNTF_kappa <- sum(kappa$v.f.ue.num) / NIAF_kappa
+```
+
+
