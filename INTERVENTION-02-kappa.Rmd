@@ -38,7 +38,7 @@ Vaccination.k <- function(t, t0, parms) {
   
 #1.5) Timed Intervention
     ## INCREASE VAX UPTAKE (start at year 15)
-    if (t >= 7300) {
+    if (t >= 10950) {
       kappa = kappa * vec.k
     }
     
@@ -265,7 +265,7 @@ init <- init.dcm( # males
 
 # RUN: TIMED KAPPA
 ```{r}
-control.k <- control.dcm(nsteps = (70*365), new.mod = Vaccination.k)
+control.k <- control.dcm(nsteps = (80*365), new.mod = Vaccination.k)
 
 mod <- dcm(param.k, init, control.k)
 mod
