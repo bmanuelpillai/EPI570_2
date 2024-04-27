@@ -1,8 +1,8 @@
 ---
 output:
-  pdf_document: default
-  html_document: default
   word_document: default
+  html_document: default
+  pdf_document: default
 ---
 ## Old Differential Equations (Tommy)
 **Males**  
@@ -34,57 +34,36 @@ ce_{f.ex} = ce_{m.ex}
 $$
 
 ## Differential Equations for Infection Rates
-# Note: In these equations, subscript, x is used to denote variables that apply universally across both genders 
+## Note: In these equations, subscript, g is used to denote variables that apply universally across both genders 
 
 # External Infection Rate for Susceptibles
 $$
-\lambda_{s.ex,x} = \tau \cdot ce_{ex} \cdot i_{prev}
+\lambda_{s.ex,g} = \tau \cdot ce_{ex} \cdot i_{prev}
 $$
 
-### Internal Infection Rate for Susceptibles
+## Internal Infection Rate for Susceptibles
 $$
-\lambda_{s.in,x} = \tau \cdot ce_{in} \cdot \frac{i_{num}}{n}
-$$
-
-### Total Susceptible Infection Rate
-$$
-\lambda_{s,x} = \lambda_{s.ex,x} + \lambda_{s.in,x}
+\lambda_{s.in,g} = \tau \cdot ce_{in} \cdot \frac{i_{num}}{n}
 $$
 
-### External Infection Rate for Vaccinated Individuals
+## Total Susceptible Infection Rate
 $$
-\lambda_{v.ex,x} = \tau \cdot (1 - \psi) \cdot ce_{ex} \cdot i_{prev}
-$$
-
-### Internal Infection Rate for Vaccinated Individuals
-$$
-\lambda_{v.in,x} = \tau \cdot (1 - \psi) \cdot ce_{in} \cdot \frac{i_{num}}{n}
+\lambda_{s,g} = \lambda_{s.ex,g} + \lambda_{s.in,g}
 $$
 
-### Total Vaccinated Infection Rate
+## External Infection Rate for Vaccinated Individuals
 $$
-\lambda_{v,x} = \lambda_{v.ex,x} + \lambda_{v.in,x}
+\lambda_{v.ex,g} = \tau \cdot (1 - \psi) \cdot ce_{ex} \cdot i_{prev}
 $$
 
-# Internal Infection Rate
+## Internal Infection Rate for Vaccinated Individuals
 $$
-\lambda_{s.in} = \tau \cdot ce_{in} \cdot \frac{i_{num}}{n}
+\lambda_{v.in,g} = \tau \cdot (1 - \psi) \cdot ce_{in} \cdot \frac{i_{num}}{n}
 $$
-# Total Suceptible Infection Rate
+
+## Total Vaccinated Infection Rate
 $$
-\lambda_{s} = \lambda_{s.ex} + \lambda_{s.in}
-$$
-# Vaccinated External Infection Rate
-$$
-\lambda_{v.ex} = \tau \cdot (1 - \psi) \cdot ce_{ex} \cdot i_{prev}
-$$
-# Vaccinated Internal Infection Rate
-$$
-\lambda_{v.in} = \tau \cdot (1 - \psi) \cdot ce_{in} \cdot \frac{i_{num}}{n}
-$$
-# Total Vaccinated Infection Rate
-$$
-\lambda_{v} = \lambda_{v.ex} + \lambda_{v.in}
+\lambda_{v,g} = \lambda_{v.ex,g} + \lambda_{v.in,g}
 $$
 ## Differential Equations for Infection Rates (Same as above but with gender stratification)
 ** Susceptible Males**
@@ -100,7 +79,6 @@ $$
 \lambda_{m.s} = \lambda_{m.s.ex} + \lambda_{m.s.in}
 $$
 ## Susceptible Females
-
 $$
 \lambda_{f.s.ex} = \tau \cdot ce_{f.ex} \cdot i_{m.prev}
 $$
@@ -113,7 +91,6 @@ $$
 \lambda_{f.s} = \lambda_{f.s.ex} + \lambda_{f.s.in}
 $$
 ## Vaccinated Males
-
 $$
 \lambda_{m.v.ex} = \tau \cdot (1 - \psi) \cdot ce_{m.ex} \cdot i_{f.prev}
 $$
@@ -144,49 +121,48 @@ $$
 $$
 
 ## Additional Differential Equations (Gender Neutral)
-# Note: In these equations, subscript, x is used to denote variables that apply universally across both genders. 
-Alpha is used for age.in and age.out. 
+## Note: In these equations, subscript, g is used to denote variables that apply universally across both genders. Alpha is used for age.in and age.out. 
 
 # Susceptible Unexposed (For individuals aged 11-18 years):
 
 $$
-\frac{dS_{x,ue}}{dt} = 0.5 \cdot (1 - \omega_x \cdot \chi) \cdot \nu \cdot n - \alpha_{\text{in}} \cdot S_{x,ue} - \mu_{ue} \cdot S_{x,ue}
+\frac{dS_{g,ue}}{dt} = 0.5 \cdot (1 - \omega_g \cdot \chi) \cdot \nu \cdot n - \alpha_{\text{in}} \cdot S_{g,ue} - \mu_{ue} \cdot S_{g,ue}
 $$
 
 ### Susceptible Exposed
 For sexually active individuals:
 
 $$
-\frac{dS_{x,e}}{dt} = \alpha_{\text{in}} \cdot S_{x,ue} - \mu \cdot S_{x,e} - \alpha_{\text{out}} \cdot S_{x,e} - \lambda_{x,s} \cdot \zeta_s \cdot S_{x,e} - \lambda_{x,s} \cdot (1 - \zeta_s) \cdot S_{x,e} + \delta_{s,a} \cdot I_{x,a} + \delta_{s,s} \cdot I_{x,s} - \kappa \cdot S_{x,e}
+\frac{dS_{g,e}}{dt} = \alpha_{\text{in}} \cdot S_{g,ue} - \mu \cdot S_{g,e} - \alpha_{\text{out}} \cdot S_{g,e} - \lambda_{g,s} \cdot \zeta_s \cdot S_{g,e} - \lambda_{g,s} \cdot (1 - \zeta_s) \cdot S_{g,e} + \delta_{s,a} \cdot I_{g,a} + \delta_{s,s} \cdot I_{g,s} - \kappa \cdot S_{g,e}
 $$
 
 ### Infected Asymptomatic
 $$
-\frac{dI_{x,a}}{dt} = -\alpha_{\text{out}} \cdot I_{x,a} - \mu \cdot I_{x,a} + \lambda_{x,s} \cdot (1 - \zeta_s) \cdot S_{x,e} - \delta_{s,a} \cdot I_{x,a}
+\frac{dI_{g,a}}{dt} = -\alpha_{\text{out}} \cdot I_{g,a} - \mu \cdot I_{g,a} + \lambda_{g,s} \cdot (1 - \zeta_s) \cdot S_{g,e} - \delta_{s,a} \cdot I_{g,a}
 $$
 
 ### Infected Symptomatic
 $$
-\frac{dI_{x,s}}{dt} = -\alpha_{\text{out}} \cdot I_{x,s} - \mu \cdot I_{x,s} + \lambda_{x,s} \cdot \zeta_s \cdot S_{x,e} - \delta_{s,s} \cdot I_{x,s}
+\frac{dI_{g,s}}{dt} = -\alpha_{\text{out}} \cdot I_{g,s} - \mu \cdot I_{g,s} + \lambda_{g,s} \cdot \zeta_s \cdot S_{g,e} - \delta_{s,s} \cdot I_{g,s}
 $$
 
 ### Vaccinated Unexposed
 $$
-\frac{dV_{x,ue}}{dt} = 0.5 \cdot \omega_x \cdot \chi \cdot \nu \cdot n - \alpha_{\text{in}} \cdot V_{x,ue} - \mu_{ue} \cdot V_{x,ue}
+\frac{dV_{g,ue}}{dt} = 0.5 \cdot \omega_g \cdot \chi \cdot \nu \cdot n - \alpha_{\text{in}} \cdot V_{g,ue} - \mu_{ue} \cdot V_{g,ue}
 $$
 
 ### Vaccinated Exposed/Sexually Active
 $$
-\frac{dV_{x,e}}{dt} = \alpha_{\text{in}} \cdot V_{x,ue} - \alpha_{\text{out}} \cdot V_{x,e} - \mu \cdot V_{x,e} - \lambda_{x,v} \cdot \zeta_v \cdot V_{x,e} - \lambda_{x,v} \cdot (1 - \zeta_v) \cdot V_{x,e} + \delta_{v,a} \cdot I_{x,a} + \delta_{v,s} \cdot I_{x,s} + \kappa \cdot S_{x,e}
+\frac{dV_{g,e}}{dt} = \alpha_{\text{in}} \cdot V_{g,ue} - \alpha_{\text{out}} \cdot V_{g,e} - \mu \cdot V_{g,e} - \lambda_{g,v} \cdot \zeta_v \cdot V_{g,e} - \lambda_{g,v} \cdot (1 - \zeta_v) \cdot V_{g,e} + \delta_{v,a} \cdot I_{g,a} + \delta_{v,s} \cdot I_{g,s} + \kappa \cdot S_{g,e}
 $$
 
 ### Infected Asymptomatic (Vaccinated)
 $$
-\frac{dI_{x,v,a}}{dt} = -\alpha_{\text{out}} \cdot I_{x,v,a} - \mu \cdot I_{x,v,a} + \lambda_{x,v} \cdot (1 - \zeta_v) \cdot V_{x,e} - \delta_{v,a} \cdot I_{x,v,a}
+\frac{dI_{g,v,a}}{dt} = -\alpha_{\text{out}} \cdot I_{g,v,a} - \mu \cdot I_{g,v,a} + \lambda_{g,v} \cdot (1 - \zeta_v) \cdot V_{g,e} - \delta_{v,a} \cdot I_{g,v,a}
 $$
 
 ### Infected Symptomatic (Vaccinated)
 $$
-\frac{dI_{x,v,s}}{dt} = -\alpha_{\text{out}} \cdot I_{x,v,s} - \mu \cdot I_{x,v,s} + \lambda_{x,v} \cdot \zeta_v \cdot V_{x,e} - \delta_{v,s} \cdot I_{x,v,s}
+\frac{dI_{g,v,s}}{dt} = -\alpha_{\text{out}} \cdot I_{g,v,s} - \mu \cdot I_{g,v,s} + \lambda_{g,v} \cdot \zeta_v \cdot V_{g,e} - \delta_{v,s} \cdot I_{g,v,s}
 $$
 
