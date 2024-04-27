@@ -1,5 +1,5 @@
 ---
-title: 'INTERVENTION #1 (OMEGA)'
+title: 'INTERVENTION #2: KAPPA'
 author: "group 2"
 date: "`r Sys.Date()`"
 output: html_document
@@ -14,9 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 pacman::p_load(pacman, EpiModel, ggplot2, tidyverse, reshape2)
 ```
 
-# MODEL-OMEGA
-```{r, model: time-varying omega}
-Vaccination.o <- function(t, t0, parms) {
+
+# MODEL-KAPPA
+```{r, model: time-varying kappa}
+Vaccination.k <- function(t, t0, parms) {
   with(as.list(c(t0, parms)), {
     
 #1. Track Population Sizes ###############################################################
@@ -36,10 +37,9 @@ Vaccination.o <- function(t, t0, parms) {
     i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num   # females
   
 #1.5) Timed Intervention
-    
-    ## INCREASE MALE VAX (start at year 15)
+    ## INCREASE VAX UPTAKE (start at year 15)
     if (t >= 5475) {
-      omega.m = omega.m * vec.o
+      kappa = kappa * vec.k
     }
     
 #2. Define Contact Rate ##################################################################
@@ -201,20 +201,20 @@ list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s,
 
 ```
 
-```{r, parameters: time-varying omega}
-param.o <- param.dcm( # FOI PARAMETERS
+```{r, parameters: time-varying kappa}
+param.k <- param.dcm( # FOI PARAMETERS
                     tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
                     psi = 0.90, # Gardasil Merck vaccine efficacy for warts
                     ce.m.in = (25/365), # contact parameter assumed based on sexual activity data
                     ce.m.ex = (5/365),
-                    vec.o = 1.333,
+                    vec.k = 10,
                     
                     # GENERAL POP PARAMETERS
                     # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.45, # US population prevalence of HPV amoung women
                     i.m.prev = 0.45, # US population prevalence of HPV amoung men
                     nu = (((56.3)/1000)/365), # sensitivity parameter to ensure stable population
-                    mu.ue = (150/1e5)/365,
+                    mu.ue = (50/1e5)/365,
                     mu = (100/1e5)/365,
                     age.in = (1/(7*365)), age.out = (1/(11*365)),
                     
@@ -262,13 +262,15 @@ init <- init.dcm( # males
 
 ```
 
-# RUN: TIMED OMEGA
-```{r}
-control.o <- control.dcm(nsteps = (65*365), new.mod = Vaccination.o)
 
-mod <- dcm(param.o, init, control.o)
+# RUN: TIMED KAPPA
+```{r}
+control.k <- control.dcm(nsteps = (65*365), new.mod = Vaccination.k)
+
+mod <- dcm(param.k, init, control.k)
 mod
 ```
+
 
 
 # BASIC GRAPHS TO TEST OUTPUT
@@ -330,3 +332,6 @@ plot(mod, y = c("m.num", 'f.num'),
      main = "population sizes")
 
 ```
+
+
+
