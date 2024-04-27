@@ -55,4 +55,18 @@ NNTF_omega <- sum(omega$v.f.ue.num) / NIAF_omega
 NNTF_kappa <- sum(kappa$v.f.ue.num) / NIAF_kappa
 ```
 
+```{r Combine Results}
+# Compare Vaccine Effects
+effects <- data.frame(
+  Measure = c("Number of Infections Averted Overall", "Number of Infections Averted Males", "Number of Infections Averted Females",
+              "Percent of Cases Averted Overall", "Percent of Cases Averted Males", "Percent of Cases Averted Females",
+              "Number Needed to Treat Overall", "Number Needed to Treat Males", "Number Needed to Treat Females"),
+  Omega = c(NIA_omega, NIAM_omega, NIAF_omega, PIA_omega, PIAM_omega, PIAF_omega, NNT_omega, NNTM_omega, NNTF_omega),
+  Kappa = c(NIA_kappa, NIAM_kappa, NIAF_kappa, PIA_kappa, PIAM_kappa, PIAF_kappa, NNT_kappa, NNTM_kappa, NNTF_kappa)
+)
+
+# Create Table
+kable(effects, align = "c", caption = "Comparing Vaccine Scenarios", digits = 2)
+```
+
 
