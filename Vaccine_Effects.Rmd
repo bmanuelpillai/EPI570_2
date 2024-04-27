@@ -12,20 +12,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ***Run other Scripts First***
 ```{r Number of Infections Averted}
 # Number of Infections Averted Overall
-NIA_omega <- (sum(omega$si.f.flow)+sum(omega$si.m.flow)) - (sum(baseline$si.f.flow)+sum(baseline$si.m.flow))
+NIA_omega <- (sum(baseline$si.f.flow)+sum(baseline$si.m.flow)) - (sum(omega$si.f.flow)+sum(omega$si.m.flow))
 
-NIA_kappa <- (sum(kappa$si.f.flow)+sum(kappa$si.m.flow)) - (sum(kappa$si.f.flow)+sum(kappa$si.m.flow))
+NIA_kappa <- (sum(baseline$si.f.flow)+sum(baseline$si.m.flow)) - (sum(kappa$si.f.flow)+sum(kappa$si.m.flow))
 
 
 # Number of Infections Averted Males
-NIAM_omega <- (sum(omega$si.m.flow)) - (sum(baseline$si.m.flow))
+NIAM_omega <- (sum(baseline$si.m.flow)) - (sum(omega$si.m.flow))
 
-NIAM_kappa <- (sum(kappa$si.m.flow)) - (sum(baseline$si.m.flow))
+NIAM_kappa <- (sum(baseline$si.m.flow)) - (sum(kappa$si.m.flow))
 
 # Number of Infections Averted Females
-NIAF_omega <- (sum(omega$si.f.flow)) - (sum(baseline$si.f.flow))
+NIAF_omega <- (sum(baseline$si.f.flow)) - (sum(omega$si.f.flow))
 
-NIAF_kappa <- (sum(kappa$si.f.flow)) - (sum(baseline$si.f.flow))
+NIAF_kappa <- (sum(baseline$si.f.flow)) - (sum(kappa$si.f.flow))
 ```
 
 ```{r Percent Cases Averted}
