@@ -311,15 +311,13 @@ model1 <- as.data.frame(mod)
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", 
      main = "Proportional Prevalence Males\n(Catch Up Vac.)",
-     ylim = c(0.2,0.6), xlim = c(5475, 15000),
-     col = "blue") +
-    abline(v = 5475, lty = 2)
+     ylim = c(0.5,0.65), xlim = c(5475, 15000),
+     col = "blue") 
 
 plot(mod, y = "f.prev", 
      main = "Proportional Prevalence Females\n(Catch Up Vac.)",
-     ylim = c(0.2,0.6), xlim = c(5475, 15000),
-     col = "pink") +
-    abline(v = 5475, lty = 2)
+     ylim = c(0.5,0.65), xlim = c(5475, 15000),
+     col = "pink")
 
 ```
 
