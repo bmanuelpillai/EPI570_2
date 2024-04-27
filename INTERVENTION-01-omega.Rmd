@@ -361,6 +361,7 @@ plot(mod, y = "vi.f.flow",
      col = "pink") +
     abline(v = 5475, lty = 2)
 ```
+
 ```{r NNT}
 
 ```
