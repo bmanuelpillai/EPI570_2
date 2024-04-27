@@ -261,7 +261,7 @@ init <- init.dcm( # males
 
 # RUN: TIMED KAPPA
 ```{r}
-control.b <- control.dcm(nsteps = (65*365), new.mod = Vaccination.b)
+control.b <- control.dcm(nsteps = (80*365), new.mod = Vaccination.b)
 
 mod <- dcm(param.b, init, control.b)
 mod

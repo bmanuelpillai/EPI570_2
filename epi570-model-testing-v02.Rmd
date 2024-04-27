@@ -972,6 +972,7 @@ ggplot(tidy_data, aes(x = Scenario, y = PIA, fill = Gender)) +
 
 
 ```
+
 ```{r}
 tidy_data <- merged_scenarios %>%
   pivot_longer(cols = starts_with("NNT_"), 
