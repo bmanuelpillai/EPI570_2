@@ -307,24 +307,61 @@ model1 <- as.data.frame(mod)
 
 ## plots
 ```{r, prevalence of infection}
+
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", 
-     main = "Prevalence of infection, males")
+     main = "Proportional Prevalence Males\n(Catch Up Vac.)",
+     ylim = c(0.2,0.6), xlim = c(5475, 15000),
+     col = "blue") +
+    abline(v = 5475, lty = 2)
 
 plot(mod, y = "f.prev", 
-     main = "Prevalence of infection, females")
+     main = "Proportional Prevalence Females\n(Catch Up Vac.)",
+     ylim = c(0.2,0.6), xlim = c(5475, 15000),
+     col = "pink") +
+    abline(v = 5475, lty = 2)
+
 ```
 
 
 ```{r, vax prevalence}
 par(mfrow = c(1,2))
 plot(mod, y = "m.vax.prev", 
-     main = "Prevalence of vax, males")
+     main = "Proportional Prevalence Males\n(Catch Up Vac.)",
+     ylim = c(0.2,0.6),
+     col = "blue") +
+    abline(v = 5475, lty = 2)
+
 
 plot(mod, y = "f.vax.prev", 
-     main = "Prevalence of vax, females")
+     main = "Proportional Prevalence Females\n(Catch Up Vac.)",
+     ylim = c(0.2,0.6), 
+     col = "pink") +
+    abline(v = 5475, lty = 2)
 ```
+```{r Incidence}
+par(mfrow = c(2,2))
+plot(mod, y = "si.m.flow", 
+     main = "Incidence Males\n(Catch Up Vac.)",
+     col = "blue") +
+    abline(v = 5475, lty = 2)
 
+plot(mod, y = "si.f.flow", 
+     main = "Incidence Females\n(Catch Up Vac.)", 
+     col = "pink") +
+    abline(v = 5475, lty = 2)
+
+plot(mod, y = "vi.m.flow", 
+     main = "Incidence Vaccinated Males\n(Catch Up Vac.)",
+     col = "blue") +
+    abline(v = 5475, lty = 2)
+
+
+plot(mod, y = "vi.f.flow", 
+     main = "Incidence Vaccinated Females\n(Catch Up Vac.)", 
+     col = "pink") +
+    abline(v = 5475, lty = 2)
+```
 
 ```{r, pop sizes}
 par(mfrow = c(1,2))
