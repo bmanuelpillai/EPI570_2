@@ -270,9 +270,10 @@ mod <- dcm(param.o, init, control.o)
 mod
 
 omega <- as.data.frame(mod)
+
+omega <- omega %>% 
+  filter(time >= 10950)
 ```
-
-
 # BASIC GRAPHS TO TEST OUTPUT
 ## adding elements to model
 ```{r, adding elements ot model}
@@ -307,60 +308,45 @@ model1 <- as.data.frame(mod)
 
 ## plots
 ```{r, prevalence of infection}
-
+# Prevalence Overall
 par(mfrow = c(1,2))
-plot(mod, y = "m.prev", 
-     main = "Proportional Prevalence Males\n(Childhood Male Vac.)",
-     ylim = c(0.5,0.65), xlim = c(11000, 30000),
-     col = "blue")
+plot(mod, y = c("m.prev", "f.prev"), 
+     main = "Proportional Prevalence\n(Childhood Male Vac.)",
+     ylim = c(0.5,0.65), xlim = c(10950, 25000),
+     col = c("blue", "pink"))
 
-plot(mod, y = "f.prev", 
-     main = "Proportional Prevalence Females\n(Childhood Male Vac.)",
-     ylim = c(0.5,0.65), xlim = c(11000, 30000),
-     col = "pink")
+legend("topright", legend = c("Male Prevalence", "Female Prevalence"), 
+       col = c("blue", "pink"), pch = 19, cex = 0.6)
 
+# Prevalence Vaccinated
+plot(mod, y = c("m.vax.prev", "f.vax.prev"), 
+     main = "Vaccianted\nProportional Prevalence\n(Childhood Male Vac.)",
+     ylim = c(0.4,0.65), xlim = c(10950, 25000),
+     col = c("blue", "pink"))
+
+legend("topright", legend = c("Vaccianted Male Prevalence", "Vaccinated Female Prevalence"), 
+       col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
-
-```{r, vax prevalence}
-par(mfrow = c(1,2))
-plot(mod, y = "m.vax.prev", 
-     main = "Proportional Prevalence\nVaccinated Males\n(Childhood Male Vac.)",
-     ylim = c(0.4,0.65), xlim = c(11000, 30000),
-     col = "blue")
-
-plot(mod, y = "f.vax.prev", 
-     main = "Proportional Prevalence\nVaccinated Females\n(Childhood Male Vac.)",
-     ylim = c(0.4,0.65), xlim = c(11000, 30000),
-     col = "pink")
-```
 ```{r Incidence}
+# Prevalence Overall
 par(mfrow = c(1,2))
-plot(mod, y = "si.m.flow", 
-     main = "Incidence Males\n(Childhood Male Vac.)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000)) 
+plot(mod, y = c("si.m.flow", "si.f.flow"), 
+     main = "Incidence\n(Childhood Male Vac.)",
+     ylim = c(6000, 9000), xlim = c(10950, 25000),
+     col = c("blue", "pink"))
 
-plot(mod, y = "si.f.flow", 
-     main = "Incidence Females\n(Childhood Male Vac.)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000))
+legend("topright", legend = c("Male Incidence", "Female Incidence"), 
+       col = c("blue", "pink"), pch = 19, cex = 0.6)
 
-par(mfrow = c(1,2))
-plot(mod, y = "vi.m.flow", 
-     main = "Incidence Vaccinated Males\n(Childhood Male Vac.)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 5000))
+# Prevalence Vaccinated
+plot(mod, y = c("vi.m.flow", "vi.f.flow"), 
+     main = "Vaccianted\nIncidence\n(Childhood Male Vac.)",
+     ylim = c(2000,4500), xlim = c(10950, 25000),
+     col = c("blue", "pink"))
 
-
-plot(mod, y = "vi.f.flow", 
-     main = "Incidence Vaccinated Females\n(Childhood Male Vac.)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 5000))
+legend("bottomright", legend = c("Vaccianted Male Incidence", "Vaccinated Female Incidence"), 
+       col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
 ```{r, pop sizes}
