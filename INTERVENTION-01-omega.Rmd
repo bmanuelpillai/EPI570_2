@@ -38,7 +38,7 @@ Vaccination.o <- function(t, t0, parms) {
 #1.5) Timed Intervention
     
     ## INCREASE MALE VAX (start at year 15)
-    if (t >= 7300) {
+    if (t >= 10950) {
       omega.m = omega.m * vec.o
     }
     
@@ -264,7 +264,7 @@ init <- init.dcm( # males
 
 # RUN: TIMED OMEGA
 ```{r}
-control.o <- control.dcm(nsteps = (70*365), new.mod = Vaccination.o)
+control.o <- control.dcm(nsteps = (80*365), new.mod = Vaccination.o)
 
 mod <- dcm(param.o, init, control.o)
 mod
