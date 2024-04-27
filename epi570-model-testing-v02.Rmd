@@ -212,7 +212,7 @@ param1 <- param.dcm( # FOI PARAMETERS
                     # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.45, # US population prevalence of HPV amoung women
                     i.m.prev = 0.45, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    nu = (((56.3)/1000)/365), # sensitivity parameter to ensure stable population
                     mu.ue = (50/1e5)/365,
                     mu = (100/1e5)/365,
                     age.in = (1/(7*365)), age.out = (1/(11*365)),
@@ -256,7 +256,6 @@ init <- init.dcm( # males
                  si.f.flow = 0, vi.f.flow = 0, sv.f.flow = 0)
 
 
-
 control <- control.dcm(nsteps = (50*365), new.mod = Vaccination)
 
 mod1 <- dcm(param1, init, control)
@@ -278,7 +277,7 @@ param2 <- param.dcm( # FOI PARAMETERS
                     # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.45, # US population prevalence of HPV amoung women
                     i.m.prev = 0.45, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    nu = (((56.3)/1000)/365), # sensitivity parameter to ensure stable population
                     mu.ue = (50/1e5)/365,
                     mu = (100/1e5)/365,
                     age.in = (1/(7*365)), age.out = (1/(11*365)),
@@ -322,7 +321,7 @@ param3 <- param.dcm( # FOI PARAMETERS
                     # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.45, # US population prevalence of HPV amoung women
                     i.m.prev = 0.45, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    nu = (((56.3)/1000)/365), # sensitivity parameter to ensure stable population
                     mu.ue = (50/1e5)/365,
                     mu = (100/1e5)/365,
                     age.in = (1/(7*365)), age.out = (1/(11*365)),
@@ -366,7 +365,7 @@ param4 <- param.dcm( # FOI PARAMETERS
                     # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
                     i.f.prev = 0.45, # US population prevalence of HPV amoung women
                     i.m.prev = 0.45, # US population prevalence of HPV amoung men
-                    nu = (((20)/1000)/365), # sensitivity parameter to ensure stable population
+                    nu = (((56.3)/1000)/365), # sensitivity parameter to ensure stable population
                     mu.ue = (50/1e5)/365,
                     mu = (100/1e5)/365,
                     age.in = (1/(7*365)), age.out = (1/(11*365)),
