@@ -272,9 +272,6 @@ mod
 
 kappa <- as.data.frame(mod)
 ```
-
-
-
 # BASIC GRAPHS TO TEST OUTPUT
 ## adding elements to model
 ```{r, adding elements ot model}

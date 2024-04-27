@@ -310,12 +310,12 @@ model1 <- as.data.frame(mod)
 
 par(mfrow = c(1,2))
 plot(mod, y = "m.prev", 
-     main = "Proportional Prevalence Males\n(Catch Up Vac.)",
+     main = "Proportional Prevalence Males\n(Childhood Male Vac.)",
      ylim = c(0.5,0.65), xlim = c(11000, 30000),
      col = "blue")
 
 plot(mod, y = "f.prev", 
-     main = "Proportional Prevalence Females\n(Catch Up Vac.)",
+     main = "Proportional Prevalence Females\n(Childhood Male Vac.)",
      ylim = c(0.5,0.65), xlim = c(11000, 30000),
      col = "pink")
 
@@ -325,39 +325,39 @@ plot(mod, y = "f.prev",
 ```{r, vax prevalence}
 par(mfrow = c(1,2))
 plot(mod, y = "m.vax.prev", 
-     main = "Proportional Prevalence Vaccinated Males\n(Catch Up Vac.)",
+     main = "Proportional Prevalence\nVaccinated Males\n(Childhood Male Vac.)",
      ylim = c(0.4,0.65), xlim = c(11000, 30000),
      col = "blue")
 
 plot(mod, y = "f.vax.prev", 
-     main = "Proportional Prevalence Vaccinated Females\n(Catch Up Vac.)",
+     main = "Proportional Prevalence\nVaccinated Females\n(Childhood Male Vac.)",
      ylim = c(0.4,0.65), xlim = c(11000, 30000),
      col = "pink")
 ```
 ```{r Incidence}
 par(mfrow = c(1,2))
 plot(mod, y = "si.m.flow", 
-     main = "Incidence Males\n(Catch Up Vac.)",
+     main = "Incidence Males\n(Childhood Male Vac.)",
      col = "blue",
      xlim = c(11000, 30000),
      ylim = c(5000, 10000)) 
 
 plot(mod, y = "si.f.flow", 
-     main = "Incidence Females\n(Catch Up Vac.)", 
+     main = "Incidence Females\n(Childhood Male Vac.)", 
      col = "pink",
      xlim = c(11000, 30000),
      ylim = c(5000, 10000))
 
 par(mfrow = c(1,2))
 plot(mod, y = "vi.m.flow", 
-     main = "Incidence Vaccinated Males\n(Catch Up Vac.)",
+     main = "Incidence Vaccinated Males\n(Childhood Male Vac.)",
      col = "blue",
      xlim = c(11000, 30000),
      ylim = c(2500, 5000))
 
 
 plot(mod, y = "vi.f.flow", 
-     main = "Incidence Vaccinated Females\n(Catch Up Vac.)", 
+     main = "Incidence Vaccinated Females\n(Childhood Male Vac.)", 
      col = "pink",
      xlim = c(11000, 30000),
      ylim = c(2500, 5000))
