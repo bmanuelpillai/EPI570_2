@@ -1,0 +1,98 @@
+---
+title: "equations"
+author: "group 2"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# CONTACT RATES
+
+$$
+c_{f, internal} = \frac{c_{m, internal} \cdot m_{num}}{f_{num}}
+$$
+$$
+c_{f, external} = c_{m, external}
+$$
+
+
+# FORCE OF INFECTION
+## UNVACCINATED
+
+$$
+\lambda_{uv, g, external} = \tau \cdot c_{g, external} \cdot I_{g*, external}
+$$
+
+$$
+\lambda_{uv, g, internal} = \tau \cdot c_{g, internal} \cdot \frac{i_{num, g*}}{n_{g*}}
+$$
+
+$$
+\lambda_{uv,g} = \lambda_{uv, g, external} + \lambda_{uv, g, internal}
+$$
+
+## VACCINATED
+$$
+\lambda_{v, g, external} = \tau \cdot (1 - \psi) \cdot c_{g, external} \cdot I_{g*, external}
+$$
+
+$$
+\lambda_{v, g, internal} = \tau \cdot (1 - \psi) \cdot c_{g, internal} \cdot \frac{i_{num, g*}}{n_{g*}}
+$$
+
+$$
+\lambda_{v,g} = \lambda_{v, g, external} + \lambda_{v, g, internal}
+$$
+
+
+
+
+# Susceptible Unexposed (For individuals aged 11-18 years):
+
+$$
+\frac{dU_{uv,g}}{dt} = 0.5 (1 - \omega_g \chi) \nu N - \alpha_{\text{in}} U_{g} - \mu_{u}U_{uv,g}
+$$
+
+### Susceptible Exposed
+For sexually active individuals:
+
+$$
+\frac{dS_{g}}{dt} = \alpha_{\text{in}} U_{g} - \mu_{e} S_{g} - \alpha_{\text{out}} S_{g} - \lambda_{uv, g} Z  S_{g} - \lambda_{uv,g} (1 - Z) S_{g} + \delta_{uv,a} I_{uv,g,a} + \delta_{uv,s} I_{uv,g,s} - \kappa S_{g}
+$$
+
+### Infected Asymptomatic
+$$
+\frac{dI_{uv,g,a}}{dt} = -\alpha_{\text{out}} I_{uv,g,a} - \mu_e I_{uv,g,a} + \lambda_{uv,g} (1 - Z) S_{g} - \delta_{g,a} I_{uv,g,a}
+$$
+
+### Infected Symptomatic
+$$
+\frac{dI_{uv,g,s}}{dt} = -\alpha_{\text{out}} I_{uv,g,s} - \mu_e I_{uv,g,s} + \lambda_{g,s} Z S_{g} - \delta_{uv,s} I_{uv,g,s}
+$$
+
+
+# VACCINATED ###############################################################################
+$$
+\frac{dU_{v,g}}{dt} = 0.5 \omega_g \chi \nu N - \alpha_{\text{in}} V_{g} - \mu_{u} U_{v,g}
+$$
+
+### Vaccinated Exposed/Sexually Active
+$$
+\frac{dV_{g}}{dt} = \alpha_{\text{in}} U_{v, g} - \alpha_{\text{out}} V_{g} - \mu_e V_{g} - \lambda_{v,g} Z V_{g} - \lambda_{v, g} (1 - Z) V_{g} + \delta_{v,a} I_{v,g,a} + \delta_{v,s} I_{v,g,s} + \kappa S_{g}
+$$
+
+### Infected Asymptomatic (Vaccinated)
+$$
+\frac{dI_{v,g,a}}{dt} = -\alpha_{\text{out}} I_{v,g,a} - \mu_e I_{v,g,a} + \lambda_{v,g} (1 - Z)  V_{g} - \delta_{v,a} I_{v,g,a}
+$$
+
+### Infected Symptomatic (Vaccinated)
+$$
+\frac{dI_{v,g,s}}{dt} = -\alpha_{\text{out}} I_{v,g,s} - \mu_e I_{v,g,s} + \lambda_{v,s} Z V_{g} - \delta_{v,s} I_{v,g,s}
+$$
+
