@@ -1,0 +1,307 @@
+---
+title: 'INTERVENTION #1 (OMEGA)'
+author: "group 2"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+pacman::p_load(pacman, EpiModel, ggplot2, tidyverse, reshape2)
+```
+
+# MODEL-OMEGA
+```{r, model: time-varying omega}
+Vaccination.o <- function(t, t0, parms) {
+  with(as.list(c(t0, parms)), {
+    
+#1. Track Population Sizes ###############################################################
+    # total male population size
+    m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+            v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num
+
+    # total female population size
+    f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+            v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num
+
+    # total population
+    num = f.num + m.num
+
+    # infected numbers for contact proportions
+    i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num   # males
+    i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num   # females
+  
+#1.5) Timed Intervention
+    
+    ## INCREASE MALE VAX (start at year 15)
+    if (t >= 5475) {
+      omega.m = omega.m * vec.o
+    }
+    
+#2. Define Contact Rate ##################################################################
+    # contact rate for females dependent on contact rate for males
+    # forcing dissortative heterosexual contact only
+    ce.f.in <- (ce.m.in * m.num) / f.num
+    ce.f.ex <- (ce.m.ex)
+
+
+#3. Define Lambda ########################################################################
+    # conceptualizing 9vHPV Gardasil vaccine as reducing likelihood of becoming infected 
+    # with HPV due to high efficacy (psi). thus, dynamics of HPV itself are same between
+    # susceptible & vaccinated, but the vaccinated FOI is reduced by the complement of vaccine
+    # efficacy (1-psi)
+    
+    ### EXTERNAL FOI ADD?
+    
+  # susceptibles
+    # males
+    lambda.m.s.ex <- (tau) * (ce.m.ex) * (i.f.prev) 
+    lambda.m.s.in <- (tau) * (ce.m.in) * (i.f.num / f.num)
+    lambda.m.s <- lambda.m.s.ex + lambda.m.s.in
+    
+    # females
+    lambda.f.s.ex <-  (tau) * (ce.f.ex) * (i.m.prev)
+    lambda.f.s.in <-  (tau) * (ce.f.in) * (i.m.num / m.num)
+    lambda.f.s <- lambda.f.s.ex + lambda.f.s.in
+  
+  # vaccinated
+    # males
+    lambda.m.v.ex <- (tau)*(1-psi) * (ce.m.ex)*(i.f.prev) 
+    lambda.m.v.in <- (tau)*(1-psi) * (ce.m.in)*(i.f.num / f.num)
+    lambda.m.v <- lambda.m.v.ex + lambda.m.v.in
+    
+    # females
+    lambda.f.v.ex <-  (tau)*(1-psi) * (ce.f.ex)*(i.m.prev)
+    lambda.f.v.in <-  (tau)*(1-psi) * (ce.f.in)*(i.m.num / m.num)
+    lambda.f.v <- lambda.f.v.ex + lambda.f.v.in
+
+
+
+#4. Define Additional parameters #########################################################
+  # recovery rate: 1/duration of infection, allowing for differential clearing rate by vax status & symptomatic status 
+    # susceptible recovery rate
+      delta.s.a <- 1/dur.inf.s.a
+      delta.s.s <- 1/dur.inf.s.s
+    # vaccinated recovery rate
+      delta.v.a <- 1/dur.inf.v.a
+      delta.v.s <- 1/dur.inf.v.s
+    
+    # zeta is the proportion of susceptibles that become symptomatic 
+    # kappa is the proportion of susceptible exposed that become vaccinated exposed at each timestep
+    # nu is birthrate
+
+#5. Define Differential Equations ########################################################
+  
+# MALES : SUSCEPTIBLE
+  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num]
+  dS.m.ue <- ((0.5 * (1-omega.m*chi) * nu*num)) +            # births
+             (-age.in * uv.m.ue.num) + (-mu.ue * uv.m.ue.num)  # gen pop
+      # entry multiplied by half to account for M/F strata
+      # S populated by complement of proportion vaccinated*proportion immunologic
+
+  # susceptible exposed (18+, proxy for sexually active) [uv.m.e.num]
+  dS.m.e <- (age.in * uv.m.ue.num) + (-mu * uv.m.e.num) + (-age.out * uv.m.e.num) +         # general pop
+            (-lambda.m.s * zeta.s * uv.m.e.num) + (-lambda.m.s * (1-zeta.s) * uv.m.e.num) + # exposure
+            (delta.s.a * uv.m.i.a.num) + (delta.s.s * uv.m.i.s.num) +                       # recovery
+            (-kappa * uv.m.e.num)                                                           # catch-up vax
+  
+ # infected asymptomatic [uv.m.i.a.num]
+  dI.m.s.a <- (-age.out * uv.m.i.a.num) + (-mu * uv.m.i.a.num) +  # general pop
+              (lambda.m.s * (1-zeta.s) * uv.m.e.num) +           # asymptomatic infection
+              (-delta.s.a * uv.m.i.a.num)                         # recovery
+    
+  # infected symptomatic [uv.m.i.s.num]
+  dI.m.s.s <- (-age.out * uv.m.i.s.num) + (-mu * uv.m.i.s.num) +      # general pop
+              (lambda.m.s * zeta.s * uv.m.e.num) +               # symptomatic infection
+              (-delta.s.s * uv.m.i.s.num)                        # recovery
+              
+
+
+# MALES : VACCINATED
+  # vaccinated unexposed [v.m.ue.num]
+  dV.m.ue <- (0.5 * omega.m * chi * nu * num) +              # births
+             (-age.in * v.m.ue.num) + (-mu.ue * v.m.ue.num)  # general pop
+
+  # vaccinated exposed/sexually active [v.m.e.num]
+  dV.m.e <- (age.in * v.m.ue.num) + (-age.out * v.m.e.num) + (-mu * v.m.e.num) +         # general pop
+            (-lambda.m.v * (zeta.v) * v.m.e.num) + (-lambda.m.v * (1- zeta.v) * v.m.e.num) + # exposure
+            (delta.v.a * v.m.i.a.num) + (delta.v.s * v.m.i.s.num) +                      # recovery
+            (kappa * uv.m.e.num)                                                       # catch-up vax
+
+  # infected asymptomatic [v.m.i.a.num]
+  dI.m.v.a <- (-age.out * v.m.i.a.num) + (-mu * v.m.i.a.num) +        # gen pop
+              (lambda.m.v * (1- zeta.v) * v.m.e.num) +                 # asymptomatic infection
+              (-delta.v.a * v.m.i.a.num)                              # recovery
+  # infected symptomatic [v.m.i.s.num]
+  dI.m.v.s <- (-age.out * v.m.i.s.num) + (-mu * v.m.i.s.num) +        # gen pop
+              (lambda.m.v * (zeta.v) * v.m.e.num) +                    # symptomatic infection
+              (-delta.v.s * v.m.i.s.num)                              # recovery  
+
+  
+# FEMALES : SUSCEPTIBLE
+  # unexposed [uv.f.ue.num]
+  dS.f.ue <- ((0.5 * (1-omega.f*chi) * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
+  
+  # exposed/sexually active [uv.f.e.num]
+  dS.f.e <- (age.in * uv.f.ue.num) + (-mu * uv.f.e.num) + (-age.out * uv.f.e.num) +       # general pop
+            (-lambda.f.s * zeta.s * uv.f.e.num) + (-lambda.f.s * (1-zeta.s) * uv.f.e.num) +   # exposure
+            (delta.s.a * uv.f.i.a.num) + (delta.s.s * uv.f.i.s.num) +                     # recovery
+            (-kappa * uv.f.e.num)                                                       # catch-up vax
+  
+  # infected, asymptomatic [uv.f.i.a.num]
+  dI.f.s.a <- (-age.out * uv.f.i.a.num) + (-mu * uv.f.i.a.num) +  # general pop
+              (lambda.f.s * (1-zeta.s) * uv.f.e.num) +              # asymptomatic infection
+              (-delta.s.a * uv.f.i.a.num)                         # recovery
+    
+  # infected, symptomatic [uv.f.i.s.num]
+  dI.f.s.s <- (lambda.f.s * zeta.s * uv.f.e.num) +                     # symptomatic infection
+              (-delta.s.s * uv.f.i.s.num) +                          # recovery
+              (-age.out * uv.f.i.s.num) + (-mu * uv.f.i.s.num)       # general pop
+
+  
+# FEMALES : VACCINATED
+  # unexposed [v.f.ue.num]
+  dV.f.ue <- (0.5 * omega.f * chi * nu * num) +              # births
+             (-age.in * v.f.ue.num) + (-mu.ue * v.f.ue.num)  # general pop
+  # exposed [v.f.e.num]
+  dV.f.e <- (age.in * v.f.ue.num) + (-age.out * v.f.e.num) + (-mu * v.f.e.num) +       # gen pop
+            (-lambda.f.v * zeta.v * v.f.e.num) + (-lambda.f.v * (1-zeta.v) * v.f.e.num) +  # infection
+            (delta.v.a * v.f.i.a.num) + (delta.v.s * v.f.i.s.num) +                    # recovery
+            (kappa * uv.f.e.num)                                                       # catch-up vax
+
+  # infected, asymptomatic [v.f.i.a.num]
+  dI.f.v.a <- (-age.out * v.f.i.a.num) + (-mu * v.f.i.a.num) +        # gen pop
+              (lambda.f.v * (1-zeta.v) * v.f.e.num) +                   # asymptomatic infection
+              (-delta.v.a * v.f.i.a.num)                              # recovery
+  # infected, symptomatic [v.f.i.s.num]
+  dI.f.v.s <- (-age.out * v.f.i.s.num) + (-mu * v.f.i.s.num) +        # gen pop
+              (lambda.f.v * zeta.v * v.f.e.num) +                       # symptomatic infection
+              (-delta.v.s * v.f.i.s.num)                              # recovery  
+
+  
+  
+# 6.Outputs ##############################################################################
+list(c(dS.m.ue, dS.m.e, dI.m.s.a, dI.m.s.s, 
+       dV.m.ue, dV.m.e, dI.m.v.a, dI.m.v.s,
+       dS.f.ue, dS.f.e, dI.f.s.a, dI.f.s.s, 
+       dV.f.ue, dV.f.e, dI.f.v.a, dI.f.v.s,
+       si.m.flow = (lambda.m.s * uv.m.e.num),
+       vi.m.flow = (lambda.m.v * v.m.e.num),
+       sv.m.flow = (kappa * uv.m.e.num),
+       si.f.flow = (lambda.f.s * uv.f.e.num),
+       vi.f.flow = (lambda.f.v * v.f.e.num),
+       sv.f.flow = (kappa * uv.f.e.num))
+       )
+  })
+}
+
+```
+
+```{r, parameters: time-varying omega}
+param.o <- param.dcm( # FOI PARAMETERS
+                    tau = 0.40, # median per-act transmission prob (Burchell, et al. 2006)
+                    psi = 0.90, # Gardasil Merck vaccine efficacy for warts
+                    ce.m.in = (25/365), # contact parameter assumed based on sexual activity data
+                    ce.m.ex = (5/365),
+                    vec.o = 1.333,
+                    
+                    # GENERAL POP PARAMETERS
+                    # infection prevalence for whole pop assumed from mid-2010s prevalence in mid 40-50%
+                    i.f.prev = 0.45, # US population prevalence of HPV amoung women
+                    i.m.prev = 0.45, # US population prevalence of HPV amoung men
+                    nu = (((56.3)/1000)/365), # sensitivity parameter to ensure stable population
+                    mu.ue = (150/1e5)/365,
+                    mu = (100/1e5)/365,
+                    age.in = (1/(7*365)), age.out = (1/(11*365)),
+                    
+                    # RECOVERY PARAMETERS
+                        # assumed median duration w/o variation by symptoms
+                        dur.inf.s.a = (1.5*365), dur.inf.s.s= (1.5*365), 
+                        # assumed reduction in duration due to vaccination
+                        dur.inf.v.a = (1.25*365), dur.inf.v.s = (1.25*365),
+                    
+                    # VACCINE PARAMETERS
+                    # omegas assumed from national average UTD; southeastern disparity; sex-specific disparity (Prabhu, et al. 2021)
+                    # values are for age cohort per year (not overall prevalence of vax)
+                      # overall coverage about 50% overall; 60% females; 45% males (CDC VaxView-Teen)
+                    # omega.m = 0.15, omega.f = 0.20, 
+                    omega.m = 0.45, omega.f = 0.60, 
+                    chi = 0.95, # estimates for 9vHPV >90% through 90mo; weighted down, no booster (Olsson, et al. 2020)
+                    kappa = ((0.01)/365), # catch-up vax rates assumed 1% in adults from 2011-2016
+                    # symptomatic parameters
+                    # zeta is the proportion that becomes symptomatic (Chession, et al. 2014)
+                    zeta.v = (0.1) , zeta.s = (0.1))
+```
+
+# RUN: TIMED OMEGA
+```{r}
+control.o <- control.dcm(nsteps = (100*365), new.mod = Vaccination.o)
+
+mod <- dcm(param.o, init, control.o)
+mod
+```
+
+
+# BASIC GRAPHS TO TEST OUTPUT
+## adding elements to model
+```{r, adding elements ot model}
+mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                               v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod <- mutate_epi(mod, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                               v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod <- mutate_epi(mod, num = m.num + f.num)
+
+mod <- mutate_epi(mod, m.e.num = uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
+                                 v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+mod <- mutate_epi(mod, f.e.num = uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
+                                 v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+mod <- mutate_epi(mod, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+mod <- mutate_epi(mod, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
+
+
+
+mod <- mutate_epi(mod, m.prev = i.m.num / m.e.num)
+mod <- mutate_epi(mod, f.prev = i.f.num / f.e.num)
+mod <- mutate_epi(mod, m.vax = v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+mod <- mutate_epi(mod, f.vax = v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+mod <- mutate_epi(mod, m.vax.prev = m.vax/m.num)
+mod <- mutate_epi(mod, f.vax.prev = f.vax/f.num)
+
+model1 <- as.data.frame(mod)
+```
+
+## plots
+```{r, prevalence of infection}
+par(mfrow = c(1,2))
+plot(mod, y = "m.prev", 
+     main = "Prevalence of infection, males")
+
+plot(mod, y = "f.prev", 
+     main = "Prevalence of infection, females")
+```
+
+
+```{r, vax prevalence}
+par(mfrow = c(1,2))
+plot(mod, y = "m.vax.prev", 
+     main = "Prevalence of vax, males")
+
+plot(mod, y = "f.vax.prev", 
+     main = "Prevalence of vax, females")
+```
+
+
+```{r, pop sizes}
+par(mfrow = c(1,2))
+plot(mod, y = c("m.num", 'f.num'), 
+     main = "population sizes")
+
+```
