@@ -73,14 +73,18 @@ PAFM_omega <- (sum(baseline$si.m.flow + baseline$vi.m.flow) - sum( omega$si.m.fl
 PAFM_omega
 ```
 ```{r Population Attributable Fraction kappa}
+#IR reference - IR scenario / IR reference
+
+#PAF overall
 PAF_kappa <- (sum(baseline$si.f.flow + baseline$si.m.flow + baseline$vi.f.flow + baseline$vi.m.flow) - sum(kappa$si.f.flow + kappa$si.m.flow + kappa$vi.f.flow + kappa$vi.m.flow)) / (sum(baseline$si.f.flow + baseline$si.m.flow + baseline$vi.f.flow + baseline$vi.m.flow))
 PAF_kappa
 
+#PAF for females
 PAFF_kappa <- (sum(baseline$si.f.flow + baseline$vi.f.flow) - sum(kappa$si.f.flow + kappa$vi.f.flow )) / (sum(baseline$si.f.flow + baseline$vi.f.flow))
 
 PAFF_kappa
 
-
+#PAF for males
 PAFM_kappa <- (sum(baseline$si.m.flow + baseline$vi.m.flow) - sum( kappa$si.m.flow + kappa$vi.m.flow)) / (sum(baseline$si.m.flow + baseline$vi.m.flow))
 
 PAFM_kappa
@@ -99,7 +103,9 @@ effects <- data.frame(
 )
 
 # Create Table
-kable(effects, align = "c", caption = "Comparing Vaccine Scenarios", digits = 2)
+knitr::kable(effects, align = "c", caption = "Comparing Vaccine Scenarios", digits = 2)
+
+table(effects)
 ```
 
 
