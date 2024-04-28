@@ -57,6 +57,37 @@ NNTF_omega <- sum(omega$v.f.ue.num) / NIAF_omega
 NNTF_kappa <- sum(kappa$v.f.ue.num) / NIAF_kappa
 ```
 
+```{r Population Attributable Fraction omega}
+PAF_omega <- (sum(baseline$si.f.flow + baseline$si.m.flow + baseline$vi.f.flow + baseline$vi.m.flow) - sum(omega$si.f.flow + omega$si.m.flow + omega$vi.f.flow + omega$vi.m.flow)) / (sum(baseline$si.f.flow + baseline$si.m.flow + baseline$vi.f.flow + baseline$vi.m.flow))
+
+PAF_omega
+
+
+PAFF_omega <- (sum(baseline$si.f.flow + baseline$vi.f.flow) - sum(omega$si.f.flow + omega$vi.f.flow )) / (sum(baseline$si.f.flow + baseline$vi.f.flow))
+
+PAFF_omega
+
+
+PAFM_omega <- (sum(baseline$si.m.flow + baseline$vi.m.flow) - sum( omega$si.m.flow + omega$vi.m.flow)) / (sum(baseline$si.m.flow + baseline$vi.m.flow))
+
+PAFM_omega
+```
+```{r Population Attributable Fraction kappa}
+PAF_kappa <- (sum(baseline$si.f.flow + baseline$si.m.flow + baseline$vi.f.flow + baseline$vi.m.flow) - sum(kappa$si.f.flow + kappa$si.m.flow + kappa$vi.f.flow + kappa$vi.m.flow)) / (sum(baseline$si.f.flow + baseline$si.m.flow + baseline$vi.f.flow + baseline$vi.m.flow))
+PAF_kappa
+
+PAFF_kappa <- (sum(baseline$si.f.flow + baseline$vi.f.flow) - sum(kappa$si.f.flow + kappa$vi.f.flow )) / (sum(baseline$si.f.flow + baseline$vi.f.flow))
+
+PAFF_kappa
+
+
+PAFM_kappa <- (sum(baseline$si.m.flow + baseline$vi.m.flow) - sum( kappa$si.m.flow + kappa$vi.m.flow)) / (sum(baseline$si.m.flow + baseline$vi.m.flow))
+
+PAFM_kappa
+```
+
+
+
 ```{r Combine Results}
 # Compare Vaccine Effects
 effects <- data.frame(

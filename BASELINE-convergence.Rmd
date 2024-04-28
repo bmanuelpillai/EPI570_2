@@ -307,35 +307,45 @@ model1 <- as.data.frame(mod)
 ```
 
 ## plots
-```{r, prevalence of infection}
-# Prevalence Overall
+```{r, Proportional Prevalence}
 par(mfrow = c(1,2))
+
+# Plot 1: Proportional Prevalence (Baseline)
 plot(mod, y = c("m.prev", "f.prev"), 
      main = "Proportional Prevalence\n(Baseline)",
      ylim = c(0.5,0.65), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Proportional Prevalence")
 
+# legend 
 legend("topright", legend = c("Male Prevalence", "Female Prevalence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 
-# Prevalence Vaccinated
+# Plot 2: Vaccinated Proportional Prevalence (Baseline)
 plot(mod, y = c("m.vax.prev", "f.vax.prev"), 
-     main = "Vaccianted\nProportional Prevalence\n(Baseline)",
+     main = "Vaccinated\nProportional Prevalence\n(Baseline)",
      ylim = c(0.4,0.65), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Proportional Prevalence")
 
-legend("topright", legend = c("Vaccianted Male Prevalence", "Vaccinated Female Prevalence"), 
+# legend
+legend("topright", legend = c("Vaccinated Male Prevalence", "Vaccinated Female Prevalence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
+
 ```
 
 
-```{r, vax prevalence}
+```{r, Incidence}
 # Prevalence Overall
 par(mfrow = c(1,2))
 plot(mod, y = c("si.m.flow", "si.f.flow"), 
      main = "Incidence\n(Baseline)",
      ylim = c(6000, 9000), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Incidence")
 
 legend("bottomright", legend = c("Male Incidence", "Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
@@ -344,39 +354,14 @@ legend("bottomright", legend = c("Male Incidence", "Female Incidence"),
 plot(mod, y = c("vi.m.flow", "vi.f.flow"), 
      main = "Vaccianted\nIncidence\n(Baseline)",
      ylim = c(2000,4500), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Incidence")
 
 legend("bottomright", legend = c("Vaccianted Male Incidence", "Vaccinated Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
-```{r Incidence}
-par(mfrow = c(1,2))
-plot(mod, y = "si.m.flow", 
-     main = "Incidence\nMales\n(Baseline)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000)) 
 
-plot(mod, y = "si.f.flow", 
-     main = "Incidence\nFemales\n(Baseline)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000))
-
-par(mfrow = c(1,2))
-plot(mod, y = "vi.m.flow", 
-     main = "Incidence\nVaccinated Males\n(Baseline)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 4500))
-
-
-plot(mod, y = "vi.f.flow", 
-     main = "Incidence\nVaccinated Females\n(Baseline)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 4500))
-```
 
 
 

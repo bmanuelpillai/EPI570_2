@@ -314,7 +314,9 @@ par(mfrow = c(1,2))
 plot(mod, y = c("m.prev", "f.prev"), 
      main = "Proportional Prevalence\n(Catch Up Vac.)",
      ylim = c(0.5,0.65), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Proportional Prevalence")
 
 legend("topright", legend = c("Male Prevalence", "Female Prevalence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.5)
@@ -323,20 +325,24 @@ legend("topright", legend = c("Male Prevalence", "Female Prevalence"),
 plot(mod, y = c("m.vax.prev", "f.vax.prev"), 
      main = "Vaccianted\nProportional Prevalence\n(Catch Up Vac.)",
      ylim = c(0.4,0.65), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Proportional Prevalence")
 
 legend("topright", legend = c("Vaccianted Male Prevalence", "Vaccinated Female Prevalence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.5)
 ```
 
 
-```{r, vax prevalence}
+```{r, Incidence}
 # Prevalence Overall
 par(mfrow = c(1,2))
 plot(mod, y = c("si.m.flow", "si.f.flow"), 
      main = "Incidence\n(Catch Up Vac.)",
      ylim = c(2000, 9000), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Incidence")
 
 legend("bottomright", legend = c("Male Incidence", "Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
@@ -345,46 +351,16 @@ legend("bottomright", legend = c("Male Incidence", "Female Incidence"),
 plot(mod, y = c("vi.m.flow", "vi.f.flow"), 
      main = "Vaccianted\nIncidence\n(Catch Up Vac.)",
      ylim = c(2000,4500), xlim = c(10950, 25000),
-     col = c("blue", "pink"))
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Incidence")
 
 legend("bottomright", legend = c("Vaccianted Male Incidence", "Vaccinated Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
-```{r Incidence}
-par(mfrow = c(1,2))
-plot(mod, y = "si.m.flow", 
-     main = "Incidence Males\n(Catch Up Vac.)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000)) 
-
-plot(mod, y = "si.f.flow", 
-     main = "Incidence Females\n(Catch Up Vac.)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000))
-
-par(mfrow = c(1,2))
-plot(mod, y = "vi.m.flow", 
-     main = "Incidence Vaccinated Males\n(Catch Up Vac.)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 5000))
 
 
-plot(mod, y = "vi.f.flow", 
-     main = "Incidence Vaccinated Females\n(Catch Up Vac.)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 5000))
-```
 
-```{r, pop sizes}
-par(mfrow = c(1,2))
-plot(mod, y = c("m.num", 'f.num'), 
-     main = "population sizes")
-
-```
 
 
 
