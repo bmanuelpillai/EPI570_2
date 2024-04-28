@@ -104,8 +104,6 @@ effects <- data.frame(
 
 # Create Table
 knitr::kable(effects, align = "c", caption = "Comparing Vaccine Scenarios", digits = 2)
-
-table(effects)
 ```
 
 
