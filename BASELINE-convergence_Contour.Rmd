@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-pacman::p_load(pacman, EpiModel, ggplot2, tidyverse, reshape2)
+pacman::p_load(pacman, EpiModel, ggplot2, tidyverse, reshape2, viridis, metR)
 ```
 
 
@@ -304,65 +304,9 @@ mod <- mutate_epi(mod, f.vax.prev = f.vax/f.num)
 model1 <- as.data.frame(mod)
 ```
 
-## plots
-```{r, prevalence of infection}
-
-par(mfrow = c(1,2))
-plot(mod, y = "m.prev", 
-     main = "Proportional Prevalence Males\n(Baseline)",
-     ylim = c(0.5,0.65), xlim = c(11000, 30000),
-     col = "blue")
-
-plot(mod, y = "f.prev", 
-     main = "Proportional Prevalence Females\n(Baseline)",
-     ylim = c(0.5,0.65), xlim = c(11000, 30000),
-     col = "pink")
-
-```
-
-
-```{r, vax prevalence}
-par(mfrow = c(1,2))
-plot(mod, y = "m.vax.prev", 
-     main = "Proportional Prevalence Vaccinated Males\n(Baseline)",
-     ylim = c(0.4,0.65), xlim = c(11000, 30000),
-     col = "blue")
-
-plot(mod, y = "f.vax.prev", 
-     main = "Proportional Prevalence Vaccinated Females\n(Baseline)",
-     ylim = c(0.4,0.65), xlim = c(11000, 30000),
-     col = "pink")
-```
-```{r Incidence}
-par(mfrow = c(1,2))
-plot(mod, y = "si.m.flow", 
-     main = "Incidence Males\n(Baseline)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000)) 
-
-plot(mod, y = "si.f.flow", 
-     main = "Incidence Females\n(Baseline)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(5000, 10000))
-
-par(mfrow = c(1,2))
-plot(mod, y = "vi.m.flow", 
-     main = "Incidence Vaccinated Males\n(Baseline)",
-     col = "blue",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 4500))
-plot(mod, y = "vi.f.flow", 
-     main = "Incidence Vaccinated Females\n(Baseline)", 
-     col = "pink",
-     xlim = c(11000, 30000),
-     ylim = c(2500, 4500))
-```
-
 ```{r TOM's Contour Plot Code for Kappa}
-kappa.m <- seq(0.01, 0.04, 0.01)
-kappa.f <- seq(0.01, 0.04, 0.01)
+kappa.m <- seq(0.01, 0.1, 0.02)
+kappa.f <- seq(0.01, 0.1, 0.02)
 
 # create a grid of interaction parameter values
 # each row of grid correspond to unique combination of each parameter
@@ -427,10 +371,7 @@ df4 <- group_by(df, run) %>%
 ggplot(df2, aes(kappa.m, kappa.f)) +
   geom_raster(aes(fill = cumlinc), interpolate = TRUE) +
   geom_contour(aes(z = cumlinc), col = "white", alpha = 1, lwd = 1.5) +
-  geom_text_contour(aes(z = cumlinc), stroke = 0.1) +
   theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
   labs(title = "Catch Up Vaccination among Males and Females", x = "Catch Up Males", y = "Catch Up Females") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "G", direction = 1) + 
   guides(fill = guide_legend(title = "CI for Males and Females"))
@@ -440,26 +381,17 @@ ggplot(df2, aes(kappa.m, kappa.f)) +
 ggplot(df3, aes(kappa.m, kappa.f)) +
   geom_raster(aes(fill = cumlinc2), interpolate = TRUE) +
   geom_contour(aes(z = cumlinc2), col = "white", alpha = 1, lwd = 1.5) +
-  geom_text_contour(aes(z = cumlinc2), stroke = 0.1) +
   theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
   labs(title = "Catch Up Vaccination among Males", x = "Catch Up Males", y = "Catch Up Females") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "G", direction = 1) +
   guides(title = "CI for Males") +
   guides(fill = guide_legend(title = "CI for Males"))
  
-
-  geom_text_contour(aes(z = cumlinc2), stroke = 0.1)
- 
 # contour plot for females
 ggplot(df4, aes(kappa.m, kappa.f)) +
   geom_raster(aes(fill = cumlinc3), interpolate = TRUE) +
   geom_contour(aes(z = cumlinc3), col = "white", alpha = 1, lwd = 1.5) +
-  geom_text_contour(aes(z = cumlinc3), stroke = 0.1) +
   theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
   labs(title = "Catch Up Vaccination among Females", x = "Catch Up Males", y = "Catch Up Females") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "G", direction = 1) + 
   guides(fill = guide_legend(title = "CI for Females"))
@@ -467,8 +399,8 @@ ggplot(df4, aes(kappa.m, kappa.f)) +
 ```
 
 ```{r TOM's Contour Plot Code for Omega}
-omega.m <- seq(0.3, 0.6, 0.1)
-omega.f <- seq(0.3, 0.6, 0.1)
+omega.m <- seq(0.45, 0.6, 0.05)
+omega.f <- seq(0.45, 0.6, 0.05)
 
 # create a grid of interaction parameter values
 # each row of grid correspond to unique combination of each parameter
@@ -531,10 +463,7 @@ df4 <- group_by(df, run) %>%
 ggplot(df2, aes(omega.m, omega.f)) +
   geom_raster(aes(fill = cumlinc), interpolate = TRUE) +
   geom_contour(aes(z = cumlinc), col = "white", alpha = 1, lwd = 1.5) +
-  geom_text_contour(aes(z = cumlinc), stroke = 0.1) +
   theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
   labs(title = "Vaccine Coverage among Males and Females", x = "Coverage for Males", y = "Coverage for Females") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "A", direction = 1) +
   guides(fill = guide_legend(title = "CI for Males and Females"))
@@ -546,8 +475,6 @@ ggplot(df3, aes(omega.m, omega.f)) +
   geom_contour(aes(z = cumlinc2), col = "white", alpha = 1, lwd = 1.5) +
   geom_text_contour(aes(z = cumlinc2), stroke = 0.1) +
   theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
   labs(title = "Vaccine Coverage among Males", x = "Coverage for Males", y = "Coverage for Females") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "A", direction = 1) +
   guides(fill = guide_legend(title = "CI for Males"))
@@ -555,11 +482,8 @@ ggplot(df3, aes(omega.m, omega.f)) +
 # contour plot for females
 ggplot(df4, aes(omega.m, omega.f)) +
   geom_raster(aes(fill = cumlinc3), interpolate = TRUE) +
-  geom_contour(aes(z = cumlinc3), col = "white", alpha = 1, lwd = 1.5, title = "CI for Males") +
-  geom_text_contour(aes(z = cumlinc3), stroke = 0.1) +
+  geom_contour(aes(z = cumlinc3), col = "white", alpha = 1, lwd = 1.5) +
   theme_minimal() +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_x_continuous(expand = c(0, 0)) +
   labs(title = "Vaccine Coverage among Females", x = "Catch Up Males", y = "Catch Up Females") +
   scale_fill_viridis(discrete = FALSE, alpha = 1, option = "A", direction = 1) +
   guides(fill = guide_legend(title = "CI for Females"))
