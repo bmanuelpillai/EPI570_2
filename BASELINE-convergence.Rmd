@@ -312,7 +312,7 @@ par(mfrow = c(1,2))
 
 # Plot 1: Proportional Prevalence (Baseline)
 plot(mod, y = c("m.prev", "f.prev"), 
-     main = "Proportional Prevalence\n(Baseline)",
+     main = "Proportional Prevalence",
      ylim = c(0.5,0.65), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
@@ -324,7 +324,7 @@ legend("topright", legend = c("Male Prevalence", "Female Prevalence"),
 
 # Plot 2: Vaccinated Proportional Prevalence (Baseline)
 plot(mod, y = c("m.vax.prev", "f.vax.prev"), 
-     main = "Vaccinated\nProportional Prevalence\n(Baseline)",
+     main = "Vaccinated\nProportional Prevalence",
      ylim = c(0.4,0.65), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
@@ -341,7 +341,7 @@ legend("topright", legend = c("Vaccinated Male Prevalence", "Vaccinated Female P
 # Prevalence Overall
 par(mfrow = c(1,2))
 plot(mod, y = c("si.m.flow", "si.f.flow"), 
-     main = "Incidence\n(Baseline)",
+     main = "Incidence",
      ylim = c(6000, 9000), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
@@ -352,13 +352,13 @@ legend("bottomright", legend = c("Male Incidence", "Female Incidence"),
 
 # Prevalence Vaccinated
 plot(mod, y = c("vi.m.flow", "vi.f.flow"), 
-     main = "Vaccianted\nIncidence\n(Baseline)",
+     main = "Vaccinated\nIncidence",
      ylim = c(2000,4500), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Incidence")
 
-legend("bottomright", legend = c("Vaccianted Male Incidence", "Vaccinated Female Incidence"), 
+legend("bottomright", legend = c("Vaccinated Male Incidence", "Vaccinated Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
