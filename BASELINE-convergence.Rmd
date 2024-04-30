@@ -302,6 +302,10 @@ mod <- mutate_epi(mod, m.vax = v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s
 mod <- mutate_epi(mod, f.vax = v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
 mod <- mutate_epi(mod, m.vax.prev = m.vax/m.num)
 mod <- mutate_epi(mod, f.vax.prev = f.vax/f.num)
+mod <- mutate_epi(mod, si.m.flow.cuml = cumsum(si.m.flow))
+mod <- mutate_epi(mod, si.f.flow.cuml = cumsum(si.f.flow))
+mod <- mutate_epi(mod, vi.m.flow.cuml = cumsum(vi.m.flow))
+mod <- mutate_epi(mod, vi.f.flow.cuml = cumsum(vi.f.flow))
 
 model1 <- as.data.frame(mod)
 ```
@@ -340,9 +344,9 @@ legend("topright", legend = c("Vaccinated Male Prevalence", "Vaccinated Female P
 ```{r, Incidence}
 # Prevalence Overall
 par(mfrow = c(1,2))
-plot(mod, y = c("si.m.flow", "si.f.flow"), 
+plot(mod, y = c("si.m.flow.cuml", "si.f.flow.cuml"), 
      main = "Incidence",
-     ylim = c(6000, 9000), xlim = c(10950, 25000),
+     ylim = c(), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Incidence")
@@ -351,9 +355,9 @@ legend("bottomright", legend = c("Male Incidence", "Female Incidence"),
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 
 # Prevalence Vaccinated
-plot(mod, y = c("vi.m.flow", "vi.f.flow"), 
+plot(mod, y = c("vi.m.flow.cuml", "vi.f.flow.cuml"), 
      main = "Vaccinated\nIncidence",
-     ylim = c(2000,4500), xlim = c(10950, 25000),
+     ylim = c(), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Incidence")
