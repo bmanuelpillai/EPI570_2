@@ -308,6 +308,15 @@ mod <- mutate_epi(mod, vi.m.flow.cuml = cumsum(vi.m.flow))
 mod <- mutate_epi(mod, vi.f.flow.cuml = cumsum(vi.f.flow))
 
 model1 <- as.data.frame(mod)
+
+childhood.males.percent <- model1 %>% 
+  filter(time >= 29200) %>% 
+  summarize(vac.male.percent = (v.m.ue.num + v.m.e.num + v.m.i.a.num + v.m.i.s.num)/ m.num ) 
+
+
+childhood.females.percent <-model1 %>% 
+  filter(time >= 29200)%>% 
+  summarize(vac.female.percent = ( + v.f.e.num + v.f.i.a.num + v.f.i.s.num)/ f.num)
 ```
 
 ## plots
