@@ -316,7 +316,7 @@ childhood.males.percent <- model1 %>%
 
 childhood.females.percent <-model1 %>% 
   filter(time >= 29200)%>% 
-  summarize(vac.female.percent = ( + v.f.e.num + v.f.i.a.num + v.f.i.s.num)/ f.num)
+  summarize(vac.female.percent = (v.f.ue.num + v.f.e.num + v.f.i.a.num + v.f.i.s.num)/ f.num)
 
 childhood.overall.percent <- model1 %>% 
   filter(time >= 29200) %>% 

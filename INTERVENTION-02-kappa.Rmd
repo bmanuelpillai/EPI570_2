@@ -312,14 +312,14 @@ model2 <- as.data.frame(mod)
 
 
 
-catchup.males.percent<- model2 %>% 
+catchup.males.percent <- model2 %>% 
   filter(time >= 29200) %>% 
   summarize(vac.male.percent = (v.m.ue.num + v.m.e.num + v.m.i.a.num + v.m.i.s.num)/ m.num ) 
 
 
-catchup.females.percent<- model2 %>% 
+catchup.females.percent <- model2 %>% 
   filter(time >= 29200)%>% 
-  summarize(vac.female.percent = ( + v.f.e.num + v.f.i.a.num + v.f.i.s.num)/ f.num)
+  summarize(vac.female.percent = (v.f.ue.num + v.f.e.num + v.f.i.a.num + v.f.i.s.num)/ f.num)
 
 catchup.overall.percent <- model2 %>% 
   filter(time >= 29200) %>% 
