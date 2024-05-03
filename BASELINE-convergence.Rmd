@@ -360,7 +360,7 @@ legend("topright", legend = c("Vaccinated Male Prevalence", "Vaccinated Female P
 # Prevalence Overall
 par(mfrow = c(1,2))
 plot(mod, y = c("si.m.flow.cuml", "si.f.flow.cuml"), 
-     main = "Incidence",
+     main = "Incidence Rate",
      ylim = c(), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
@@ -371,7 +371,7 @@ legend("bottomright", legend = c("Male Incidence", "Female Incidence"),
 
 # Prevalence Vaccinated
 plot(mod, y = c("vi.m.flow.cuml", "vi.f.flow.cuml"), 
-     main = "Vaccinated\nIncidence",
+     main = "Vaccinated\nIncidence Rate",
      ylim = c(), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
