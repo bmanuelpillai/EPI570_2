@@ -277,43 +277,84 @@ baseline <- baseline %>%
 # BASIC GRAPHS TO TEST OUTPUT
 ## adding elements to model
 ```{r, adding elements ot model}
+# Male Population Size
 mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
 
+# Female Population Size
 mod <- mutate_epi(mod, f.num = uv.f.ue.num + uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
                                v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
 
+# Total Population Size
 mod <- mutate_epi(mod, num = m.num + f.num)
 
+# Total 18-29 males
 mod <- mutate_epi(mod, m.e.num = uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                  v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
 
+# Total 18-29 females
 mod <- mutate_epi(mod, f.e.num = uv.f.e.num + uv.f.i.a.num + uv.f.i.s.num + 
                                  v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
 
+# Total infected males
 mod <- mutate_epi(mod, i.m.num = uv.m.i.a.num + uv.m.i.s.num + v.m.i.a.num  + v.m.i.s.num)
+
+# Total infected females
 mod <- mutate_epi(mod, i.f.num = uv.f.i.a.num + uv.f.i.s.num + v.f.i.a.num  + v.f.i.s.num)
 
-
-
+# prevalence in males
 mod <- mutate_epi(mod, m.prev = i.m.num / m.e.num)
+
+# prevalence in females
 mod <- mutate_epi(mod, f.prev = i.f.num / f.e.num)
+
+# Total males vaccinated
 mod <- mutate_epi(mod, m.vax = v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
+
+# Total females vaccinated
 mod <- mutate_epi(mod, f.vax = v.f.ue.num  + v.f.e.num  + v.f.i.a.num  + v.f.i.s.num)
+
+# Male proportion vaccinated
 mod <- mutate_epi(mod, m.vax.prev = m.vax/m.num)
+
+# Female proportion vaccinated
 mod <- mutate_epi(mod, f.vax.prev = f.vax/f.num)
 
-model1 <- as.data.frame(mod)
+# Cumulative Incidence Over Time
+mod <- mutate_epi(mod, si.m.flow.cuml = cumsum(si.m.flow))
+mod <- mutate_epi(mod, si.f.flow.cuml = cumsum(si.f.flow))
+mod <- mutate_epi(mod, vi.m.flow.cuml = cumsum(vi.m.flow))
+mod <- mutate_epi(mod, vi.f.flow.cuml = cumsum(vi.f.flow))
+mod <- mutate_epi(mod, sivi.m.flow.cuml = cumsum(si.m.flow + vi.m.flow))
+mod <- mutate_epi(mod, sivi.f.flow.cuml = cumsum(si.f.flow + vi.f.flow))
+
+model <- as.data.frame(mod)
+
+
+baseline.males.percent <- model %>% 
+  filter(time >= 29200) %>% 
+  summarize(vac.male.percent = (v.m.ue.num + v.m.e.num + v.m.i.a.num + v.m.i.s.num)/ m.num ) 
+
+
+baseline.females.percent <-model %>% 
+  filter(time >= 29200)%>% 
+  summarize(vac.female.percent = (v.f.ue.num + v.f.e.num + v.f.i.a.num + v.f.i.s.num)/ f.num)
+
+
+baseline.overall.percent <- model %>% 
+  filter(time >= 29200) %>% 
+  summarize(vac.overall.percent = sum(v.m.ue.num + v.m.e.num + v.m.i.a.num + v.m.i.s.num + v.f.ue.num + v.f.e.num + v.f.i.a.num + v.f.i.s.num) / (m.num + f.num))
+  
 ```
 
 ## plots
 ```{r, Proportional Prevalence}
 par(mfrow = c(1,2))
 
-# Plot 1: Proportional Prevalence (Baseline)
+# Plot 1: Overall Proportional Prevalence (Baseline)
 plot(mod, y = c("m.prev", "f.prev"), 
-     main = "Proportional Prevalence\n(Baseline)",
-     ylim = c(0.5,0.65), xlim = c(10950, 25000),
+     main = "Overall HPV\nProportional Prevalence",
+     ylim = c(0.4,0.65), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Proportional Prevalence")
@@ -324,41 +365,52 @@ legend("topright", legend = c("Male Prevalence", "Female Prevalence"),
 
 # Plot 2: Vaccinated Proportional Prevalence (Baseline)
 plot(mod, y = c("m.vax.prev", "f.vax.prev"), 
-     main = "Vaccinated\nProportional Prevalence\n(Baseline)",
+     main = "Proportion Vaccinated",
      ylim = c(0.4,0.65), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Proportional Prevalence")
 
 # legend
-legend("topright", legend = c("Vaccinated Male Prevalence", "Vaccinated Female Prevalence"), 
+legend("topright", legend = c("Male Vaccinated Proportion", "Female Vaccinated Proportion"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
-
 ```
 
 
 ```{r, Incidence}
-# Prevalence Overall
-par(mfrow = c(1,2))
-plot(mod, y = c("si.m.flow", "si.f.flow"), 
-     main = "Incidence\n(Baseline)",
-     ylim = c(6000, 9000), xlim = c(10950, 25000),
+par(mfrow = c(1,3))
+
+# Cumulative Incidence Overall
+plot(mod, y = c("sivi.m.flow.cuml", "sivi.f.flow.cuml"), 
+     main = "Overall\nCumulative Incidence Over Time",
+     ylim = c(0, 3e8), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Incidence")
 
-legend("bottomright", legend = c("Male Incidence", "Female Incidence"), 
+legend("bottomright", legend = c("Overall Male Incidence", "Overall Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 
-# Prevalence Vaccinated
-plot(mod, y = c("vi.m.flow", "vi.f.flow"), 
-     main = "Vaccianted\nIncidence\n(Baseline)",
-     ylim = c(2000,4500), xlim = c(10950, 25000),
+# Cumulative Incidence Unvaccinated
+plot(mod, y = c("si.m.flow.cuml", "si.f.flow.cuml"), 
+     main = "Unvaccinated\nCumulative Incidence Over Time",
+     ylim = c(0, 3e8), xlim = c(10950, 25000),
      col = c("blue", "pink"),
      xlab = "Time (Days)",
      ylab = "Incidence")
 
-legend("bottomright", legend = c("Vaccianted Male Incidence", "Vaccinated Female Incidence"), 
+legend("bottomright", legend = c("Unvaccinated Male Incidence", "Unvaccinated Female Incidence"), 
+       col = c("blue", "pink"), pch = 19, cex = 0.6)
+
+# Cumulative Incidence Vaccinated
+plot(mod, y = c("vi.m.flow.cuml", "vi.f.flow.cuml"), 
+     main = "Vaccinated\nCumulative Incidence Over Time",
+     ylim = c(0, 3e8), xlim = c(10950, 25000),
+     col = c("blue", "pink"),
+     xlab = "Time (Days)",
+     ylab = "Incidence")
+
+legend("bottomright", legend = c("Vaccinated Male Incidence", "Vaccinated Female Incidence"), 
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
