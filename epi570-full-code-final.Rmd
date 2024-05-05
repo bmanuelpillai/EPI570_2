@@ -1477,7 +1477,7 @@ param.t <- param.dcm( # FOI PARAMETERS
                     zeta.v = (0.1) , zeta.s = (0.1))
 ```
 
-```{r TOM's Contour Plot Code for Kappa}
+```{r TOMs Contour Plot Code for Kappa}
 kappa.m <- seq(0.01, 0.04, 0.01)
 kappa.f <- seq(0.01, 0.04, 0.01)
 
@@ -1585,7 +1585,7 @@ ggplot(df4, aes(kappa.m, kappa.f)) +
 
 ```
 
-```{r TOM's Contour Plot Code for Omega}
+```{r TOMs Contour Plot Code for Omega}
 omega.m <- seq(0.3, 0.6, 0.1)
 omega.f <- seq(0.3, 0.6, 0.1)
 
