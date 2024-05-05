@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # SET UP
-```{r}
+```{r, set up}
 pacman::p_load(pacman, EpiModel, ggplot2, tidyverse, reshape2, metR, viridis)
 ```
 
@@ -260,7 +260,7 @@ param.b <- param.dcm( # FOI PARAMETERS
 
 
 ## CONTROL & RUN - BASELINE
-```{r}
+```{r, control-run baseline}
 control.b <- control.dcm(nsteps = (80*365), new.mod = Vaccination.b)
 
 mod <- dcm(param.b, init, control.b)
@@ -273,7 +273,7 @@ baseline <- baseline %>%
 ```
 
 ## ADD MODEL ELEMENTS-BASELINE
-```{r, adding elements ot model}
+```{r, adding elements to model-baseline}
 # Male Population Size
 mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
@@ -345,7 +345,7 @@ baseline.overall.percent <- model %>%
 ```
 
 ### PLOTS-BASELINE
-```{r, Proportional Prevalence}
+```{r, Proportional Prevalence-baseline}
 par(mfrow = c(1,2))
 
 # Plot 1: Overall Proportional Prevalence (Baseline)
@@ -373,7 +373,7 @@ legend("topright", legend = c("Male Vaccinated Proportion", "Female Vaccinated P
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
-```{r, Incidence}
+```{r, Incidence-baseline}
 par(mfrow = c(1,3))
 
 # Cumulative Incidence Overall
@@ -636,7 +636,7 @@ param.o <- param.dcm( # FOI PARAMETERS
 ```
 
 ## CONTROL & RUN-INT 01
-```{r}
+```{r, control-run-int01}
 control.o <- control.dcm(nsteps = (80*365), new.mod = Vaccination.o)
 
 mod <- dcm(param.o, init, control.o)
@@ -649,7 +649,7 @@ omega <- omega %>%
 ```
 
 ## ADD MODEL ELEMENTS-INT 01
-```{r, adding elements ot model1}
+```{r, adding elements to model int01}
 # Male Population Size
 mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
@@ -721,7 +721,7 @@ baseline.overall.percent <- model1 %>%
 ```
 
 ### PLOTS-INT 01
-```{r, Proportional Prevalence}
+```{r, Proportional Prevalence-int01}
 par(mfrow = c(1,2))
 
 # Plot 1: Overall Proportional Prevalence (Baseline)
@@ -749,7 +749,7 @@ legend("topright", legend = c("Male Vaccinated Proportion", "Female Vaccinated P
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
-```{r, Incidence}
+```{r, Incidence-int01}
 par(mfrow = c(1,3))
 
 # Cumulative Incidence Overall
@@ -1012,7 +1012,7 @@ param.k <- param.dcm( # FOI PARAMETERS
 ```
 
 ## CONTROL & RUN-INT 02
-```{r}
+```{r, control-run-int02}
 control.k <- control.dcm(nsteps = (80*365), new.mod = Vaccination.k)
 
 mod <- dcm(param.k, init, control.k)
@@ -1025,7 +1025,7 @@ kappa <- kappa %>%
 ```
 
 ## ADD MODEL ELEMENTS-INT 02
-```{r, adding elements ot model2}
+```{r, adding elements to model int02}
 # Male Population Size
 mod <- mutate_epi(mod, m.num = uv.m.ue.num + uv.m.e.num + uv.m.i.a.num + uv.m.i.s.num + 
                                v.m.ue.num  + v.m.e.num  + v.m.i.a.num  + v.m.i.s.num)
@@ -1097,7 +1097,7 @@ baseline.overall.percent <- model2 %>%
 ```
 
 ### PLOTS-INT 02
-```{r, Proportional Prevalence}
+```{r, Proportional Prevalence-int 02}
 par(mfrow = c(1,2))
 
 # Plot 1: Overall Proportional Prevalence (Baseline)
@@ -1125,7 +1125,7 @@ legend("topright", legend = c("Male Vaccinated Proportion", "Female Vaccinated P
        col = c("blue", "pink"), pch = 19, cex = 0.6)
 ```
 
-```{r, Incidence}
+```{r, Incidence-int 02}
 par(mfrow = c(1,3))
 
 # Cumulative Incidence Overall
