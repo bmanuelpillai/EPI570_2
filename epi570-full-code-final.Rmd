@@ -118,7 +118,7 @@ Vaccination.b <- function(t, t0, parms) {
 #5. Define Differential Equations ########################################################
   
 # MALES : SUSCEPTIBLE
-  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num]
+  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num] [U compartment]
   dS.m.ue <- ((0.5 * (1-omega.m*chi) * nu*num)) +            # births
              (-age.in * uv.m.ue.num) + (-mu.ue * uv.m.ue.num)  # gen pop
       # entry multiplied by half to account for M/F strata
@@ -143,7 +143,7 @@ Vaccination.b <- function(t, t0, parms) {
 
 
 # MALES : VACCINATED
-  # vaccinated unexposed [v.m.ue.num]
+  # vaccinated unexposed [v.m.ue.num] [U compartment]
   dV.m.ue <- (0.5 * omega.m * chi * nu * num) +              # births
              (-age.in * v.m.ue.num) + (-mu.ue * v.m.ue.num)  # general pop
 
@@ -164,7 +164,7 @@ Vaccination.b <- function(t, t0, parms) {
 
   
 # FEMALES : SUSCEPTIBLE
-  # unexposed [uv.f.ue.num]
+  # unexposed [uv.f.ue.num] [U compartment]
   dS.f.ue <- ((0.5 * (1-omega.f*chi) * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
   
   # exposed/sexually active [uv.f.e.num]
@@ -185,7 +185,7 @@ Vaccination.b <- function(t, t0, parms) {
 
   
 # FEMALES : VACCINATED
-  # unexposed [v.f.ue.num]
+  # unexposed [v.f.ue.num] [U compartment]
   dV.f.ue <- (0.5 * omega.f * chi * nu * num) +              # births
              (-age.in * v.f.ue.num) + (-mu.ue * v.f.ue.num)  # general pop
   # exposed [v.f.e.num]
@@ -494,7 +494,7 @@ Vaccination.o <- function(t, t0, parms) {
 #5. Define Differential Equations ########################################################
   
 # MALES : SUSCEPTIBLE
-  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num]
+  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num] [U compartment]
   dS.m.ue <- ((0.5 * (1-omega.m*chi) * nu*num)) +            # births
              (-age.in * uv.m.ue.num) + (-mu.ue * uv.m.ue.num)  # gen pop
       # entry multiplied by half to account for M/F strata
@@ -519,7 +519,7 @@ Vaccination.o <- function(t, t0, parms) {
 
 
 # MALES : VACCINATED
-  # vaccinated unexposed [v.m.ue.num]
+  # vaccinated unexposed [v.m.ue.num] [U compartment]
   dV.m.ue <- (0.5 * omega.m * chi * nu * num) +              # births
              (-age.in * v.m.ue.num) + (-mu.ue * v.m.ue.num)  # general pop
 
@@ -540,7 +540,7 @@ Vaccination.o <- function(t, t0, parms) {
 
   
 # FEMALES : SUSCEPTIBLE
-  # unexposed [uv.f.ue.num]
+  # unexposed [uv.f.ue.num] [U compartment]
   dS.f.ue <- ((0.5 * (1-omega.f*chi) * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
   
   # exposed/sexually active [uv.f.e.num]
@@ -561,7 +561,7 @@ Vaccination.o <- function(t, t0, parms) {
 
   
 # FEMALES : VACCINATED
-  # unexposed [v.f.ue.num]
+  # unexposed [v.f.ue.num] [U compartment]
   dV.f.ue <- (0.5 * omega.f * chi * nu * num) +              # births
              (-age.in * v.f.ue.num) + (-mu.ue * v.f.ue.num)  # general pop
   # exposed [v.f.e.num]
@@ -870,7 +870,7 @@ Vaccination.k <- function(t, t0, parms) {
 #5. Define Differential Equations ########################################################
   
 # MALES : SUSCEPTIBLE
-  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num]
+  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num] [U compartment]
   dS.m.ue <- ((0.5 * (1-omega.m*chi) * nu*num)) +            # births
              (-age.in * uv.m.ue.num) + (-mu.ue * uv.m.ue.num)  # gen pop
       # entry multiplied by half to account for M/F strata
@@ -895,7 +895,7 @@ Vaccination.k <- function(t, t0, parms) {
 
 
 # MALES : VACCINATED
-  # vaccinated unexposed [v.m.ue.num]
+  # vaccinated unexposed [v.m.ue.num] [U compartment]
   dV.m.ue <- (0.5 * omega.m * chi * nu * num) +              # births
              (-age.in * v.m.ue.num) + (-mu.ue * v.m.ue.num)  # general pop
 
@@ -916,7 +916,7 @@ Vaccination.k <- function(t, t0, parms) {
 
   
 # FEMALES : SUSCEPTIBLE
-  # unexposed [uv.f.ue.num]
+  # unexposed [uv.f.ue.num] [U compartment]
   dS.f.ue <- ((0.5 * (1-omega.f*chi) * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
   
   # exposed/sexually active [uv.f.e.num]
@@ -937,7 +937,7 @@ Vaccination.k <- function(t, t0, parms) {
 
   
 # FEMALES : VACCINATED
-  # unexposed [v.f.ue.num]
+  # unexposed [v.f.ue.num] [U compartment]
   dV.f.ue <- (0.5 * omega.f * chi * nu * num) +              # births
              (-age.in * v.f.ue.num) + (-mu.ue * v.f.ue.num)  # general pop
   # exposed [v.f.e.num]
@@ -1337,7 +1337,7 @@ Vaccination.t <- function(t, t0, parms) {
 #5. Define Differential Equations ########################################################
   
 # MALES : SUSCEPTIBLE
-  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num]
+  # susceptible unexposed (11-18 yrs old) [uv.m.ue.num] [U compartment]
   dS.m.ue <- ((0.5 * (1-omega.m*chi) * nu*num)) +            # births
              (-age.in * uv.m.ue.num) + (-mu.ue * uv.m.ue.num)  # gen pop
       # entry multiplied by half to account for M/F strata
@@ -1362,7 +1362,7 @@ Vaccination.t <- function(t, t0, parms) {
 
 
 # MALES : VACCINATED
-  # vaccinated unexposed [v.m.ue.num]
+  # vaccinated unexposed [v.m.ue.num] [U compartment]
   dV.m.ue <- (0.5 * omega.m * chi * nu * num) +              # births
              (-age.in * v.m.ue.num) + (-mu.ue * v.m.ue.num)  # general pop
 
@@ -1383,7 +1383,7 @@ Vaccination.t <- function(t, t0, parms) {
 
   
 # FEMALES : SUSCEPTIBLE
-  # unexposed [uv.f.ue.num]
+  # unexposed [uv.f.ue.num] [U compartment]
   dS.f.ue <- ((0.5 * (1-omega.f*chi) * nu * num)) - (age.in * uv.f.ue.num) - (mu.ue * uv.f.ue.num)
   
   # exposed/sexually active [uv.f.e.num]
@@ -1404,7 +1404,7 @@ Vaccination.t <- function(t, t0, parms) {
 
   
 # FEMALES : VACCINATED
-  # unexposed [v.f.ue.num]
+  # unexposed [v.f.ue.num] [U compartment]
   dV.f.ue <- (0.5 * omega.f * chi * nu * num) +              # births
              (-age.in * v.f.ue.num) + (-mu.ue * v.f.ue.num)  # general pop
   # exposed [v.f.e.num]
